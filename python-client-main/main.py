@@ -11,6 +11,7 @@ def initializer(game: Game):
     strategic_nodes, score = list(zip(*strategic_nodes))
     print(game.get_turn_number())
     owner = game.get_owners()
+    #print(f"STRATEGIC NODES: {strategic_nodes}\n SCORE: {score}")
     for i in strategic_nodes:
         if owner[str(i)] == -1:
             print(game.put_one_troop(i), "-- putting one troop on", i)
