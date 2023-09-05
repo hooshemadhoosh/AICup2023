@@ -53,7 +53,7 @@ def initializer(game: Game):
             print(game.put_one_troop(i), "-- putting one troop on neighbor of strategic node", j)
             return
     return
-
+ 
 def turn(game):
     my_id = game.get_player_id()['player_id']
 
@@ -123,24 +123,25 @@ def turn(game):
     #the second state! attacking!
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
-    # find the node with the most troops that I own
-    max_troops = 0
-    max_node = -1
-    owner = game.get_owners()
 
-    for i in owner: #i used this instad of     for i in owner.keys()
-        if owner[str(i)] == my_id:
-            if game.get_number_of_troops()[i] > max_troops:
-                max_troops = game.get_number_of_troops()[i]
-                max_node = i
     if len(opurtunity_of_attacking_strategic_nodes) >= 1:
         for on in opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low:
             adj_to_attack = find_best_adj(number_of_troops , adjacents , on , owner , my_id)
             defenders = number_of_troops[str(on)] + number_of_fort_troops[str(on)]
             if (number_of_troops[str(adj_to_attack)]/defenders) > 1.3:
-                print (game.attack(best_adj_to_put_froot, pointed_node, beta, 0.5))
+                print (game.attack(adj_to_attack, on, beta, 0.5))
                 break
     else:
+        # find the node with the most troops that I own
+        max_troops = 0
+        max_node = -1
+        owner = game.get_owners()
+        for i in owner: #i used this instad of     for i in owner.keys()
+            if owner[str(i)] == my_id:
+                if game.get_number_of_troops()[i] > max_troops:
+                    max_troops = game.get_number_of_troops()[i]
+                    max_node = i
+                    
     # find a neighbor of that node that I don't own and attack it! (default code)
         adj = game.get_adj()
         for i in adj[max_node]:
