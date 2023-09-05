@@ -1,7 +1,0 @@
-src/blueprints/__pycache__/
-src/tools/__pycache__/
-src/components/__pycache__/
-.DS_Store
-.vscode/
-src/turn_controllers/__pycache__/
-src/__pycache__/ 
