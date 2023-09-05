@@ -53,45 +53,48 @@ def turn(game):
     beta = VARS["mytroops/enemytroops (beta)"]
 
     for s in strategic_nodes:  
-        if owner[str(s)] != my_id:
-            enemy_troops_on_node = int(game.get_number_of_troops()[s]) + int(game.get_number_of_fort_troops()[s]) #getting the number of enemy troops on the strategic node
-            if ((my_remaining_troops-2) / enemy_troops_on_node) > beta:
-                number_of_free_adjacents_of_strategic_node = 0
-                #adding "the chance of successful attack on each neighbor of strategic node" as value to the opurtunity_of_attacking_strategic_nodes dictionary with the key of that node
-                for neighborss in adjacents[s]:
-                    if owner[str(neighborss)] == -1:
-                        number_of_free_adjacents_of_strategic_node += 1
-                if number_of_free_adjacents_of_strategic_node != 0:
-                    opurtunity_of_attacking_strategic_nodes [s] = my_remaining_troops*number_of_free_adjacents_of_strategic_node / enemy_troops_on_node
+        enemy_troops_on_node = int(game.get_number_of_troops()[s]) + int(game.get_number_of_fort_troops()[s]) #getting the number of enemy troops on the strategic node
+        if owner[str(s)] != my_id and enemy_troops_on_node > 1 and ((my_remaining_troops-2) / enemy_troops_on_node) > beta:
+            number_of_free_adjacents_of_strategic_node = 0
+
+            #adding "the chance of successful attack on each neighbor of strategic node" as value to the opurtunity_of_attacking_strategic_nodes dictionary with the key of that node
+            for neighborss in adjacents[s]:
+                if owner[str(neighborss)] == -1:
+                    number_of_free_adjacents_of_strategic_node += 1
+            if number_of_free_adjacents_of_strategic_node != 0:
+                opurtunity_of_attacking_strategic_nodes [s] = my_remaining_troops*number_of_free_adjacents_of_strategic_node / enemy_troops_on_node
+                
+
+    #start putting troops on suitable nodes that we have chosen above...
     if len(opurtunity_of_attacking_strategic_nodes) > 1:
         #sorting the chance of attacking in the dictionary from a high amount to a low one
         opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low = sorted(opurtunity_of_attacking_strategic_nodes.items(), key = lambda item: item[1] , reverse=True)
         pointed_node = opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low[0][0] #pointing a node with the most chance of successful attack 
         n_defenders = int(game.get_number_of_troops()[pointed_node]) + int(game.get_number_of_fort_troops()[pointed_node])
         print (game.put_troop(pointed_node , int(-(-(beta*n_defenders)//1))+2 ))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
+
     elif len(opurtunity_of_attacking_strategic_nodes) == 1:
         pointed_node = opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low[0][0] #pointing a node with the most chance of successful attack 
         n_defenders = int(game.get_number_of_troops()[pointed_node]) + int(game.get_number_of_fort_troops()[pointed_node])
         print (game.put_troop(pointed_node , int(-(-(beta*n_defenders)//1))+2 ))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
-    else:
-        for ii in owner:
-            if owner[str(ii)] == -1:
-                print(game.put_troop(ii, 2))
+
+    else: #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them!
+        for x in owner: #i used this instad of     for i in owner.keys()
+            if owner[str(x)] == my_id and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
+                print(game.put_troop(x, 2))
+            elif owner[str(x)] == -1 and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
+                print(game.put_troop(x, 1))
 
 
-            
 
-   #for x in owner: #i used this instad of     for i in owner.keys()
-   #    if owner[str(x)] == -1 and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
-   #        print(game.put_troop(x, 1))
-            
-   #list_of_my_nodes = []
-   #for i in owner: #i used this instad of     for i in owner.keys()
-   #    if owner[str(i)] == my_id:
-   #        list_of_my_nodes.append(i)
-
-   #print(game.put_troop(random.choice(list_of_my_nodes), game.get_number_of_troops_to_put()['number_of_troops']))
-    print(game.get_number_of_troops_to_put())
+#   if game.get_number_of_troops_to_put()['number_of_troops'] > 1:       
+#       list_of_my_nodes = []
+#       for i in owner: #i used this instad of     for i in owner.keys()
+#           if owner[str(i)] == my_id:
+#                   list_of_my_nodes.append(i)
+#       print(game.put_troop(random.choice(list_of_my_nodes), game.get_number_of_troops_to_put()['number_of_troops']))
+#   
+#   print(game.get_number_of_troops_to_put())
     print(game.next_state()) #going to the next state
 
 
