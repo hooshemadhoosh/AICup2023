@@ -39,59 +39,87 @@ def initializer(game: Game):
     return
 
 def turn(game):
+    my_id = game.get_player_id()['player_id']
+
+
+
+    #the first state! putting troops!
     global flag
     print(game.get_number_of_troops_to_put())
     owner = game.get_owners()
-    for i in owner.keys():
+
+    for i in owner: #i used this instad of     for i in owner.key()
         if owner[str(i)] == -1 and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
             print(game.put_troop(i, 1))
             
     list_of_my_nodes = []
-    for i in owner.keys():
-        if owner[str(i)] == game.get_player_id()['player_id']:
+    for i in owner: #i used this instad of     for i in owner.key()
+        if owner[str(i)] == my_id:
             list_of_my_nodes.append(i)
+
     print(game.put_troop(random.choice(list_of_my_nodes), game.get_number_of_troops_to_put()['number_of_troops']))
     print(game.get_number_of_troops_to_put())
+    print(game.next_state()) #going to the next state
 
-    print(game.next_state())
+
+
+
+    #the second state! attacking!
 
     # find the node with the most troops that I own
     max_troops = 0
     max_node = -1
     owner = game.get_owners()
-    for i in owner.keys():
-        if owner[str(i)] == game.get_player_id()['player_id']:
+
+    for i in owner: #i used this instad of     for i in owner.key()
+        if owner[str(i)] == my_id:
             if game.get_number_of_troops()[i] > max_troops:
                 max_troops = game.get_number_of_troops()[i]
                 max_node = i
-    # find a neighbor of that node that I don't own
+
+    # find a neighbor of that node that I don't own and attack it! (default code)
     adj = game.get_adj()
     for i in adj[max_node]:
-        if owner[str(i)] != game.get_player_id()['player_id'] and owner[str(i)] != -1:
+        if owner[str(i)] != my_id and owner[str(i)] != -1:
             print(game.attack(max_node, i, 1, 0.5))
             break
+
     print(game.next_state())
     print(game.get_state())
-    # get the node with the most troops that I own
+
+
+
+
+    #the third state! moving troops state!
+
+    # get the node with the most troops that I own (default code)
     max_troops = 0
     max_node = -1
     owner = game.get_owners()
-    for i in owner.keys():
-        if owner[str(i)] == game.get_player_id()['player_id']:
+
+    for i in owner: #i used this instad of     for i in owner.key()
+        if owner[str(i)] == my_id:
             if game.get_number_of_troops()[i] > max_troops:
                 max_troops = game.get_number_of_troops()[i]
                 max_node = i
+
     print(game.get_reachable(max_node))
     destination = random.choice(game.get_reachable(max_node)['reachable'])
     print(game.move_troop(max_node, destination, 1))
     print(game.next_state())
 
+
+
+
+    #the last state! forting!
+
+    # get the node with the most troops that I own (default code)
     if flag == False:
         max_troops = 0
         max_node = -1
         owner = game.get_owners()
-        for i in owner.keys():
-            if owner[str(i)] == game.get_player_id()['player_id']:
+        for i in owner: #i used this instad of     for i in owner.key()
+            if owner[str(i)] == my_id:
                 if game.get_number_of_troops()[i] > max_troops:
                     max_troops = game.get_number_of_troops()[i]
                     max_node = i
