@@ -3,6 +3,22 @@ from src.game import Game
 VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2}
 flag = False
 
+
+#the following function gets the adjacents of all nodes and the most important strategic node which we want
+#and return the best adjacent to put troops on for attacking
+def find_best_adj (dict_of_troops , alladj , most_strategic_node , owner , my_id):
+    highest_num_of_troops = 0
+    best_adj = 0
+    for each_adj in alladj[most_strategic_node]: #searching in the adjacment of strategic node
+        if owner[str(each_adj)] == my_id and dict_of_troops[str(each_adj)] > highest_num_of_troops:
+            best_adj = each_adj
+            highest_num_of_troops = dict_of_troops[str(each_adj)]
+        elif owner[str(each_adj)] == -1:
+            best_adj = each_adj
+    return best_adj
+
+
+
 def initializer(game: Game):   
     strategic_nodes = game.get_strategic_nodes()['strategic_nodes']
     score = game.get_strategic_nodes()['score']
@@ -68,7 +84,7 @@ def turn(game):
                 if owner[str(neighborss)] == -1 or owner[str(neighborss)]==my_id:
                     number_of_free_adjacents_of_strategic_node += 1
             if number_of_free_adjacents_of_strategic_node != 0:
-                opurtunity_of_attacking_strategic_nodes [s] = score[strategic_nodes.index(s)]*my_remaining_troops*number_of_free_adjacents_of_strategic_node / enemy_troops_on_node
+                opurtunity_of_attacking_strategic_nodes [str(s)] = score[strategic_nodes.index(s)]*my_remaining_troops*number_of_free_adjacents_of_strategic_node / enemy_troops_on_node
 
 
     #start putting troops on suitable nodes that we have chosen above...
@@ -76,16 +92,19 @@ def turn(game):
         #sorting the chance of attacking in the dictionary from a high amount to a low one
         opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low = sorted(opurtunity_of_attacking_strategic_nodes.items(), key = lambda item: item[1] , reverse=True)
         pointed_node = opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low[0][0] #pointing a node with the most chance of successful attack 
-        n_defenders = int(number_of_troops[str(pointed_node)]) + int(number_of_fort_troops[str(pointed_node)])
-        print (game.put_troop(pointed_node , int(-(-(beta*n_defenders)//1))+2 ))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
+        best_adj_to_put_froot = find_best_adj(number_of_troops , adjacents , pointed_node , owner , my_id)
+        n_defenders = number_of_fort_troops[str(best_adj_to_put_froot)] + number_of_troops[str(best_adj_to_put_froot)]
+        num_of_troops = (int(-(-(beta*n_defenders)//1))+2) - number_of_troops[str(best_adj_to_put_froot)]
+        if my_remaining_troops > num_of_troops :
+            print (game.put_troop(best_adj_to_put_froot , num_of_troops))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
 
-    else: #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them randomly!
-        list_of_my_or_free_nodes = [] 
-        for x in owner: #i used this instad of     for i in owner.keys()
-            if (owner[x] == my_id or owner[x] == -1) and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
-                list_of_my_or_free_nodes.append(int(x))
-        while game.get_number_of_troops_to_put()['number_of_troops'] > 2:
-            print (game.put_troop(random.choice(list_of_my_or_free_nodes), random.choice([2,3])))
+    #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them randomly!
+    list_of_my_or_free_nodes = [] 
+    for x in owner: #i used this instad of     for i in owner.keys()
+        if (owner[x] == my_id or owner[x] == -1) and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
+            list_of_my_or_free_nodes.append(int(x))
+    while game.get_number_of_troops_to_put()['number_of_troops'] > 2:
+        print (game.put_troop(random.choice(list_of_my_or_free_nodes), random.choice([2,3])))
 
 
 #   if game.get_number_of_troops_to_put()['number_of_troops'] > 1:       
@@ -102,7 +121,8 @@ def turn(game):
 
 
     #the second state! attacking!
-
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
     # find the node with the most troops that I own
     max_troops = 0
     max_node = -1
@@ -113,13 +133,21 @@ def turn(game):
             if game.get_number_of_troops()[i] > max_troops:
                 max_troops = game.get_number_of_troops()[i]
                 max_node = i
-
+    if len(opurtunity_of_attacking_strategic_nodes) >= 1:
+        for on in opurtunity_of_attacking_strategic_nodes_sorted_from_high_to_low:
+            adj_to_attack = find_best_adj(number_of_troops , adjacents , on , owner , my_id)
+            defenders = number_of_troops[str(on)] + number_of_fort_troops[str(on)]
+            if (number_of_troops[str(adj_to_attack)]/defenders) > 1.3:
+                print (game.attack(best_adj_to_put_froot, pointed_node, beta, 0.5))
+                break
+    else:
     # find a neighbor of that node that I don't own and attack it! (default code)
-    adj = game.get_adj()
-    for i in adj[max_node]:
-        if owner[str(i)] != my_id and owner[str(i)] != -1:
-            print(game.attack(max_node, i, 1, 0.5))
-            break
+        adj = game.get_adj()
+        for i in adj[max_node]:
+            if owner[str(i)] != my_id and owner[str(i)] != -1:
+                print(game.attack(max_node, i, beta, 0.5))
+                break
+    
 
     print(game.next_state())
     print(game.get_state())
