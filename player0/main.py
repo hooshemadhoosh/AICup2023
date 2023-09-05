@@ -78,11 +78,13 @@ def turn(game):
         n_defenders = int(game.get_number_of_troops()[str(pointed_node)]) + int(game.get_number_of_fort_troops()[str(pointed_node)])
         print (game.put_troop(pointed_node , int(-(-(beta*n_defenders)//1))+2 ))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
 
-    else: #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them!
+    else: #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them randomly!
+        list_of_my_or_free_nodes = [] 
         for x in owner: #i used this instad of     for i in owner.keys()
             if (owner[str(x)] == my_id or owner[str(x)] == -1) and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
-                print(game.put_troop(x, 2))
-
+                list_of_my_or_free_nodes.append(int(x))
+        while game.get_number_of_troops_to_put()['number_of_troops'] > 1:
+            print (game.put_troop(random.choice(list_of_my_or_free_nodes), random.choice([2,3])))
 
 
 #   if game.get_number_of_troops_to_put()['number_of_troops'] > 1:       
