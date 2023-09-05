@@ -48,9 +48,9 @@ def turn(game):
     print(game.get_number_of_troops_to_put())
     owner = game.get_owners()
 
-    for i in owner: #i used this instad of     for i in owner.key()
-        if owner[str(i)] == -1 and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
-            print(game.put_troop(i, 1))
+    for x in owner: #i used this instad of     for i in owner.key()
+        if owner[str(x)] == -1 and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
+            print(game.put_troop(x, 1))
             
     list_of_my_nodes = []
     for i in owner: #i used this instad of     for i in owner.key()
@@ -127,4 +127,4 @@ def turn(game):
         print(game.get_number_of_troops()[str(max_node)])
         print(game.fort(max_node, 3))
         print(game.get_number_of_fort_troops())
-        flag = True
+        flag = True 
