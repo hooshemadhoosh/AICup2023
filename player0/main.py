@@ -128,7 +128,7 @@ def turn(game):
     #the second state! attacking!
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
-    print(adjacents)
+    
     if len(sort_chance_of_attacks) >= 1:
         for on in sort_chance_of_attacks:
             if on[1]['attackon'] == True:
