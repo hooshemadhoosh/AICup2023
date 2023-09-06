@@ -17,6 +17,24 @@ def find_best_adj (dict_of_troops , alladj , most_strategic_node , owner , my_id
             best_adj = each_adj
     return best_adj
 
+def Tunnel(start, dict_adj):
+    dp = [10000] * (len(dict_adj) + 1)
+    mark = [0] * (len(dict_adj) + 1)
+    uplist = [-1] * (len(dict_adj) + 1)
+    mark[start] = 1
+    dp[start] = 0
+    que = []
+    que.append(start) 
+    while len(que):
+        point = que.pop(0)
+        for i in dict_adj[point]:
+            if(mark[i] == 0):
+                mark[i] = 1 
+                que.append(i)
+                dp[i] = dp[point] + 1
+                uplist[i] = point
+    
+    return (uplist)
 
 
 def initializer(game: Game):   
