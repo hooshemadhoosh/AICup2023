@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , 'beta_plus': 1.5}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , 'beta_plus': 1.5, "Troops" : 3}
 flag = False
 
 
@@ -103,7 +103,7 @@ def initializer(game: Game):
 
     # give 3 troops to all Tunnelnode  :)
     for i in Tunnel_list:
-        if(troops_of[str(i)] < 3 and owner[str(i)] == my_id):
+        if(troops_of[str(i)] < VARS['Troops'] and owner[str(i)] == my_id):
             game.put_one_troop(i)
             return
     
