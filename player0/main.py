@@ -154,6 +154,7 @@ def turn(game):
             if my_remaining_troops > num_of_needed_troops > 0 :
                 print (game.put_troop(n[0][0] , num_of_needed_troops))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
                 n[1]['attackon'] = True
+                my_remaining_troops -= num_of_needed_troops
             else:
                 n[1]['attackon'] = True
     #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them randomly!
@@ -175,7 +176,7 @@ def turn(game):
     
     if len(sort_chance_of_attacks) >= 1:
         for on in sort_chance_of_attacks:
-            if on[1]['attackon'] == True:
+            if on[1]['attackon'] == True and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
                 print (game.attack(on[0][0] , on[0][1] , beta , 0.7))
     
     random_attacks = {}
