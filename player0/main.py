@@ -27,7 +27,7 @@ def Tunnel(start, dict_adj):
     que.append(start) 
     while len(que):
         point = que.pop(0)
-        for i in dict_adj[point]:
+        for i in dict_adj[str(point)]:
             if(mark[i] == 0):
                 mark[i] = 1 
                 que.append(i)
@@ -89,8 +89,11 @@ def initializer(game: Game):
     Tunnel_list = []
     x = enemy_best_strategic
     while(x != -1):
-        x = my_uplist[x]
         Tunnel_list.append(x)
+        x = my_uplist[x]
+        
+    my_uplist.reverse()
+    my_uplist = my_uplist[1:]
     
     # first putting troop in Tunnelnode 
     for i in Tunnel_list:
@@ -106,7 +109,6 @@ def initializer(game: Game):
     
     return
     
-    #
     
  
 def turn(game):
