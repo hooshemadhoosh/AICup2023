@@ -131,12 +131,14 @@ def turn(game):
 
     for s in strategic_nodes:  
         enemy_troops_on_node = int(number_of_troops[str(s)]) + int(number_of_fort_troops[str(s)]) #getting the number of enemy troops on the strategic node
-        if owner[str(s)] != my_id and ((my_remaining_troops-2) / enemy_troops_on_node) > beta:
+        if owner[str(s)] != my_id:
             for node in adjacents[str(s)]:
                 if owner[str(node)] == my_id:
                     my_troops_layer1node = number_of_troops[str(node)]
-                    opurtunity_of_attacks [str(s)] = {'attacker': node , 'attack_score':(my_remaining_troops-2 + my_troops_layer1node)/ enemy_troops_on_node , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False}
-                                                    #my node attacker!  #the chance of attacking                                                          #the number of enemy troops on strategic node #the troops i have on layer1 before 
+                    attack_score = (my_remaining_troops-3 + my_troops_layer1node)/ enemy_troops_on_node
+                    if attack_score > beta:
+                        opurtunity_of_attacks [node] = {'defender': s , 'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False}
+                                                    #enemy node defender!  #the chance of attacking #the number of enemy troops on strategic node #the troops i have on layer1 before 
 
 
     #start putting troops on suitable nodes #جهت احتیاط این شرط رو گذاشتم که یه چند تا سربازی هم داشته باشیم تا جاهای دیگه به عنوان مدافع کار بذاریم!
@@ -145,17 +147,17 @@ def turn(game):
         sort_chance_of_attacks = sorted(opurtunity_of_attacks.items(), key = lambda item: item[1]['attack_score'] , reverse=True)
         for n in sort_chance_of_attacks:
             n_defenders = n[1]['enemy_troops']
-            num_of_troops = (int(-(-(beta*n_defenders)//1))+2) - n[1]['my_troops_layer1node']
-            if my_remaining_troops > num_of_troops :
-                print (game.put_troop(n[1]['attacker'] , num_of_troops))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
+            num_of_needed_troops = (int(-(-(beta*n_defenders)//1))+2) - n[1]['my_troops_layer1node']
+            if my_remaining_troops > num_of_needed_troops :
+                print (game.put_troop(n[0] , num_of_needed_troops))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
                 n[1]['attackon'] = True
     #if there isn't any suitable node to put troops on we should put our troops on the nodes that we have now or the nodes which no one own them randomly!
-    list_of_my_or_free_nodes = [] 
-    for x in owner:
-        if (owner[x] == my_id or owner[x] == -1) and game.get_number_of_troops_to_put()['number_of_troops'] > 1:
-            list_of_my_or_free_nodes.append(int(x))
+    list_of_my_strategics = [] 
+    for x in strategic_nodes:
+        if owner[str(x)] == my_id and game.get_number_of_troops_to_put()['number_of_troops'] > 2:
+            list_of_my_strategics.append(int(x))
     while game.get_number_of_troops_to_put()['number_of_troops'] > 2:
-        print (game.put_troop(random.choice(list_of_my_or_free_nodes), random.choice([2,3])))
+        print (game.put_troop(random.choice(list_of_my_strategics), random.choice([2,3])))
 
     print(game.next_state()) #going to the next state
 
@@ -169,7 +171,7 @@ def turn(game):
     if len(sort_chance_of_attacks) >= 1:
         for on in sort_chance_of_attacks:
             if on[1]['attackon'] == True:
-                print (game.attack(on[1]['attacker'] , int(on[0]) , beta , 0.7))
+                print (on , on[1]['defender'] , beta , 0.7)
     # find the node with the most troops that I own
     max_troops = 0
     max_node = -1
