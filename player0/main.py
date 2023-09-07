@@ -70,39 +70,57 @@ def initializer(game: Game):
         if owner[str(i)]==my_id and troops_of[str(i)]<VARS['strategic_troops_number']:
             print(game.put_one_troop(i), "-- putting one troop on neighbor of strategic node", j)
             return
+
     # MAke Tunnel 
-    my_best_strategic  = -1
-    enemy_best_strategic = -1 
+    my_best_strategic  = []
+    enemy_best_strategic = []
     my_uplist = []
     for i in strategic_nodes:
         if(owner[str(i)] == my_id):
-            my_best_strategic = i
-            break
+            my_best_strategic.append(i)
+        else:
+            enemy_best_strategic.append(i)
         
-    for i in strategic_nodes:
-        if(owner[str(i)] != my_id):
-            enemy_best_strategic = i
-            break
-    my_uplist = Tunnel(my_best_strategic, adj)
-
-    # Make tunnel from my strategtic to enemy strategic :)
-    Tunnel_list = []
-    x = enemy_best_strategic
-    while(x != -1):
-        Tunnel_list.append(x)
-        x = my_uplist[x]
-        
-    my_uplist.reverse()
-    my_uplist = my_uplist[1:]
     
+    my_uplist1 = Tunnel(my_best_strategic[0], adj)
+    
+    dict_of_Tunnel_list = {}
+    # Make tunnel from my strategtic to enemy strategic :)
+
+    for i in enemy_best_strategic:
+
+        Tunnel_listt = []
+        x = i
+        while(x != -1):
+            Tunnel_listt.append(x)
+            x = my_uplist1[x]
+            
+        Tunnel_listt.reverse()
+        Tunnel_listt = Tunnel_listt[1:]
+        dict_of_Tunnel_list[len(dict_of_Tunnel_list)] = Tunnel_listt
+    #first Tunnel
     # first putting troop in Tunnelnode 
-    for i in Tunnel_list:
+
+    for i in dict_of_Tunnel_list[0]:
         if(owner[str(i)] == -1):
             game.put_one_troop(i)
             return 
 
     # give 3 troops to all Tunnelnode  :)
-    for i in Tunnel_list:
+    for i in dict_of_Tunnel_list[0]:
+        if(troops_of[str(i)] < VARS['Troops'] and owner[str(i)] == my_id):
+            game.put_one_troop(i)
+            return
+    #Second Tunnel
+    # first putting troop in Tunnelnode 
+
+    for i in dict_of_Tunnel_list[1]:
+        if(owner[str(i)] == -1):
+            game.put_one_troop(i)
+            return 
+
+    # give 3 troops to all Tunnelnode  :)
+    for i in dict_of_Tunnel_list[1]:
         if(troops_of[str(i)] < VARS['Troops'] and owner[str(i)] == my_id):
             game.put_one_troop(i)
             return
