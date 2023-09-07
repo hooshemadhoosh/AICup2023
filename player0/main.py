@@ -239,19 +239,18 @@ def turn(game):
 
 
     #the last state! forting!
-
+    owner = game.get_owners()
     # get the node with the most troops that I own (default code)
+    
+            
     if flag == False:
-        max_troops = 0
-        max_node = -1
-        owner = game.get_owners()
-        for i in owner: #i used this instad of     for i in owner.keys()
-            if owner[str(i)] == my_id:
-                if game.get_number_of_troops()[i] > max_troops:
-                    max_troops = game.get_number_of_troops()[i]
-                    max_node = i
-
-        print(game.get_number_of_troops()[str(max_node)])
-        print(game.fort(max_node, 3))
-        print(game.get_number_of_fort_troops())
-        flag = True 
+        max_node = 0
+        number_of_troops= game.get_number_of_troops()
+        troops_in = 0
+        for stra in strategic_nodes:
+            if owner[str(stra)] == my_id and number_of_troops[str(stra)] > troops_in:
+                troops_in = number_of_troops[str(stra)]
+                max_node = stra
+        print (game.fort(stra , troops_in-1))
+        flag = True
+    
