@@ -70,7 +70,44 @@ def initializer(game: Game):
         if owner[str(i)]==my_id and troops_of[str(i)]<VARS['strategic_troops_number']:
             print(game.put_one_troop(i), "-- putting one troop on neighbor of strategic node", j)
             return
+    # MAke Tunnel 
+    my_best_strategic  = -1
+    enemy_best_strategic = -1 
+    my_uplist = []
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id):
+            my_best_strategic = i
+            break
+        
+    for i in strategic_nodes:
+        if(owner[str(i)] != my_id):
+            enemy_best_strategic = i
+            break
+    my_uplist = Tunnel(my_best_strategic, adj)
+
+    # Make tunnel from my strategtic to enemy strategic :)
+    Tunnel_list = []
+    x = enemy_best_strategic
+    while(x != -1):
+        x = my_uplist[x]
+        Tunnel_list.append(x)
+    
+    # first putting troop in Tunnelnode 
+    for i in Tunnel_list:
+        if(owner[str(i)] == -1):
+            game.put_one_troop(i)
+            return 
+
+    # give 3 troops to all Tunnelnode  :)
+    for i in Tunnel_list:
+        if(troops_of[str(i)] < 3 and owner[str(i)] == my_id):
+            game.put_one_troop(i)
+            return
+    
     return
+    
+    #
+    
  
 def turn(game):
     my_id = game.get_player_id()['player_id']
