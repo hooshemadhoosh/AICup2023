@@ -105,6 +105,8 @@ def initializer(game: Game):
         if(owner[str(i)] == -1):
             game.put_one_troop(i)
             return 
+        elif(owner[str(i)] != my_id):
+            break
 
     # give 3 troops to all Tunnelnode  :)
     for i in dict_of_Tunnel_list[0]:
@@ -113,11 +115,12 @@ def initializer(game: Game):
             return
     #Second Tunnel
     # first putting troop in Tunnelnode 
-
     for i in dict_of_Tunnel_list[1]:
         if(owner[str(i)] == -1):
             game.put_one_troop(i)
             return 
+        elif(owner[str(i)] != my_id):
+            break
 
     # give 3 troops to all Tunnelnode  :)
     for i in dict_of_Tunnel_list[1]:
