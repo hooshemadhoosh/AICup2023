@@ -254,6 +254,6 @@ def turn(game):
             if owner[str(stra)] == my_id and number_of_troops[str(stra)] > troops_in:
                 troops_in = number_of_troops[str(stra)]
                 max_node = stra
-        print (game.fort(stra , troops_in-1))
+        print (game.fort(stra , troops_in-2))
         flag = True
     
