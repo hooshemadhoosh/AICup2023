@@ -3,7 +3,7 @@ from src.game import Game
 VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , "beta_plus": 1.5, "TroopsTunnel" : 3}
 flag = False
 
-
+ListOfTunnels = []
 #the following function gets the adjacents of all nodes and the most important strategic node which we want
 #and return the best adjacent to put troops on for attacking
 def find_best_adj (dict_of_troops , alladj , most_strategic_node , owner , my_id):
@@ -35,6 +35,25 @@ def Tunnel(start, dict_adj):
                 uplist[i] = point
     
     return (uplist)
+
+
+def TunnelListMaker(list_of_my_strategics,list_of_enemy_strategics,dict_adj):
+    result = []
+    for my_strategic in list_of_my_strategics:
+        my_uplist = Tunnel(my_strategic,dict_adj)
+        for enemy_strategic in list_of_enemy_strategics:
+            Tunnel_listt = []
+            x = enemy_strategic
+            while(x != -1):
+                Tunnel_listt.append(x)
+                x = my_uplist[x]
+            
+        Tunnel_listt.reverse()
+        result.append(Tunnel_listt)
+    result = result.sort(key=lambda x: len(x))
+    return result[:4]
+
+
 
 
 def initializer(game: Game):   
