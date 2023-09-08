@@ -67,7 +67,7 @@ def initializer(game: Game):
             
     
 
-    # MAke Tunnel 
+    # Make Tunnel 
     my_best_strategic  = []
     enemy_best_strategic = []
     my_uplist = []
@@ -78,18 +78,18 @@ def initializer(game: Game):
             enemy_best_strategic.append(i)
         
     
-    my_uplist1 = Tunnel(my_best_strategic[0], adj)
+    my_uplist = Tunnel(my_best_strategic[0], adj)
     
     dict_of_Tunnel_list = {}
-    # Make tunnel from my strategtic to enemy strategic :)
 
+    # Make tunnel from my strategtic to enemy strategic :)
     for i in enemy_best_strategic:
 
         Tunnel_listt = []
         x = i
         while(x != -1):
             Tunnel_listt.append(x)
-            x = my_uplist1[x]
+            x = my_uplist[x]
             
         Tunnel_listt.reverse()
         Tunnel_listt = Tunnel_listt[1:]
