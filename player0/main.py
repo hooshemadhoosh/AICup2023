@@ -100,8 +100,8 @@ def initializer(game: Game):
     # first putting troop in Tunnelnode 
     #print(dict_of_Tunnel_list)
 
-    for j in dict_of_Tunnel_list:
-        for i in j:
+    for j in range(len(dict_of_Tunnel_list)):
+        for i in dict_of_Tunnel_list[j]:
             if(owner[str(i)] == -1):
                 game.put_one_troop(i)
                 print("One Troops Add to Tunnel")
@@ -116,8 +116,8 @@ def initializer(game: Game):
             return
     
     # give 3 troops to all Tunnelnode  :)
-    for j in dict_of_Tunnel_list:
-        for i in j:
+    for j in range(len(dict_of_Tunnel_list)):
+        for i in dict_of_Tunnel_list[j]:
             if(troops_of[str(i)] < VARS['TroopsTunnel'] and owner[str(i)] == my_id):
                 game.put_one_troop(i)
                 print("One Troops Add to Tunnel")
