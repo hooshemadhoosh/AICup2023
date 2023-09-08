@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , 'beta_plus': 1.5, "Troops" : 3}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , 'beta_plus': 1.5, "TroopsTunnel" : 3}
 flag = False
 
 
@@ -65,11 +65,7 @@ def initializer(game: Game):
                 print(game.put_one_troop(j), "-- putting one troop on neighbor of strategic node", j)
                 return
             
-    #Reinforcement Of our Strategic Nodes
-    for i in strategic_nodes:
-        if owner[str(i)]==my_id and troops_of[str(i)]<VARS['strategic_troops_number']:
-            print(game.put_one_troop(i), "-- putting one troop on neighbor of strategic node", j)
-            return
+    
 
     # MAke Tunnel 
     my_best_strategic  = []
@@ -98,35 +94,37 @@ def initializer(game: Game):
         Tunnel_listt.reverse()
         Tunnel_listt = Tunnel_listt[1:]
         dict_of_Tunnel_list[len(dict_of_Tunnel_list)] = Tunnel_listt
-    #first Tunnel
+    
+
+    # Make 4 Tunnel
     # first putting troop in Tunnelnode 
+    #print(dict_of_Tunnel_list)
 
-    for i in dict_of_Tunnel_list[0]:
-        if(owner[str(i)] == -1):
-            game.put_one_troop(i)
-            return 
-        elif(owner[str(i)] != my_id):
-            break
-
-    # give 3 troops to all Tunnelnode  :)
-    for i in dict_of_Tunnel_list[0]:
-        if(troops_of[str(i)] < VARS['Troops'] and owner[str(i)] == my_id):
-            game.put_one_troop(i)
+    for j in dict_of_Tunnel_list:
+        for i in j:
+            if(owner[str(i)] == -1):
+                game.put_one_troop(i)
+                print("One Troops Add to Tunnel")
+                return 
+            elif(owner[str(i)] != my_id):
+                break
+    
+    #Reinforcement Of our Strategic Nodes
+    for i in strategic_nodes:
+        if owner[str(i)]==my_id and troops_of[str(i)]<VARS['strategic_troops_number']:
+            print(game.put_one_troop(i), "-- putting one troop on neighbor of strategic node", j)
             return
-    #Second Tunnel
-    # first putting troop in Tunnelnode 
-    for i in dict_of_Tunnel_list[1]:
-        if(owner[str(i)] == -1):
-            game.put_one_troop(i)
-            return 
-        elif(owner[str(i)] != my_id):
-            break
-
+    
     # give 3 troops to all Tunnelnode  :)
-    for i in dict_of_Tunnel_list[1]:
-        if(troops_of[str(i)] < VARS['Troops'] and owner[str(i)] == my_id):
-            game.put_one_troop(i)
-            return
+    for j in dict_of_Tunnel_list:
+        for i in j:
+            if(troops_of[str(i)] < VARS['TroopsTunnel'] and owner[str(i)] == my_id):
+                game.put_one_troop(i)
+                print("One Troops Add to Tunnel")
+                return
+    
+
+    
     
     return
     
@@ -242,10 +240,8 @@ def turn(game):
 
 
     #the last state! forting!
-    owner = game.get_owners()
+
     # get the node with the most troops that I own (default code)
-    
-            
     if flag == False:
         max_node = 0
         number_of_troops= game.get_number_of_troops()
@@ -254,6 +250,6 @@ def turn(game):
             if owner[str(stra)] == my_id and number_of_troops[str(stra)] > troops_in:
                 troops_in = number_of_troops[str(stra)]
                 max_node = stra
-        print (game.fort(stra , troops_in-2))
+        print (game.fort(stra , troops_in-1))
         flag = True
     
