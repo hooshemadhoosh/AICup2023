@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , 'beta_plus': 1.5, "TroopsTunnel" : 3}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , "beta_plus": 1.5, "TroopsTunnel" : 3}
 flag = False
 
 
@@ -210,7 +210,8 @@ def turn(game):
                         random_attacks[(int(mine) , enemies)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False}
     random_attacks = sorted(random_attacks.items(), key = lambda item: item[1]['attack_score'] , reverse=True)
     for each_attack in random_attacks:
-        print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
+        if game.get_number_of_troops()[each_attack[0][0]] > 1:
+            print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
     
     print(game.next_state())
     print(game.get_state())
