@@ -158,6 +158,50 @@ def turn(game):
     defender_troops = VARS["number_of_defender_troops"]
     sort_chance_of_attacks = -1
 
+    #Start task 0
+    # اگه سه تا استراتژیک داشتیم و یه همسایه از استراتژیک داشتیم میایم
+    # میایم هرچی سرباز داریم میریزم توی همسایه استراتژیکی ازش  به اونی که نداریم اتک میدیدم !
+
+
+    count_startegic_node = 0
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id):
+            count_startegic_node += 1
+    
+    if(count_startegic_node == 3):
+
+        dict_best_node_for_attak = {}
+
+        for i in strategic_nodes:
+            if(owner[str(i)] != my_id):
+                for j in adjacents[str(i)]:
+                    if(owner[str(j)] == my_id):
+                        dict_best_node_for_attak[j] = number_of_troops[str(j)]
+        maxi = -1
+        max_id = -1
+        for i in dict_best_node_for_attak.keys():
+            if(dict_best_node_for_attak[i] > maxi):
+                maxi = dict_best_node_for_attak[i]
+                max_id = i
+            
+        
+        if(max_id == -1):
+            pass
+        else:
+            #my_remaining_troops
+            game.put_troop(max_id, my_remaining_troops)
+            
+            near_startegic = 0
+            for i in adjacents[max_id]:
+                if i in strategic_nodes:
+                    near_startegic = i
+                    break
+            
+            game.attack(max_id, near_startegic, 1, 0.9)
+            
+
+
+
 
     #START TASK 1
     for enemy in strategic_nodes:  
