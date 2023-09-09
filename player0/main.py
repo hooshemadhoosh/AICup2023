@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.7}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.7 , "number_of_defender_troops" : 2}
 flag = False
 
 ListOfTunnels = []
@@ -139,7 +139,7 @@ def turn(game):
     beta = VARS["mytroops/enemytroops (beta)"]
     beta_plus = VARS["beta_plus"]
     attack_attemps = VARS["number_of_attack_attemps"]
-
+    defender_troops = VARS["number_of_defender_troops"]
 
 
     #START TASK 1
@@ -168,6 +168,25 @@ def turn(game):
                     my_remaining_troops -= num_of_needed_troops #it is here to update the troops that i have each time
                 n[1]['attackon'] = True #it is written to use in the attack state
     #FINISH TASK1
+
+
+    #START TASK2
+    else:
+        if my_remaining_troops > 0:
+            defend_planets = {}
+            for m in strategic_nodes:
+                if owner[str(m)] == my_id:
+                    my_planet_troops = number_of_troops[str(m)]
+                    enemy_troops = 0
+                    for enemy_adj in adjacents[str(m)]:
+                        if owner[str(enemy_adj)] != my_id:
+                            enemy_troops += (number_of_troops[str(enemy_adj)] + number_of_fort_troops[str(enemy_adj)])
+                    defend_planets[str(m)] = enemy_troops/my_planet_troops
+            defend_planets = dict(sorted(defend_planets.items() , key  = lambda u : u[1] , reverse = True))
+            for defend in defend_planets:
+                my_remaining_troops -= defender_troops
+                print (game.put_troop(int(defend) , defender_troops))
+    #FINISH TASK2
 
 
     print(game.next_state()) #going to the next state
