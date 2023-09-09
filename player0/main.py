@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.2 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.7}
 flag = False
 
 ListOfTunnels = []
@@ -157,7 +157,7 @@ def turn(game):
                 if owner[str(my)] == my_id:
                     my_troops_layer1node = number_of_troops[str(my)]
                                                         #این 3 رو برای این کم کردم که بعد میخوام دوتا اضافه کنم سرباز داشته باشیم و ارور نگیریم ولی نمیدونم چرا همون دو نذاشتم باشه و سه گذاشتم یادم نمیاد..
-                    attack_score = (my_remaining_troops-3 + my_troops_layer1node)/enemy_troops_on_node
+                    attack_score = (my_remaining_troops-VARS['number_of_attack_attemps'] + my_troops_layer1node)/enemy_troops_on_node
                     if attack_score > beta: #اگر امتیاز حمله از بتا بزرگ تر بود میاد به دیکشنری با مشخصات مورد نیاز اضافه میکنه در غیر این صورت که نیازی نیست این کار رو بکنه چون سرباز نداریم
                         opurtunity_of_attacks [(my , enemy)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False}
                         #s is enemy node and node is my node  #the chance of attacking #the number of enemy troops on strategic node #the troops i have on layer1 before 
@@ -176,10 +176,8 @@ def turn(game):
                                         #if this condition isn't checked, it may raises and error about that "num_of_needed_troops" is zero or a negetive number
                 if num_of_needed_troops > 0:
                     print (game.put_troop(n[0][0] , num_of_needed_troops))#put n troops on the best choice of attacking, which n has been rounded up to ensure that the attack will be successful!
-                    n[1]['attackon'] = True #it is written to use in the attack state
                     my_remaining_troops -= num_of_needed_troops #it is here to update the troops that i have each time
-                else:  
-                    n[1]['attackon'] = True
+                n[1]['attackon'] = True #it is written to use in the attack state
     #if there isn't any suitable node to put troops on we should put our troops on the strategic nodes
     list_of_my_strategics = [] #پیشنهاد: میشه این رو به یه دیکشنری تبدیل کرد که بیاد بر اساس تعداد سرباز موجود توش از کوچک به بزرگ مرتب بشه و سرباز های باقی مونده رو به سیاره هایی که کمترین سرباز رو دارند اضافه کنه
     for x in strategic_nodes:
@@ -202,7 +200,7 @@ def turn(game):
     if len(sort_chance_of_attacks) >= 1:
         for on in sort_chance_of_attacks:     #ممکنه به یه سیاره بخوایم دو بار حمله کنیم! و بار اول مال ما بشه...
             if on[1]['attackon'] == True and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
-                print (game.attack(on[0][0] , on[0][1] , beta , 0.7))                      #تو همون دوبار حمله کردنه تعداد سرباز هامون کم میشه دیگه پس باید چکش کنیم
+                print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']))                      #تو همون دوبار حمله کردنه تعداد سرباز هامون کم میشه دیگه پس باید چکش کنیم
     
     random_attacks = {} #توضیح این بخش کد با پینت
     for mine in owner:
