@@ -50,13 +50,15 @@ def TunnelListMaker(list_of_my_strategics,list_of_enemy_strategics,dict_adj):
             
         Tunnel_listt.reverse()
         result.append(Tunnel_listt)
-    result = result.sort(key=lambda x: len(x))
+    result.sort(key=lambda x: len(x))
+    print('THIS IS ORDERED LIST OF TUNNELS ',result)
     return result[:4]
 
 
 
 
-def initializer(game: Game):   
+def initializer(game: Game):
+    global ListOfTunnels   
     strategic_nodes = game.get_strategic_nodes()['strategic_nodes']
     score = game.get_strategic_nodes()['score']
     strategic_nodes = list(zip(strategic_nodes, score))
@@ -86,47 +88,25 @@ def initializer(game: Game):
             
     
 
-    # Make Tunnel 
+    # Categorizing Strategic nodes by owner 
     my_best_strategic  = []
     enemy_best_strategic = []
-    my_uplist = []
     for i in strategic_nodes:
-        if(owner[str(i)] == my_id):
+        if (owner[str(i)] == my_id) and (i not in my_best_strategic):
             my_best_strategic.append(i)
-        else:
+        elif (i not in enemy_best_strategic):
             enemy_best_strategic.append(i)
         
-    
-    my_uplist = Tunnel(my_best_strategic[0], adj)
-    
-    dict_of_Tunnel_list = {}
-
     # Make tunnel from my strategtic to enemy strategic :)
-    for i in enemy_best_strategic:
+    if len(ListOfTunnels) == 0: ListOfTunnels=TunnelListMaker(my_best_strategic,enemy_best_strategic,adj)
 
-        Tunnel_listt = []
-        x = i
-        while(x != -1):
-            Tunnel_listt.append(x)
-            x = my_uplist[x]
-            
-        Tunnel_listt.reverse()
-        Tunnel_listt = Tunnel_listt[1:]
-        dict_of_Tunnel_list[len(dict_of_Tunnel_list)] = Tunnel_listt
-    
-
-    # Make 4 Tunnel
-    # first putting troop in Tunnelnode 
-    #print(dict_of_Tunnel_list)
-
-    for j in range(len(dict_of_Tunnel_list)):
-        for i in dict_of_Tunnel_list[j]:
-            if(owner[str(i)] == -1):
-                game.put_one_troop(i)
-                print("One Troops Add to Tunnel")
-                return 
-            elif(owner[str(i)] != my_id):
-                break
+    #Filling tunnels with troop
+    for tunnel in ListOfTunnels:
+        for node in tunnel:
+            if(owner[str(node)] == -1):
+                game.put_one_troop(node)
+                print(f"One Troop Added to Tunnel on node {node}")
+                return
     
     #Reinforcement Of our Strategic Nodes
     for i in strategic_nodes:
@@ -135,11 +115,11 @@ def initializer(game: Game):
             return
     
     # give 3 troops to all Tunnelnode  :)
-    for j in range(len(dict_of_Tunnel_list)):
-        for i in dict_of_Tunnel_list[j]:
-            if(troops_of[str(i)] < VARS['TroopsTunnel'] and owner[str(i)] == my_id):
-                game.put_one_troop(i)
-                print("One Troops Add to Tunnel")
+    for tunnel in ListOfTunnels:
+        for node in tunnel:
+            if(troops_of[str(node)] < VARS['TroopsTunnel'] and owner[str(node)] == my_id):
+                game.put_one_troop(node)
+                print(f"One Troop Added to Tunnel on node {node}")
                 return
     
 
