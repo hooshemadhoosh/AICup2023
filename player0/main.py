@@ -171,17 +171,20 @@ def turn(game):
     if(count_startegic_node == 3):
 
         dict_best_node_for_attak = {}
-
         for i in strategic_nodes:
             if(owner[str(i)] != my_id):
                 for j in adjacents[str(i)]:
                     if(owner[str(j)] == my_id):
-                        dict_best_node_for_attak[j] = number_of_troops[str(j)]
+                        dict_best_node_for_attak[str(j)] = [number_of_troops[str(j)], number_of_troops[str(i)] + number_of_fort_troops[str(i)]]
+                        
+
         maxi = -1
         max_id = -1
         for i in dict_best_node_for_attak.keys():
-            if(dict_best_node_for_attak[i] > maxi):
-                maxi = dict_best_node_for_attak[i]
+            best_node_to_attack = dict_best_node_for_attak[str(i)][0] / dict_best_node_for_attak[1]
+
+            if(best_node_to_attack > maxi):
+                maxi = best_node_to_attack
                 max_id = i
             
         
@@ -192,12 +195,14 @@ def turn(game):
             game.put_troop(max_id, my_remaining_troops)
             
             near_startegic = 0
-            for i in adjacents[max_id]:
+            for i in adjacents[str(max_id)]:
                 if i in strategic_nodes:
                     near_startegic = i
                     break
             
+            game.next_state()
             game.attack(max_id, near_startegic, 1, 0.9)
+            
             
 
 
