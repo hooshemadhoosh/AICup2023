@@ -1,8 +1,8 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 3}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
-
+turn_number = 105
 ListOfTunnels = []
 
 
@@ -135,8 +135,15 @@ def initializer(game: Game):
     
  
 def turn(game):
-    my_id = game.get_player_id()['player_id']
+    
     global flag
+#getting turn number
+    global turn_number
+    turn_number += 1
+    print (turn_number)
+
+#VARIABLES
+    my_id = game.get_player_id()['player_id']
     owner = game.get_owners()
     my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     strategic_nodes = game.get_strategic_nodes() ['strategic_nodes']
@@ -153,7 +160,7 @@ def turn(game):
     attack_attemps = VARS["number_of_attack_attemps"]
     defender_troops = VARS["number_of_defender_troops"]
     sort_chance_of_attacks = -1
-
+    reinforcment_soldiers = VARS['ReainForce_strategics_everyround']
 
 #The first state! DEPLOYMENT OF TROOPS!---------------------------------------------------------------------------
 
@@ -191,7 +198,8 @@ def turn(game):
             pass
         else:
             #my_remaining_troops
-            game.put_troop(max_id, my_remaining_troops)
+            print (game.put_troop(max_id, my_remaining_troops) , 
+                   'All troops are deployed to get the fourth strategic node!')
 #FINISH TASK -1        
             
             
@@ -205,8 +213,9 @@ def turn(game):
             if(number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
                 mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
                 mini_id = i
-    if(mini_id != -1):
-        game.put_troop(mini_id, VARS['ReainForce_strategics_everyround'])
+    if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
+        my_remaining_troops -= reinforcment_soldiers
+        print (game.put_troop(mini_id, reinforcment_soldiers ) , '3 soldiers are deployed to reinforce our strategic node defend')
 
 #FINISH TASK 0
 
@@ -235,9 +244,10 @@ def turn(game):
             num_of_needed_troops = (int(-(-(beta*n_defenders)//1))+ attack_attemps-1) - n[1]['my_troops_layer1node']
             if my_remaining_troops >= num_of_needed_troops:
                 if num_of_needed_troops > 0:
-                    print (game.put_troop(n[0][0] , num_of_needed_troops))
+                    print (game.put_troop(n[0][0] , num_of_needed_troops) , ' %d soldiers are deployed on ' %num_of_needed_troops , str(n[0][0]))
                     my_remaining_troops -= num_of_needed_troops 
                 n[1]['attackon'] = True 
+                print ('Attack is on now for planet %d' %n[0][0])
 #FINISH TASK1
 
 
@@ -255,15 +265,17 @@ def turn(game):
         
         defend_planets = dict(sorted(defend_planets.items() , key  = lambda u : u[1] , reverse = True))
         for defend in defend_planets:
-            print ('my troops is:' , my_remaining_troops)
+            print ('number of my troops is:' , my_remaining_troops)
+            print ('server says the number of my troops are: ' , game.get_number_of_troops_to_put()['number_of_troops'])
             if my_remaining_troops >= defender_troops:
                 my_remaining_troops -= defender_troops
-                print (game.put_troop(int(defend) , defender_troops))
+                print (game.put_troop(int(defend) , defender_troops), '2 SOLDIERS are deployed on %d node' %int(defend) )
 #FINISH TASK2
 
 #START TASK 3
     #Opening Tunnel
     open_tunnel = []  #Contains items like (from attack, to attack, our strategic node)
+    print (ListOfTunnels)
     for tunnel in ListOfTunnels:
         if not is_tunnel_activated(tunnel,owner,my_id):
             for i in range(1,len(tunnel)):
@@ -298,7 +310,7 @@ def turn(game):
                     near_startegic = i
                     break
 
-            game.attack(max_id, near_startegic, 1, 0.9)
+            print (game.attack(max_id, near_startegic, 1, 0.9) , 'Attack for geting the fourth node!')
 #FINISH TASK 0 
 
 #START TASK1
@@ -308,7 +320,7 @@ def turn(game):
     if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
         for on in sort_chance_of_attacks: 
             if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
-                print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']))           
+                print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
 #FINISH TASK1
 
     random_attacks = {}
