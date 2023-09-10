@@ -36,9 +36,9 @@ def TunnelListMaker(list_of_my_strategics,list_of_enemy_strategics,dict_adj):
             while(x != -1):
                 Tunnel_listt.append(x)
                 x = my_uplist[x]
-            
-        Tunnel_listt.reverse()
-        result.append(Tunnel_listt)
+
+            Tunnel_listt.reverse()
+            result.append(Tunnel_listt)
     result.sort(key=lambda x: len(x))
     print('THIS IS ORDERED LIST OF TUNNELS ',result)
     return result[:4]
@@ -99,7 +99,7 @@ def initializer(game: Game):
     for i in strategic_nodes:
         if (owner[str(i)] == my_id) and (i not in my_best_strategic):
             my_best_strategic.append(i)
-        elif (i not in enemy_best_strategic):
+        elif (owner[str(i)]!=-1) and (i not in enemy_best_strategic):
             enemy_best_strategic.append(i)
         
     # Make tunnel from my strategtic to enemy strategic :)
@@ -120,12 +120,12 @@ def initializer(game: Game):
             return
     
     # give 3 troops to all Tunnelnode  :)
-    for tunnel in ListOfTunnels:
-        for node in tunnel:
-            if(troops_of[str(node)] < VARS['TroopsTunnel'] and owner[str(node)] == my_id):
-                game.put_one_troop(node)
-                print(f"One Troop Added to Tunnel on node {node}")
-                return
+    # for tunnel in ListOfTunnels:
+    #     for node in tunnel:
+    #         if(troops_of[str(node)] < VARS['TroopsTunnel'] and owner[str(node)] == my_id):
+    #             game.put_one_troop(node)
+    #             print(f"One Troop Added to Tunnel on node {node}")
+    #             return
     
 
     
@@ -138,12 +138,15 @@ def turn(game):
     
     global flag
 #getting turn number
+    my_id = game.get_player_id()['player_id']
     global turn_number
-    turn_number += 1
-    print (turn_number)
+    if turn_number==105:
+        if my_id==1:  turn_number=103
+        elif my_id==2:  turn_number==104
+    turn_number += 3
+    print ("TURN NUMBER: ",turn_number)
 
 #VARIABLES
-    my_id = game.get_player_id()['player_id']
     owner = game.get_owners()
     my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     strategic_nodes = game.get_strategic_nodes() ['strategic_nodes']
