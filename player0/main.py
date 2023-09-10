@@ -201,6 +201,7 @@ def turn(game):
             pass
         else:
             #my_remaining_troops
+            my_remaining_troops = 0
             print (game.put_troop(max_id, my_remaining_troops) , 
                    'All troops are deployed to get the fourth strategic node!')
 #FINISH TASK -1        
@@ -296,7 +297,6 @@ def turn(game):
                 my_remaining_troops-=troops_to_put
                 print (game.put_troop(item[0] , int(troops_to_put)))
             item[3] = True
-            print (item)
 #FINISH TASK 3
     print(game.next_state()) #going to the next state
 
@@ -343,22 +343,22 @@ def turn(game):
         for each_attack in random_attacks:
             if game.get_number_of_troops()[str(each_attack[0][0])] > 1:
                 print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
-        
+
+ 
+#START TASK3
+    for each_attack in open_tunnel:
+        if each_attack[3]:
+            if owner[str(each_attack[1])] != my_id:
+                print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
+#FINISH TASK3
+
     print(game.next_state())
 
 
 
 
 
-
-#START TASK3
-    for each_attack in open_tunnel:
-        if each_attack[3]:
-            print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
-#FINISH TASK3
-
-
-    #the third state! moving troops state!
+#The third state! moving troops state!-----------------------------------------------------------
 
     # get the node with the most troops that I own (default code)
     max_troops = 0
