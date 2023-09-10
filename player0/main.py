@@ -215,7 +215,7 @@ def turn(game):
                 mini_id = i
     if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
         my_remaining_troops -= reinforcment_soldiers
-        print (game.put_troop(mini_id, reinforcment_soldiers ) , '3 soldiers are deployed to reinforce our strategic node defend')
+        print (game.put_troop(mini_id, reinforcment_soldiers ), '3 soldiers are deployed to reinforce our strategic node defend')
 
 #FINISH TASK 0
 
