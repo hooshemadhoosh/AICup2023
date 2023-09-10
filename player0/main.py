@@ -186,7 +186,7 @@ def turn(game):
         for i in strategic_nodes:
             if(owner[str(i)] != my_id):
                 for j in adjacents[str(i)]:
-                    if(owner[str(j)] == my_id):
+                    if(owner[str(j)] == my_id or owner[str(j)] == -1):
                         dict_best_node_for_attak[str(j)] = [number_of_troops[str(j)], number_of_troops[str(i)] + number_of_fort_troops[str(i)]]
                         
         for i in dict_best_node_for_attak:
@@ -207,7 +207,7 @@ def turn(game):
             
             
 #START TASK 0 :
-    # تقویت ضعیف ترین خونه ی استراتژیک در هر راند !!
+# تقویت ضعیف ترین خونه ی استراتژیک در هر راند !!
 
     mini = 1000
     mini_id = -1
@@ -313,33 +313,34 @@ def turn(game):
                     near_startegic = i
                     break
 
-            print (game.attack(max_id, near_startegic, 1, 0.9) , 'Attack for geting the fourth node!')
+            print (game.attack(max_id, near_startegic, VARS['mytroops/enemytroops (beta)'], 0.5) , 'Attack for geting the fourth node!')
 #FINISH TASK 0 
 
 #START TASK1
-    number_of_troops= game.get_number_of_troops()
-    number_of_fort_troops = game.get_number_of_fort_troops()
-    
-    if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
-        for on in sort_chance_of_attacks: 
-            if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
-                print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
-#FINISH TASK1
+    else:
+        number_of_troops= game.get_number_of_troops()
+        number_of_fort_troops = game.get_number_of_fort_troops()
+        
+        if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
+            for on in sort_chance_of_attacks: 
+                if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
+                    print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
+    #FINISH TASK1
 
-    random_attacks = {}
-    for mine in owner:
-        if owner[mine] == my_id:
-            for enemies in adjacents[mine]:
-                if owner[str(enemies)] != -1 and owner[str(enemies)] != my_id:
-                    enemy_troops_on_node = int(number_of_troops[str(enemy)]) + int(number_of_fort_troops[str(enemy)])
-                    my_troops_layer1node = number_of_troops[str(my)]
-                    attack_score = (my_troops_layer1node)/ enemy_troops_on_node
-                    if attack_score > beta_plus:
-                        random_attacks[(int(mine) , enemies)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False}
-    random_attacks = sorted(random_attacks.items(), key = lambda item: item[1]['attack_score'] , reverse=True)
-    for each_attack in random_attacks:
-        if game.get_number_of_troops()[str(each_attack[0][0])] > 1:
-            print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
+        random_attacks = {}
+        for mine in owner:
+            if owner[mine] == my_id:
+                for enemies in adjacents[mine]:
+                    if owner[str(enemies)] != -1 and owner[str(enemies)] != my_id:
+                        enemy_troops_on_node = int(number_of_troops[str(enemy)]) + int(number_of_fort_troops[str(enemy)])
+                        my_troops_layer1node = number_of_troops[str(my)]
+                        attack_score = (my_troops_layer1node)/ enemy_troops_on_node
+                        if attack_score > beta_plus:
+                            random_attacks[(int(mine) , enemies)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False}
+        random_attacks = sorted(random_attacks.items(), key = lambda item: item[1]['attack_score'] , reverse=True)
+        for each_attack in random_attacks:
+            if game.get_number_of_troops()[str(each_attack[0][0])] > 1:
+                print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
         
     print(game.next_state())
 
