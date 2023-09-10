@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 3 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 turn_number = 105
 ListOfTunnels = []
@@ -24,7 +24,6 @@ def Tunnel(start, dict_adj):
                 uplist[i] = point
     
     return (uplist)
-
 
 def TunnelListMaker(list_of_my_strategics,list_of_enemy_strategics,dict_adj):
     result = []
@@ -59,8 +58,6 @@ def number_of_tunnel(node,owner,my_id):
             result = i
             break
     return result
-
-
 
 def initializer(game: Game):
     global ListOfTunnels   
@@ -134,7 +131,7 @@ def initializer(game: Game):
     
     
  
-def turn(game):
+def turn(game: Game):
     
     global flag
 #getting turn number
@@ -164,7 +161,13 @@ def turn(game):
     defender_troops = VARS["number_of_defender_troops"]
     sort_chance_of_attacks = -1
     reinforcment_soldiers = VARS['ReainForce_strategics_everyround']
-
+    my_best_strategic  = []
+    enemy_best_strategic = []
+    for i in strategic_nodes:
+        if (owner[str(i)] == my_id) and (i not in my_best_strategic):
+            my_best_strategic.append(i)
+        elif (owner[str(i)]!=-1) and (i not in enemy_best_strategic):
+            enemy_best_strategic.append(i)
 #The first state! DEPLOYMENT OF TROOPS!---------------------------------------------------------------------------
 
     #Start task -1
@@ -298,11 +301,28 @@ def turn(game):
                 print (game.put_troop(item[0] , int(troops_to_put)))
             item[3] = True
 #FINISH TASK 3
+
+#START TASK 4
+    attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
+    for enemy_stra in enemy_best_strategic:
+        sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
+        sorted_layer1.sort(key= lambda x: number_of_troops[str(x)]+number_of_fort_troops[str(x)])
+        for layer1_node in sorted_layer1:
+            sorted_layer2 = [node for node in adjacents[str(layer1_node)] if owner[str(node)]==my_id]
+            if len(sorted_layer2)==0:   continue
+            sorted_layer2.sort(key= lambda x: number_of_troops[str(x)],reverse=True)
+            for layer2_node in sorted_layer2:
+                needed_troops = (number_of_troops[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
+                if number_of_troops[str(layer2_node)]+my_remaining_troops>=needed_troops:
+                    troops_to_put = needed_troops-number_of_troops[str(layer2_node)]
+                    if troops_to_put > 0:   
+                        my_remaining_troops-=troops_to_put
+                        print (game.put_troop(layer2_node , int(troops_to_put)))
+                        attack_on_layer1.append([layer2_node,layer1_node])
+                        break
+#FINISH TASK 4
+
     print(game.next_state()) #going to the next state
-
-
-
-
 #The second state! attacking!---------------------------------------------------------------------------
 
 #START TASK0
@@ -318,7 +338,7 @@ def turn(game):
             print (game.attack(max_id, near_startegic, VARS['mytroops/enemytroops (beta)'], 0.5) , 'Attack for geting the fourth node!')
 #FINISH TASK 0 
 
-#START TASK1
+#START TASK 1
     else:
         number_of_troops= game.get_number_of_troops()
         number_of_fort_troops = game.get_number_of_fort_troops()
@@ -327,7 +347,7 @@ def turn(game):
             for on in sort_chance_of_attacks: 
                 if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
                     print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
-    #FINISH TASK1
+    #FINISH TASK 1
 
         random_attacks = {}
         for mine in owner:
@@ -345,19 +365,20 @@ def turn(game):
                 print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
 
  
-#START TASK3
+#START TASK 3
     for each_attack in open_tunnel:
         if each_attack[3]:
             if owner[str(each_attack[1])] != my_id:
                 print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
-#FINISH TASK3
+#FINISH TASK 3
+
+#START TASK 4
+    for case in attack_on_layer1:   
+        if owner[str(case[1])]!=my_id and owner[str(case[1])]!=-1 and owner[str(case[0])]==my_id:   
+            print(game.attack(case[0],case[1],beta,VARS['moving_fraction']),"ATTACK ON LAYER1")
+#FINISH TASK 4
 
     print(game.next_state())
-
-
-
-
-
 #The third state! moving troops state!-----------------------------------------------------------
 
     # get the node with the most troops that I own (default code)
