@@ -277,16 +277,17 @@ def turn(game):
 
 #START TASK 3
     #Opening Tunnel
-    open_tunnel = []  #Contains items like (from attack, to attack, our strategic node)
-    print (ListOfTunnels)
+    open_tunnel = []  #Contains items like (from attack, to attack, our strategic node, check attack!)
     for tunnel in ListOfTunnels:
         if not is_tunnel_activated(tunnel,owner,my_id):
             for i in range(1,len(tunnel)):
                 if owner[str(tunnel[i])]!=my_id and owner[str(tunnel[i-1])]==my_id:
-                    x= (tunnel[i-1],tunnel[i],tunnel[0])
+                    x= [tunnel[i-1],tunnel[i],tunnel[0], False] #باید چک کنم ببینم در حالت لیست هم درست مرتب سازی میکنه یا گند کاری میشه
                     open_tunnel.append(x)
                     break
-    open_tunnel.sort(key=lambda x: number_of_troops[str(x[2])]+number_of_fort_troops[str(x[2])])
+    print ('open tunnel IS NOT sorted:' , open_tunnel)
+    open_tunnel.sort(key=lambda x: number_of_troops[str(x[2])]+number_of_fort_troops[str(x[2])]) #باید چک کنم ببینم در حالت لیست هم درست مرتب سازی میکنه یا گند کاری میشه
+    print ('open tunnel IS sorted',open_tunnel)
     for item in open_tunnel:
         needed_troops = (number_of_troops[str(item[1])] + number_of_fort_troops[str(item[1])])*beta+attack_attemps-1
         if number_of_troops[str(item[0])]+my_remaining_troops>=needed_troops:
@@ -294,7 +295,8 @@ def turn(game):
             if troops_to_put > 0:   
                 my_remaining_troops-=troops_to_put
                 print (game.put_troop(item[0] , int(troops_to_put)))
-            
+            item[3] = True
+            print (item)
 #FINISH TASK 3
     print(game.next_state()) #going to the next state
 
@@ -345,6 +347,15 @@ def turn(game):
     print(game.next_state())
 
 
+
+
+
+
+#START TASK3
+    for each_attack in open_tunnel:
+        if each_attack[3]:
+            print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
+#FINISH TASK3
 
 
     #the third state! moving troops state!
