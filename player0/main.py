@@ -2,7 +2,6 @@ import random
 from src.game import Game
 VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
-turn_number = 105
 ListOfTunnels = []
 
 
@@ -136,11 +135,7 @@ def turn(game: Game):
     global flag
 #getting turn number
     my_id = game.get_player_id()['player_id']
-    global turn_number
-    if turn_number==105:
-        if my_id==1:  turn_number=103
-        elif my_id==2:  turn_number==104
-    turn_number += 3
+    turn_number = game.get_turn_number()['turn_number']
     print ("TURN NUMBER: ",turn_number)
 
 #VARIABLES
