@@ -183,7 +183,7 @@ def turn(game: Game):
         if(owner[str(i)] == my_id):
             count_startegic_node += 1
     
-    if(count_startegic_node == 3):
+    if(count_startegic_node == 3 and turn_number > 126):
 
         dict_best_node_for_attak = {}
         for i in strategic_nodes:
@@ -303,6 +303,7 @@ def turn(game: Game):
 #FINISH TASK 3
 
 #START TASK 4
+
     owner = game.get_owners()
     attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
     for enemy_stra in enemy_best_strategic:
@@ -328,7 +329,7 @@ def turn(game: Game):
     
 #START TASK0
     owner = game.get_owners()
-    if(count_startegic_node == 3 and max_id != -1):
+    if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
             
             near_startegic = 0
@@ -336,7 +337,6 @@ def turn(game: Game):
                 if i in strategic_nodes:
                     near_startegic = i
                     break
-
             print (game.attack(max_id, near_startegic, VARS['mytroops/enemytroops (beta)'], 0.5) , 'Attack for geting the fourth node!')
 #FINISH TASK 0 
     
@@ -387,10 +387,10 @@ def turn(game: Game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(owner[str(k)] == my_id and (k in strategic_nodes)):
+                        if(owner[str(k)] == my_id and (k in strategic_nodes) and number_of_troops[str(k)] >= VARS['beta_plus'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])):
                             game.attack(k, j, VARS['beta_plus'], (1 - VARS['moving_fraction']))
                             owner = game.get_owners()
-                        elif(owner[str(k)] == my_id):
+                        elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (VARS['mytroops/enemytroops (beta)'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]))):
                             game.attack(k, j, VARS['mytroops/enemytroops (beta)'],  VARS['moving_fraction'])
                             owner = game.get_owners()
 
