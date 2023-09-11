@@ -377,7 +377,24 @@ def turn(game: Game):
         if owner[str(case[1])]!=my_id and owner[str(case[1])]!=-1 and owner[str(case[0])]==my_id:   
             print(game.attack(case[0],case[1],beta,VARS['moving_fraction']),"ATTACK ON LAYER1")
 #FINISH TASK 4
+    owner = game.get_owners()
+#Start task 5 :
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id):
+            for j in adjacents[str(i)]:
+                if(owner[str(j)] != my_id and owner[str(j)] != -1): 
+                    for k in adjacents[str(j)]:
+                        if(owner[str(k)] == my_id and (k in strategic_nodes)):
+                            game.attack(k, j, VARS['beta_plus'], (1 - VARS['moving_fraction']))
+                            owner = game.get_owners()
+                        elif(owner[str(k)] == my_id):
+                            game.attack(k, j, VARS['mytroops/enemytroops (beta)'],  VARS['moving_fraction'])
+                            owner = game.get_owners()
 
+                        if(owner[str(j)] == my_id):
+                            break
+
+# finish task 5 
     print(game.next_state())
 #The third state! moving troops state!-----------------------------------------------------------
 
