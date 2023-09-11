@@ -303,6 +303,7 @@ def turn(game: Game):
 #FINISH TASK 3
 
 #START TASK 4
+    owner = game.get_owners()
     attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
     for enemy_stra in enemy_best_strategic:
         sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
@@ -370,7 +371,7 @@ def turn(game: Game):
 #START TASK 3
     for each_attack in open_tunnel:
         if each_attack[3]:
-            if owner[str(each_attack[1])] != my_id:
+            if owner[str(each_attack[1])] != my_id and owner[str(each_attack[1])] != -1:
                 print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
 #FINISH TASK 3
     owner = game.get_owners()
