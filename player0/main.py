@@ -324,8 +324,9 @@ def turn(game: Game):
 
     print(game.next_state()) #going to the next state
 #The second state! attacking!---------------------------------------------------------------------------
-
+    
 #START TASK0
+    owner = game.get_owners()
     if(count_startegic_node == 3 and max_id != -1):
         #my_remaining_troops
             
@@ -337,9 +338,10 @@ def turn(game: Game):
 
             print (game.attack(max_id, near_startegic, VARS['mytroops/enemytroops (beta)'], 0.5) , 'Attack for geting the fourth node!')
 #FINISH TASK 0 
-
+    
 #START TASK 1
     else:
+        owner = game.get_owners()
         number_of_troops= game.get_number_of_troops()
         number_of_fort_troops = game.get_number_of_fort_troops()
         
@@ -348,7 +350,7 @@ def turn(game: Game):
                 if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
                     print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
     #FINISH TASK 1
-
+        owner = game.get_owners()
         random_attacks = {}
         for mine in owner:
             if owner[mine] == my_id:
@@ -364,14 +366,14 @@ def turn(game: Game):
             if game.get_number_of_troops()[str(each_attack[0][0])] > 1:
                 print (game.attack(each_attack[0][0] , each_attack[0][1] , beta , 0.5))
 
- 
+    owner = game.get_owners()
 #START TASK 3
     for each_attack in open_tunnel:
         if each_attack[3]:
             if owner[str(each_attack[1])] != my_id:
                 print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
 #FINISH TASK 3
-
+    owner = game.get_owners()
 #START TASK 4
     for case in attack_on_layer1:   
         if owner[str(case[1])]!=my_id and owner[str(case[1])]!=-1 and owner[str(case[0])]==my_id:   
