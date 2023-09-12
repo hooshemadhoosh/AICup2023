@@ -275,6 +275,9 @@ def turn(game: Game):
 
 #START TASK 3
     owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
+    
     #Opening Tunnel
     open_tunnel = []  #Contains items like (from attack, to attack, our strategic node, check attack!)
     for tunnel in ListOfTunnels:
@@ -302,6 +305,9 @@ def turn(game: Game):
 #START TASK 4
 
     owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
+
     attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
     for enemy_stra in enemy_best_strategic:
         sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
@@ -326,6 +332,8 @@ def turn(game: Game):
     
 #START TASK0
     owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
     if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
 
@@ -375,19 +383,24 @@ def turn(game: Game):
             print(game.attack(case[0],case[1],beta,moving_fraction),"ATTACK ON LAYER1")
 #FINISH TASK 4
     owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
     for i in strategic_nodes:
-        if(game.get_owners()[str(i)] == my_id):
+        if(owner[str(i)] == my_id):
             for j in adjacents[str(i)]:
-                if(game.get_owners()[str(j)] != my_id and game.get_owners()[str(j)] != -1): 
+                if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(game.get_owners()[str(k)] == my_id and (k in strategic_nodes) and game.get_number_of_troops()[str(k)] >= beta_plus * (game.get_number_of_troops()[str(j)] + game.get_number_of_fort_troops()[str(j)]) and game.get_number_of_troops()[str(k)] >= 2):
+                        if(owner[str(k)] == my_id and (k in strategic_nodes) and owner[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, beta_plus, (1 - moving_fraction))
-                        elif(game.get_owners()[str(k)] == my_id and game.get_number_of_troops()[str(k)] == (beta * (game.get_number_of_troops()[str(j)] + game.get_number_of_fort_troops()[str(j)])) and game.get_number_of_troops()[str(k)] >= 2):
+                            
+                        elif(owner[str(k)] == my_id and number_of_troops[str(k)] == (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, beta,  moving_fraction)
-
-                        if(game.get_owners()[str(j)] == my_id):
+                        owner = game.get_owners()
+                        if(owner[str(j)] == my_id):
                             break
+
+                        
 
 #FINISH TASK 5 
     print(game.next_state())
