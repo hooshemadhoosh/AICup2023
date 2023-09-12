@@ -397,6 +397,8 @@ def turn(game: Game):
                         elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, beta,  moving_fraction)
                         owner = game.get_owners()
+                        number_of_troops= game.get_number_of_troops()
+                        number_of_fort_troops = game.get_number_of_fort_troops()
                         if(owner[str(j)] == my_id):
                             break
 
@@ -465,7 +467,7 @@ def turn(game: Game):
     #           max_node = stra
     #   print (game.fort(max_node , troops_in-1))
     #   flag = True\\
-    print(game.next_state()) #going to the next state
-#The Forth state! Fortify!-----------------------------------------------------------
+
+    print(game.next_state()) #Finishing Turn
 
     return
