@@ -425,7 +425,7 @@ def turn(game: Game):
 
     print(game.get_reachable(max_node))
     destination = random.choice(game.get_reachable(max_node)['reachable'])
-    if max_node!=destination:   print(game.move_troop(max_node, destination, 1))
+    if int(max_node)!=int(destination) and max_node!=-1:   print(game.move_troop(max_node, destination, 1))
     print(game.next_state())
 
 
