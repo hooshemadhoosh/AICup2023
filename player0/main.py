@@ -383,10 +383,10 @@ def turn(game: Game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(owner[str(k)] == my_id and (k in strategic_nodes) and number_of_troops[str(k)] >= VARS['beta_plus'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])):
+                        if(owner[str(k)] == my_id and (k in strategic_nodes) and number_of_troops[str(k)] >= VARS['beta_plus'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, VARS['beta_plus'], (1 - VARS['moving_fraction']))
                             owner = game.get_owners()
-                        elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (VARS['mytroops/enemytroops (beta)'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]))):
+                        elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (VARS['mytroops/enemytroops (beta)'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, VARS['mytroops/enemytroops (beta)'],  VARS['moving_fraction'])
                             owner = game.get_owners()
 
