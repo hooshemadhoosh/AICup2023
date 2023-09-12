@@ -3,7 +3,7 @@ from src.game import Game
 VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
-
+good_list = [4, 5, 6]
 
 def Tunnel(start, dict_adj):
     dp = [10000] * (len(dict_adj) + 1)
@@ -424,20 +424,43 @@ def turn(game: Game):
 
 
 
-
+    owner = game.get_owners()
+    number_of_fort_troops = game.get_number_of_fort_troops()
+    number_of_troops = game.get_number_of_troops()
 #THE LAST STATE FORTIFYING---------------------------------------------------------
 
+    # Task 0:
+    count_startegic_node = 0 
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id):
+            count_startegic_node += 1
+    if (count_startegic_node == 3):
+        mini = 1000 
+        mini_id = -1 
+        for i in strategic_nodes:
+            if(owner[str(i)] == my_id and number_of_troops[str(i)] < mini and number_of_troops[str(i)] > 3):
+                mini = number_of_troops[str(i)]
+                mini_id = i
+        game.fort(mini_id, number_of_troops[str(mini_id)])
+    number_of_fort_troops = game.get_number_of_fort_troops()
+    number_of_troops = game.get_number_of_troops()
+    for i in strategic_nodes :
+        if(owner[str(i)] == my_id and (number_of_troops[str(i)] in good_list)):
+            game.fort(i, number_of_troops[str(i)])
+            break        
+    # finish Task0 :)
+
     # get the node with the most troops that I own (default code)
-    if flag == False:
-        max_node = 0
-        number_of_troops= game.get_number_of_troops()
-        troops_in = 0
-        for stra in strategic_nodes:
-            if owner[str(stra)] == my_id and number_of_troops[str(stra)] > troops_in:
-                troops_in = number_of_troops[str(stra)]
-                max_node = stra
-        print (game.fort(max_node , troops_in-1))
-        flag = True
+    #if flag == False:
+    #   max_node = 0
+    #    number_of_troops= game.get_number_of_troops()
+    #   troops_in = 0
+     #   for stra in strategic_nodes:
+    #      if owner[str(stra)] == my_id and number_of_troops[str(stra)] > troops_in:
+    #           troops_in = number_of_troops[str(stra)]
+    #           max_node = stra
+    #   print (game.fort(max_node , troops_in-1))
+    #   flag = True\\
     print(game.next_state()) #going to the next state
 #The Forth state! Fortify!-----------------------------------------------------------
 
