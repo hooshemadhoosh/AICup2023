@@ -429,4 +429,8 @@ def turn(game: Game):
                 max_node = stra
         print (game.fort(max_node , troops_in-1))
         flag = True
-    
+    print(game.next_state()) #going to the next state
+#The Forth state! Fortify!-----------------------------------------------------------
+
+    print(game.next_state()) #Finish turn
+    return
