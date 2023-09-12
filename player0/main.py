@@ -156,6 +156,7 @@ def turn(game: Game):
     defender_troops = VARS["number_of_defender_troops"]
     sort_chance_of_attacks = -1
     reinforcment_soldiers = VARS['ReainForce_strategics_everyround']
+    moving_fraction = VARS['moving_fraction']
     my_best_strategic  = []
     enemy_best_strategic = []
     for i in strategic_nodes:
@@ -288,8 +289,8 @@ def turn(game: Game):
     print ('open tunnel IS sorted',open_tunnel)
     for item in open_tunnel:
         needed_troops = (game.get_number_of_troops()[str(item[1])] + game.get_number_of_fort_troops()[str(item[1])])*beta+attack_attemps-1
-        if number_of_troops[str(item[0])]+my_remaining_troops>=needed_troops:
-            troops_to_put = needed_troops-number_of_troops[str(item[0])]
+        if game.get_number_of_troops()[str(item[0])]+my_remaining_troops>=needed_troops:
+            troops_to_put = needed_troops-game.get_number_of_troops()[str(item[0])]
             if troops_to_put > 0:   
                 my_remaining_troops-=troops_to_put
                 print (game.put_troop(item[0] , int(troops_to_put)))
@@ -326,24 +327,21 @@ def turn(game: Game):
     owner = game.get_owners()
     if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
-            
+
             near_startegic = 0
             for i in adjacents[str(max_id)]:
                 if i in strategic_nodes:
                     near_startegic = i
                     break
-            print (game.attack(max_id, near_startegic, VARS['mytroops/enemytroops (beta)'], 0.5) , 'Attack for geting the fourth node!')
+            print (game.attack(max_id, near_startegic,beta, 0.5) , 'Attack for geting the fourth node!')
 #FINISH TASK 0 
     
 #START TASK 1 AND 2
     else:
-        number_of_troops= game.get_number_of_troops()
-        number_of_fort_troops = game.get_number_of_fort_troops()
-
         if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
             for on in sort_chance_of_attacks: 
                 if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
-                    print (game.attack(on[0][0] , on[0][1] , beta , VARS['moving_fraction']), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
+                    print (game.attack(on[0][0] , on[0][1] , beta , moving_fraction), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
 #FINISH TASK 1 AND 2
 
     #   owner = game.get_owners()
@@ -364,33 +362,30 @@ def turn(game: Game):
 
 #START TASK 3
     for each_attack in open_tunnel:
-        #if each_attack[3]: it is commented for testing the code
-        if game.get_owners()[str(each_attack[1])] != my_id and game.get_owners()[str(each_attack[1])] != -1:
-            print ('MY ID IS:',my_id , 'THE OWNER OF TARGET ID IS:' , game.get_owners()[str(each_attack[1])] , 'MY PLANET OWNER ID IS:',  game.get_owners()[str(each_attack[0])])
-            print (game.attack(each_attack[0],each_attack[1],beta,VARS['moving_fraction']))
+        if each_attack[3] and game.get_owners()[str(each_attack[1])] != my_id and game.get_owners()[str(each_attack[1])] != -1 and game.get_number_of_troops()[str(each_attack[0])]>1:
+            print ('TASK 3 IN ATTACKING IS DONE','MY ID IS:',my_id , 'THE OWNER OF TARGET ID IS:' , game.get_owners()[str(each_attack[1])] , 'MY PLANET OWNER ID IS:',  game.get_owners()[str(each_attack[0])])
+            print (game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction))
 #FINISH TASK 3
-    owner = game.get_owners()
+
 #START TASK 4
     for case in attack_on_layer1:   
-        if game.get_owners()[str(case[1])]!=my_id and game.get_owners()[str(case[1])]!=-1 and game.get_owners()[str(case[0])]==my_id:  
-            print ('MY ID IS:',my_id , 'THE OWNER OF TARGET ID IS:' , case[1] , 'MY PLANET OWNER ID IS:',  case[0]) 
-            print(game.attack(case[0],case[1],beta,VARS['moving_fraction']),"ATTACK ON LAYER1")
+        if game.get_owners()[str(case[1])]!=my_id and game.get_owners()[str(case[1])]!=-1 and game.get_owners()[str(case[0])]==my_id and game.get_number_of_troops()[str(case[0])]>1:  
+            print ('TASK 4 IN ATTACKING IS DONE','MY ID IS:', game.get_owners()[str(my_id)] , 'THE OWNER OF TARGET ID IS:' , game.get_owners()[str(case[1])] , 'MY PLANET OWNER ID IS:',  game.get_owners()[str(case[0])]) 
+            print(game.attack(case[0],case[1],beta,moving_fraction),"ATTACK ON LAYER1")
 #FINISH TASK 4
     owner = game.get_owners()
 #START TASK 5 :
     for i in strategic_nodes:
-        if(owner[str(i)] == my_id):
+        if(game.get_owners()[str(i)] == my_id):
             for j in adjacents[str(i)]:
-                if(owner[str(j)] != my_id and owner[str(j)] != -1): 
+                if(game.get_owners()[str(j)] != my_id and game.get_owners()[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(owner[str(k)] == my_id and (k in strategic_nodes) and number_of_troops[str(k)] >= VARS['beta_plus'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2):
-                            game.attack(k, j, VARS['beta_plus'], (1 - VARS['moving_fraction']))
-                            owner = game.get_owners()
-                        elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (VARS['mytroops/enemytroops (beta)'] * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
-                            game.attack(k, j, VARS['mytroops/enemytroops (beta)'],  VARS['moving_fraction'])
-                            owner = game.get_owners()
+                        if(game.get_owners()[str(k)] == my_id and (k in strategic_nodes) and game.get_number_of_troops()[str(k)] >= beta_plus * (game.get_number_of_troops()[str(j)] + game.get_number_of_fort_troops()[str(j)]) and game.get_number_of_troops()[str(k)] >= 2):
+                            game.attack(k, j, beta_plus, (1 - moving_fraction))
+                        elif(game.get_owners()[str(k)] == my_id and game.get_number_of_troops()[str(k)] == (beta * (game.get_number_of_troops()[str(j)] + game.get_number_of_fort_troops()[str(j)])) and game.get_number_of_troops()[str(k)] >= 2):
+                            game.attack(k, j, beta,  moving_fraction)
 
-                        if(owner[str(j)] == my_id):
+                        if(game.get_owners()[str(j)] == my_id):
                             break
 
 #FINISH TASK 5 
