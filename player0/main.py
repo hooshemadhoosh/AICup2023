@@ -289,8 +289,9 @@ def turn(game: Game):
     print ('open tunnel IS sorted',open_tunnel)
     for item in open_tunnel:
         needed_troops = (game.get_number_of_troops()[str(item[1])] + game.get_number_of_fort_troops()[str(item[1])])*beta+attack_attemps-1
+        my_remaining_troops = game.get_number_of_troops_to_put() ['number_of_troops']
         if game.get_number_of_troops()[str(item[0])]+my_remaining_troops>=needed_troops:
-            troops_to_put = needed_troops-game.get_number_of_troops()[str(item[0])]
+            troops_to_put = int(needed_troops-game.get_number_of_troops()[str(item[0])])
             if troops_to_put > 0:   
                 my_remaining_troops-=troops_to_put
                 print (game.put_troop(item[0] , int(troops_to_put)))
@@ -304,15 +305,15 @@ def turn(game: Game):
     attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
     for enemy_stra in enemy_best_strategic:
         sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
-        sorted_layer1.sort(key= lambda x: number_of_troops[str(x)]+number_of_fort_troops[str(x)])
+        sorted_layer1.sort(key= lambda x: game.get_number_of_troops()[str(x)]+game.get_number_of_fort_troops()[str(x)])
         for layer1_node in sorted_layer1:
             sorted_layer2 = [node for node in adjacents[str(layer1_node)] if owner[str(node)]==my_id]
             if len(sorted_layer2)==0:   continue
-            sorted_layer2.sort(key= lambda x: number_of_troops[str(x)],reverse=True)
+            sorted_layer2.sort(key= lambda x: game.get_number_of_troops()[str(x)],reverse=True)
             for layer2_node in sorted_layer2:
-                needed_troops = (number_of_troops[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
-                if number_of_troops[str(layer2_node)]+my_remaining_troops>=needed_troops:
-                    troops_to_put = needed_troops-number_of_troops[str(layer2_node)]
+                needed_troops = (game.get_number_of_troops()[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
+                if game.get_number_of_troops()[str(layer2_node)]+my_remaining_troops>=needed_troops:
+                    troops_to_put = int(needed_troops-game.get_number_of_troops()[str(layer2_node)])
                     if troops_to_put > 0:   
                         my_remaining_troops-=troops_to_put
                         print (game.put_troop(layer2_node , int(troops_to_put)))
@@ -390,7 +391,7 @@ def turn(game: Game):
 
 #FINISH TASK 5 
     print(game.next_state())
-#The third state! moving troops state!-----------------------------------------------------------
+#THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
 
     # get the node with the most troops that I own (default code)
     max_troops = 0
@@ -411,7 +412,7 @@ def turn(game: Game):
 
 
 
-    #the last state! forting!
+#THE LAST STATE FORTIFYING---------------------------------------------------------
 
     # get the node with the most troops that I own (default code)
     if flag == False:
@@ -427,5 +428,4 @@ def turn(game: Game):
     print(game.next_state()) #going to the next state
 #The Forth state! Fortify!-----------------------------------------------------------
 
-    print(game.next_state()) #Finish turn
     return
