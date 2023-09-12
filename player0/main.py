@@ -3,7 +3,7 @@ from src.game import Game
 VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
-good_list = [4, 5, 6]
+good_list = [4, 5]
 
 def Tunnel(start, dict_adj):
     dp = [10000] * (len(dict_adj) + 1)
