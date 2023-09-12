@@ -200,7 +200,7 @@ def turn(game: Game):
             pass
         else:
             #my_remaining_troops
-            my_remaining_troops = 0
+            # my_remaining_troops = 0
             print (game.put_troop(max_id, my_remaining_troops) , 
                    'TASK -1 IS DONE: All troops are deployed to get the fourth strategic node!\n')
 #FINISH TASK -1        
