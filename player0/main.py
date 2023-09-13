@@ -395,7 +395,7 @@ def turn(game: Game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(owner[str(k)] == my_id and (k in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2):
+                        if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, beta_plus, (1 - moving_fraction))
                             
                         elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
@@ -409,6 +409,22 @@ def turn(game: Game):
                         
 
 #FINISH TASK 5 
+
+# Start task 6:
+    for i in owner.key():
+        if(owner[str(i)] == my_id and (str(i) in strategic_nodes)):
+            for j in adjacents[str(i)]:
+                if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
+                    game.attack(i, j, 5.5 , 0.1)
+                    owner = game.get_owners()
+        elif(owner[str(i)] == my_id):
+            for j in adjacents[str(i)]:
+                if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
+                    game.attack(i, j, 4.5 , 0.3)
+                    owner = game.get_owners()
+
+# Finish Task ;)
+    owner = game.get_owners()
     print(game.next_state())
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
 
