@@ -200,7 +200,7 @@ def turn(game: Game):
             pass
         else:
             #my_remaining_troops
-            my_remaining_troops = 0
+            # my_remaining_troops = 0
             print (game.put_troop(max_id, my_remaining_troops) , 
                    'TASK -1 IS DONE: All troops are deployed to get the fourth strategic node!\n')
 #FINISH TASK -1        
@@ -211,6 +211,10 @@ def turn(game: Game):
 
     mini = 1000
     mini_id = -1
+    owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
+    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     for i in strategic_nodes:
         if(owner[str(i)] == my_id):
             if(number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
@@ -397,6 +401,8 @@ def turn(game: Game):
                         elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
                             game.attack(k, j, beta,  moving_fraction)
                         owner = game.get_owners()
+                        number_of_troops= game.get_number_of_troops()
+                        number_of_fort_troops = game.get_number_of_fort_troops()
                         if(owner[str(j)] == my_id):
                             break
 
@@ -419,7 +425,7 @@ def turn(game: Game):
 
     print(game.get_reachable(max_node))
     destination = random.choice(game.get_reachable(max_node)['reachable'])
-    print(game.move_troop(max_node, destination, 1))
+    if int(max_node)!=int(destination) and max_node!=-1:   print(game.move_troop(max_node, destination, 1))
     print(game.next_state())
 
 
@@ -438,19 +444,18 @@ def turn(game: Game):
         mini = 1000 
         mini_id = -1 
         for i in strategic_nodes:
-            if(owner[str(i)] == my_id and number_of_troops[str(i)] < mini and number_of_troops[str(i)] > 3):
+            if(owner[str(i)] == my_id and number_of_troops[str(i)] < mini and number_of_troops[str(i)] > 4):
                 mini = number_of_troops[str(i)]
                 mini_id = i
-
-        game.fort(mini_id, number_of_troops[str(mini_id)])
-        flag = True
+        if mini_id!=-1:
+            game.fort(mini_id, number_of_troops[str(mini_id)]-1)
+            flag = True
     number_of_fort_troops = game.get_number_of_fort_troops()
     number_of_troops = game.get_number_of_troops()
-    if (flag == False):
+    if (flag == False and turn_number>162):
         for i in strategic_nodes :
             if(owner[str(i)] == my_id and (number_of_troops[str(i)] in good_list)):
-                if(flag == False):
-                    game.fort(i, number_of_troops[str(i)])
+                game.fort(i, number_of_troops[str(i)]-1)
                 flag = True
                 break        
     # finish Task0 :)
@@ -466,7 +471,7 @@ def turn(game: Game):
     #           max_node = stra
     #   print (game.fort(max_node , troops_in-1))
     #   flag = True\\
-    print(game.next_state()) #going to the next state
-#The Forth state! Fortify!-----------------------------------------------------------
+
+    print(game.next_state()) #Finishing Turn
 
     return
