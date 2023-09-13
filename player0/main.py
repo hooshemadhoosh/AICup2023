@@ -216,6 +216,10 @@ def turn(game: Game):
     number_of_fort_troops = game.get_number_of_fort_troops()
     my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     for i in strategic_nodes:
+        owner = game.get_owners()
+        number_of_troops= game.get_number_of_troops()
+        number_of_fort_troops = game.get_number_of_fort_troops()
+        my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
         if(owner[str(i)] == my_id):
             if(number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
                 mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
