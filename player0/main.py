@@ -133,6 +133,7 @@ def initializer(game: Game):
 def turn(game: Game):
     
     global flag
+    global good_list
 #getting turn number
     my_id = game.get_player_id()['player_id']
     turn_number = game.get_turn_number()['turn_number']
@@ -388,7 +389,7 @@ def turn(game: Game):
     for case in attack_on_layer1:   
         if game.get_owners()[str(case[1])]!=my_id and game.get_owners()[str(case[1])]!=-1 and game.get_owners()[str(case[0])]==my_id and game.get_number_of_troops()[str(case[0])]>1:  
             print ('TASK 4 IN ATTACKING IS DONE','MY ID IS:', game.get_owners()[str(my_id)] , 'THE OWNER OF TARGET ID IS:' , game.get_owners()[str(case[1])] , 'MY PLANET OWNER ID IS:',  game.get_owners()[str(case[0])]) 
-            print(game.attack(case[0],case[1],beta,moving_fraction),"ATTACK ON LAYER1")
+            print(game.attack(case[0],case[1],beta,1-moving_fraction),"ATTACK ON LAYER1")
 #FINISH TASK 4
     owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
@@ -403,7 +404,7 @@ def turn(game: Game):
                             game.attack(k, j, beta_plus, (1 - moving_fraction))
                             
                         elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
-                            game.attack(k, j, beta,  moving_fraction)
+                            game.attack(k, j, beta,  1-moving_fraction)
                         owner = game.get_owners()
                         number_of_troops= game.get_number_of_troops()
                         number_of_fort_troops = game.get_number_of_fort_troops()
@@ -415,13 +416,15 @@ def turn(game: Game):
 #FINISH TASK 5 
 
 # Start task 6:
-    for i in owner.key():
-        if(owner[str(i)] == my_id and (str(i) in strategic_nodes)):
+    for i in owner:
+        number_of_troops= game.get_number_of_troops()
+        number_of_fort_troops = game.get_number_of_fort_troops()
+        if(owner[str(i)] == my_id and (str(i) in strategic_nodes)and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
-                if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
-                    game.attack(i, j, 5.5 , 0.1)
+                if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops(str[j])+number_of_fort_troops(str[j]) <=2)):
+                    game.attack(i, j, 5.5 , 1-moving_fraction)
                     owner = game.get_owners()
-        elif(owner[str(i)] == my_id):
+        elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
                     game.attack(i, j, 4.5 , 0.3)
@@ -433,30 +436,29 @@ def turn(game: Game):
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
 
     # get the node with the most troops that I own (default code)
-    max_troops = 0
-    max_node = -1
-    owner = game.get_owners()
+   #max_troops = 0
+   #max_node = -1
+   #owner = game.get_owners()
 
-    for i in owner: #i used this instad of     for i in owner.keys()
-        if owner[str(i)] == my_id:
-            if game.get_number_of_troops()[i] > max_troops:
-                max_troops = game.get_number_of_troops()[i]
-                max_node = i
+   #for i in owner: #i used this instad of     for i in owner.keys()
+   #    if owner[str(i)] == my_id:
+   #        if game.get_number_of_troops()[i] > max_troops:
+   #            max_troops = game.get_number_of_troops()[i]
+   #            max_node = i
 
-    print(game.get_reachable(max_node))
-    destination = random.choice(game.get_reachable(max_node)['reachable'])
-    if int(max_node)!=int(destination) and max_node!=-1:   print(game.move_troop(max_node, destination, 1))
+   #print(game.get_reachable(max_node))
+   #destination = random.choice(game.get_reachable(max_node)['reachable'])
+   #if int(max_node)!=int(destination) and max_node!=-1:   print(game.move_troop(max_node, destination, 1))
     print(game.next_state())
 
 
-
-    owner = game.get_owners()
-    number_of_fort_troops = game.get_number_of_fort_troops()
-    number_of_troops = game.get_number_of_troops()
 #THE LAST STATE FORTIFYING---------------------------------------------------------
 
     # Task 0:
     count_startegic_node = 0 
+    owner = game.get_owners()
+    number_of_fort_troops = game.get_number_of_fort_troops()
+    number_of_troops = game.get_number_of_troops()
     for i in strategic_nodes:
         if(owner[str(i)] == my_id):
             count_startegic_node += 1
@@ -464,7 +466,7 @@ def turn(game: Game):
         mini = 1000 
         mini_id = -1 
         for i in strategic_nodes:
-            if(owner[str(i)] == my_id and number_of_troops[str(i)] < mini and number_of_troops[str(i)] > 4):
+            if(owner[str(i)] == my_id and 4 < number_of_troops[str(i)] < mini):
                 mini = number_of_troops[str(i)]
                 mini_id = i
         if mini_id!=-1:
@@ -479,19 +481,6 @@ def turn(game: Game):
                 flag = True
                 break        
     # finish Task0 :)
-
-    # get the node with the most troops that I own (default code)
-    #if flag == False:
-    #   max_node = 0
-    #    number_of_troops= game.get_number_of_troops()
-    #   troops_in = 0
-     #   for stra in strategic_nodes:
-    #      if owner[str(stra)] == my_id and number_of_troops[str(stra)] > troops_in:
-    #           troops_in = number_of_troops[str(stra)]
-    #           max_node = stra
-    #   print (game.fort(max_node , troops_in-1))
-    #   flag = True\\
-
     print(game.next_state()) #Finishing Turn
 
     return
