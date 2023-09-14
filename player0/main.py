@@ -445,8 +445,8 @@ def turn(game: Game):
     owner = game.get_owners()
     number_of_troops = game.get_number_of_troops()
     max_troops = 1
-    sourcenode = 0 
-    destinationnode = 0
+    sourcenode = -1
+    destinationnode = -1
     for tunel in ListOfTunnels:
         if is_tunnel_activated (tunel , owner , my_id):
             for eachnode in tunel[1:-1]:
@@ -468,7 +468,7 @@ def turn(game: Game):
                 end = findend(tunel , owner , my_id)
                 max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
 
-    if sourcenode != 0 and destinationnode != 0:
+    if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(destinationnode)['reachable']:
         print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
 
     print(game.next_state())
