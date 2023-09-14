@@ -1,4 +1,4 @@
-VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus":1.5 , "TroopsTunnel" : 3 , "number_of_attack_attemps" : 2 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
+VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus":1.5 , "TroopsTunnel" : 3 , "number_of_attack_attemps" : 4 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
 good_list = [4, 5]
