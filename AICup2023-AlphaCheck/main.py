@@ -65,5 +65,6 @@ if __name__ == '__main__':
         shutil.rmtree('debug_log')
     except: pass
     for i in range(120):
-        main(0)
+        print(f"@@@@@@@@@@@@@@@MAP NUMBER {i%5+1}")
+        main(i%5)
         print(f"##{i}###########################################################{i}#####################{i}############")

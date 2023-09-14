@@ -362,7 +362,7 @@ def turn(game):
 
             near_startegic = 0
             for i in adjacents[str(max_id)]:
-                if i in strategic_nodes:
+                if i in strategic_nodes and owner[str(i)]!=my_id:
                     near_startegic = i
                     break
             print (game.attack(max_id, near_startegic,beta, 0.5) , 'Attack for geting the fourth node!')
@@ -396,7 +396,7 @@ def turn(game):
     for each_attack in open_tunnel:
         if each_attack[3] and game.get_owners()[str(each_attack[1])] != my_id and game.get_owners()[str(each_attack[1])] != -1 and game.get_number_of_troops()[str(each_attack[0])]>1:
             print ('TASK 3 IN ATTACKING IS DONE','MY ID IS:',my_id , 'THE OWNER OF TARGET ID IS:' , game.get_owners()[str(each_attack[1])] , 'MY PLANET OWNER ID IS:',  game.get_owners()[str(each_attack[0])])
-            print (game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction))
+            if str(each_attack[1]) in adjacents[str(each_attack[0])]: print (game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction))
 #FINISH TASK 3
 
 #START TASK 4
