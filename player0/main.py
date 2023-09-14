@@ -58,6 +58,22 @@ def number_of_tunnel(node,owner,my_id):
             break
     return result
 
+def findend (tunnel , owner , my_id):
+    x = 0
+    for n in range (1,len(tunnel)-1):
+        if owner[str(tunnel[n])] != my_id and owner[str(tunnel[n])] != -1:
+            x = n
+            break
+    return x
+
+def findmove (tunel , end , number_of_troops , max_troops , sourcenode , detinationnode ):
+    for eachnode in tunel[1:end]:
+        if number_of_troops[str(eachnode)] > max_troops:
+            max_troops = number_of_troops[str(eachnode)]
+            sourcenode = eachnode
+            detinationnode = tunel[0]
+    return max_troops , sourcenode , detinationnode
+
 def initializer(game: Game):
     global ListOfTunnels   
     strategic_nodes = game.get_strategic_nodes()['strategic_nodes']
@@ -293,7 +309,7 @@ def turn(game: Game):
         if not is_tunnel_activated(tunnel,owner,my_id):
             for i in range(1,len(tunnel)):
                 if owner[str(tunnel[i])]!=my_id and owner[str(tunnel[i-1])]==my_id:
-                    x= [tunnel[i-1],tunnel[i],tunnel[0], False] #باید چک کنم ببینم در حالت لیست هم درست مرتب سازی میکنه یا گند کاری میشه
+                    x= [tunnel[i-1],tunnel[i],tunnel[0], False] 
                     open_tunnel.append(x)
                     break
     print ('open tunnel IS NOT sorted:' , open_tunnel)
@@ -431,24 +447,37 @@ def turn(game: Game):
                     owner = game.get_owners()
 
 # Finish Task ;)
-    owner = game.get_owners()
     print(game.next_state())
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
+    owner = game.get_owners()
+    number_of_troops = game.get_number_of_troops()
+    max_troops = 1
+    sourcenode = 0 
+    destinationnode = 0
+    for tunel in ListOfTunnels:
+        if is_tunnel_activated (tunel , owner , my_id):
+            for eachnode in tunel[1:-1]:
+                if number_of_troops[str(eachnode)] > max_troops:
+                    max_troops = number_of_troops[str(eachnode)]
+                    sourcenode = eachnode
+                    destinationnode = tunel[0]
+        else:
+            end = 0
+            if owner[str(tunel[0])] == my_id:
+                end = findend(tunel , owner , my_id)
+                max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
+                if owner[str(tunel[-1])] == my_id: #when both end and start of the tunnel is for us!
+                    tunel = list(reversed(tunel))
+                    end = findend(tunel , owner , my_id)
+                    max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
+            elif owner[str(tunel[0])] != my_id and owner[str(tunel[-1])] == my_id: #we have just end of the tunnel
+                tunel = list(reversed(tunel))
+                end = findend(tunel , owner , my_id)
+                max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
 
-    # get the node with the most troops that I own (default code)
-   #max_troops = 0
-   #max_node = -1
-   #owner = game.get_owners()
+    if sourcenode != 0 and destinationnode != 0:
+        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
 
-   #for i in owner: #i used this instad of     for i in owner.keys()
-   #    if owner[str(i)] == my_id:
-   #        if game.get_number_of_troops()[i] > max_troops:
-   #            max_troops = game.get_number_of_troops()[i]
-   #            max_node = i
-
-   #print(game.get_reachable(max_node))
-   #destination = random.choice(game.get_reachable(max_node)['reachable'])
-   #if int(max_node)!=int(destination) and max_node!=-1:   print(game.move_troop(max_node, destination, 1))
     print(game.next_state())
 
 
