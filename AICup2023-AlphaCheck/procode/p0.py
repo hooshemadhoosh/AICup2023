@@ -1,4 +1,4 @@
-VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus":1.5 , "TroopsTunnel" : 3 , "number_of_attack_attemps" : 4 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
+VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
 good_list = [4, 5]
@@ -226,19 +226,12 @@ def turn(game):
 
     mini = 1000
     mini_id = -1
-    owner = game.get_owners()
-    number_of_troops= game.get_number_of_troops()
-    number_of_fort_troops = game.get_number_of_fort_troops()
-    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     for i in strategic_nodes:
-        owner = game.get_owners()
         number_of_troops= game.get_number_of_troops()
-        number_of_fort_troops = game.get_number_of_fort_troops()
         my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
-        if(owner[str(i)] == my_id):
-            if(number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
-                mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
-                mini_id = i
+        if owner[str(i)] == my_id and (number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
+            mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
+            mini_id = i
     if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
         my_remaining_troops -= reinforcment_soldiers
         print (game.put_troop(mini_id, reinforcment_soldiers ), 'TASK 0 IN DEPLOYMENT OF TROOPS IS DONE\n')
@@ -450,8 +443,8 @@ def turn(game):
     owner = game.get_owners()
     number_of_troops = game.get_number_of_troops()
     max_troops = 1
-    sourcenode = 0 
-    destinationnode = 0
+    sourcenode = -1
+    destinationnode = -1
     for tunel in ListOfTunnels:
         if is_tunnel_activated (tunel , owner , my_id):
             for eachnode in tunel[1:-1]:
@@ -473,7 +466,7 @@ def turn(game):
                 end = findend(tunel , owner , my_id)
                 max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
 
-    if sourcenode != 0 and destinationnode != 0:
+    if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(sourcenode)['reachable']:
         print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
 
     print(game.next_state())
