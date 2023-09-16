@@ -126,7 +126,7 @@ def initializer(game):
     #Reinforcement Of our Strategic Nodes
     for i in strategic_nodes:
         if owner[str(i)]==my_id and troops_of[str(i)]<VARS['strategic_troops_number']:
-            print(game.put_one_troop(i), "-- putting one troop on neighbor of strategic node", j)
+            print(game.put_one_troop(i), "-- putting one troop on strategic node",i)
             return
     
     # give 3 troops to all Tunnelnode  :)
@@ -366,7 +366,7 @@ def turn(game):
         if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
             for on in sort_chance_of_attacks: 
                 if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
-                    print (game.attack(on[0][0] , on[0][1] , beta , moving_fraction), 'I attacked from' , str(n[0][0]) , 'to the' , str(n[0][1]))           
+                    print (game.attack(on[0][0] , on[0][1] , beta , moving_fraction), 'I attacked from' , str(on[0][0]) , 'to the' , str(on[0][1]))           
 #FINISH TASK 1 AND 2
 
     #   owner = game.get_owners()
@@ -428,7 +428,7 @@ def turn(game):
         number_of_fort_troops = game.get_number_of_fort_troops()
         if(owner[str(i)] == my_id and (str(i) in strategic_nodes)and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
-                if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops(str[j])+number_of_fort_troops(str[j]) <=2)):
+                if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops[str(j)]+number_of_fort_troops[str(j)] <=2)):
                     game.attack(i, j, 5.5 , 1-moving_fraction)
                     owner = game.get_owners()
         elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1):
