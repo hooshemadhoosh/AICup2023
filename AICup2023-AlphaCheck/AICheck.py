@@ -1,37 +1,47 @@
-import datetime
-from subprocess import run
-import procode.p0 as p0
-import procode.p1 as p1
-import os
-import json
-import matplotlib.pyplot as plt
-from subprocess import run
-ai_address  = "procode//ai.py"
-check_address  = "procode//check.py"
-def UPDATE_VARS(dict,test=True):
-    if test:
-        with open(check_address,'r') as f:
-            lines = f.readlines()
-        with open(check_address,'w') as f:
-            lines[0]= f"VARS={str(dict)}\n"
-            f.write(''.join(lines))
-    else:
-        with open(ai_address,'r') as f:
-            lines = f.readlines()
-        with open(ai_address,'w') as f:
-            lines[0]= f"VARS={str(dict)}\n"
-            f.write(''.join(lines))
+import pandas as pd
+file = pd.read_csv('procode//vars.csv')
+p0_address  = "procode//p0.py"
+p1_address  = "procode//p1.py"
+p2_address  = "procode//p2.py"
+p0_vars = {file['NAME'][i]:file['p0'][i] for i in range(len(file['NAME']))}
+p1_vars = {file['NAME'][i]:file['p1'][i] for i in range(len(file['NAME']))}
+p2_vars = {file['NAME'][i]:file['p2'][i] for i in range(len(file['NAME']))}
+def UPDATE_VARS(dict,addr):
+    with open(addr,'r') as f:
+        lines = f.readlines()
+    with open(addr,'w') as f:
+        lines[0]= f"VARS={str(dict)}\n"
+        f.write(''.join(lines))
+
 def dicp(dictionary):
     result = ''
     for key in dictionary:
-        result+=str(key)+':'+str(dictionary[key])+'\n'
+        result+=str(dictionary[key])+'\n'
     return result
 def percent(score,wins):
     total = wins[0]+wins[1]+wins[2]
     return f"{round(score,2)}"
+def keys(dic):
+    res=''
+    for key in dic:
+        res+=key+':\n'
+    return  res
 
+UPDATE_VARS(p0_vars,p0_address)
+UPDATE_VARS(p1_vars,p1_address)
+UPDATE_VARS(p2_vars,p2_address)
+import datetime
+from subprocess import run
+import procode.p0 as p0
+import procode.p1 as p1
+import procode.p2 as p2
+import os
+import json
+import matplotlib.pyplot as plt
+from subprocess import run
 
 run(['py','main.py'],shell=True)
+
 
 wins = [0,0,0]
 players = ['P0','P1','P2']
@@ -47,15 +57,27 @@ fig, axe = plt.subplots(figsize=(10, 10), dpi=300)
 axe.pie(wins,textprops=dict(color="black",backgroundcolor="yellow",weight='bold' ),labels=lbl,shadow=True)
 axe.legend(players,title="Info")
 font = {'family': 'consolas',
-        'color':  'blue',
+        'color':  'black',
         'weight': 'normal',
+        'size': 12,
+        }
+font0 = {'family': 'consolas',
+        'color':  'blue',
+        'weight': 'bold',
+        'size': 12,
+        }
+font1 = {'family': 'consolas',
+        'color':  'orange',
+        'weight': 'bold',
         'size': 12,
         }
 font2 = {'family': 'consolas',
-        'color':  'orange',
-        'weight': 'normal',
+        'color':  'green',
+        'weight': 'bold',
         'size': 12,
         }
-axe.text(-1.6,-1.6, f"P0 VARS:\n{dicp(p0.VARS)}",fontdict=font)
-axe.text(0.5,-1.6, f"P1 VARS:\n{dicp(p1.VARS)}",fontdict=font2)
+axe.text(-1.6,-1.6, f"\n{keys(file['NAME'])}",fontdict=font)
+axe.text(-0.5,-1.6, f"P0\n{dicp(p0.VARS)}",fontdict=font0)
+axe.text(-0.3,-1.6, f"P1\n{dicp(p1.VARS)}",fontdict=font1)
+axe.text(-0.1,-1.6, f"P2\n{dicp(p2.VARS)}",fontdict=font2)
 plt.savefig("analysis//" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%f") + ".png")
