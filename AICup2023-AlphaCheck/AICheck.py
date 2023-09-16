@@ -7,9 +7,9 @@ p0_vars = {file['NAME'][i]:file['p0'][i] for i in range(len(file['NAME']))}
 p1_vars = {file['NAME'][i]:file['p1'][i] for i in range(len(file['NAME']))}
 p2_vars = {file['NAME'][i]:file['p2'][i] for i in range(len(file['NAME']))}
 def UPDATE_VARS(dict,addr):
-    with open(addr,'r') as f:
+    with open(addr,'r',encoding="utf8") as f:
         lines = f.readlines()
-    with open(addr,'w') as f:
+    with open(addr,'w',encoding="utf8") as f:
         lines[0]= f"VARS={str(dict)}\n"
         f.write(''.join(lines))
 
