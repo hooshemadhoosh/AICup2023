@@ -74,6 +74,31 @@ def findmove (tunel , end , number_of_troops , max_troops , sourcenode , detinat
             detinationnode = tunel[0]
     return max_troops , sourcenode , detinationnode
 
+def find_way_with_min_number_of_enemy(node, mark, dp, weigh_of_each_node, father, owner, adj):
+    dont_filled_node = [node]
+    dp[str(node)] = 0
+    mark[str(node)] = 1
+    for j in range(0, 100):
+        mini = 10000
+        mini_id = -1
+        mini_father = -1
+        for i in dont_filled_node:
+            for k in adj[str(i)]:
+                if(mark[str(k)] == 0):
+                    dp[str(k)] = min(weigh_of_each_node[str(k)] + dp[str(i)], dp[str(k)])
+                    if(dp[str(k)] < mini):
+                        mini = dp[str(k)]
+                        mini_id = k
+                        mini_father = i
+        if(mini_id == -1):
+            break
+        else:
+            father[str(mini_id)] = mini_father
+            mark[str(mini_id)] = 1
+            dont_filled_node.append(mini_id)
+            
+            
+
 def initializer(game: Game):
     global ListOfTunnels   
     strategic_nodes = game.get_strategic_nodes()['strategic_nodes']
@@ -347,11 +372,39 @@ def turn(game: Game):
 
     print(game.next_state()) #going to the next state
 #The second state! attacking!---------------------------------------------------------------------------
+# Start Task -1 :
+    owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+
+    node = "-1"
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id and number_of_troops[str(i)] > 50):
+            node = str(i)
+            break
+    if(node != "-1"):
+        mark = {}
+        dp = {}
+        weigh_of_each_node = {}
+        father = {}
+        for i in owner.keys():
+            if(owner[str(i)] != my_id and owner[str(i)] != -1):
+                weigh_of_each_node[str(i)] = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
+            dp[str(i)] = 10000
+            mark[str(i)] = 0
+            if(owner[str(i)] == my_id):
+                weigh_of_each_node[str(i)] = 0 
+            if(owner[str(i)] == -1):
+                mark[str(i)] = 1
+        
+        way = []
+        
+        father[str(node) == -1]
+        find_way_with_min_number_of_enemy(node, mark, dp, weigh_of_each_node, father)
     
 #START TASK0
     owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
-    number_of_fort_troops = game.get_number_of_fort_troops()
+    
     if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
 
