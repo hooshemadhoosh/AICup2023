@@ -4,7 +4,8 @@ VARS = {"strategic_troops_number":8 , "mytroops/enemytroops (beta)" : 1.05 , "be
 flag = False
 ListOfTunnels = []
 good_list = [4, 5]
-
+father = {}
+dp = {}
 def Tunnel(start, dict_adj):
     dp = [10000] * (len(dict_adj) + 1)
     mark = [0] * (len(dict_adj) + 1)
@@ -74,7 +75,7 @@ def findmove (tunel , end , number_of_troops , max_troops , sourcenode , detinat
             detinationnode = tunel[0]
     return max_troops , sourcenode , detinationnode
 
-def find_way_with_min_number_of_enemy(node, mark, dp, weigh_of_each_node, father, owner, adj):
+def find_way_with_min_number_of_enemy(node, mark, weigh_of_each_node, adj):
     dont_filled_node = [node]
     dp[str(node)] = 0
     mark[str(node)] = 1
@@ -396,11 +397,34 @@ def turn(game: Game):
             if(owner[str(i)] == -1):
                 mark[str(i)] = 1
         
-        way = []
         
-        father[str(node) == -1]
-        find_way_with_min_number_of_enemy(node, mark, dp, weigh_of_each_node, father)
-    
+        
+        father[str(node)] == -1
+        find_way_with_min_number_of_enemy(node, mark, weigh_of_each_node, adjacents)
+        mini = 100000
+        mini_id = -1
+        for i in strategic_nodes:
+            if(dp[str(i)] != 10000 and dp[str(i)] < mini):
+                mini = dp[str(i)]
+                mini_id = i
+        if(mini_id == -1):
+            pass # آقا اینجا مسیر درست و حسابی برامون کلن نیست 
+        else:
+            x = 0
+            way = []
+            while(x < 100 and mini_id != -1):
+                x += 1  
+                way.append(mini_id)
+                mini_id = father[str(mini_id)]
+            
+            
+            # اینجا مسیر پیدا شده حالا سوال پیش میاد از مسیر چطور استفاده کنیم ؟
+               
+
+
+
+        
+                
 #START TASK0
     owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
