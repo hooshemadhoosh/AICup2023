@@ -574,8 +574,7 @@ def turn(game: Game):
                 end = findend(tunel , owner , my_id)
                 max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
 
-    if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(destinationnode)['reachable']:
-        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
+    if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(sourcenode)['reachable']:        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
 
     print(game.next_state())
 
