@@ -383,7 +383,7 @@ def turn(game: Game):
 
     node = "-1"
     for i in strategic_nodes:
-        if(owner[str(i)] == my_id and number_of_troops[str(i)] > 50):
+        if(owner[str(i)] == my_id and number_of_troops[str(i)] > 54):
             node = str(i)
             break
     if(node != "-1"):
@@ -431,7 +431,7 @@ def turn(game: Game):
             if(len(way) > 2):
                 game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
                 for i in range(1, len(way) - 1):
-                    game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], 0.9)
+                    game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
                 
 
         else:
@@ -445,7 +445,7 @@ def turn(game: Game):
             if(len(way) > 2):
                 game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
                 for i in range(1, len(way) - 1):
-                    game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], 0.9)
+                    game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
                 
             
                
