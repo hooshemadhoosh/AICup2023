@@ -6,7 +6,7 @@ ListOfTunnels = []
 good_list = [4, 5]
 father = {}
 dp = {}
-
+mark = {}
 def Tunnel(start, dict_adj):
     dp = [10000] * (len(dict_adj) + 1)
     mark = [0] * (len(dict_adj) + 1)
@@ -76,7 +76,7 @@ def findmove (tunel , end , number_of_troops , max_troops , sourcenode , detinat
             detinationnode = tunel[0]
     return max_troops , sourcenode , detinationnode
 
-def find_way_with_min_number_of_enemy(node, mark, weigh_of_each_node, adj):
+def find_way_with_min_number_of_enemy(node, weigh_of_each_node, adj):
     dont_filled_node = [node]
     dp[str(node)] = [0, 0]
     mark[str(node)] = 1
@@ -388,10 +388,10 @@ def turn(game: Game):
             break
     if(node != "-1"):
 
-        mark = {}
-        dp = {}
+        
+        
         weigh_of_each_node = {}
-        father = {}
+        
         
         for i in owner.keys():
             if(owner[str(i)] != my_id and owner[str(i)] != -1):
@@ -406,7 +406,7 @@ def turn(game: Game):
         
         
         father[str(node)] = -1
-        find_way_with_min_number_of_enemy(node, mark, weigh_of_each_node, adjacents)
+        find_way_with_min_number_of_enemy(node, weigh_of_each_node, adjacents)
         mini = 100000
         mini_id = -1
         for i in strategic_nodes:
