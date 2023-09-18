@@ -388,9 +388,9 @@ def turn(game: Game):
 
             node = str(i)
             weigh_of_each_node = {}
-            dp = {}
-            mark = {}
-            father = {}
+            dp.clear()
+            mark.clear()
+            father.clear()
             for i in owner.keys():
                 if(owner[str(i)] != my_id and owner[str(i)] != -1):
                     weigh_of_each_node[str(i)] = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
