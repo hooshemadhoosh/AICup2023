@@ -405,7 +405,7 @@ def turn(game: Game):
         
         
         
-        father[str(node)] == -1
+        father[str(node)] = -1
         find_way_with_min_number_of_enemy(node, mark, weigh_of_each_node, adjacents)
         mini = 100000
         mini_id = -1
@@ -428,7 +428,7 @@ def turn(game: Game):
                 way.append(max_id)
                 max_id = father[str(max_id)]   
             way.reverse()     
-            if(len(way) > 2):
+            if(len(way) >= 2):
                 game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
                 for i in range(1, len(way) - 1):
                     game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
@@ -442,7 +442,7 @@ def turn(game: Game):
                 way.append(mini_id)
                 mini_id = father[str(mini_id)]
             way.reverse()
-            if(len(way) > 2):
+            if(len(way) >= 2):
                 game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
                 for i in range(1, len(way) - 1):
                     game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
