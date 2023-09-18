@@ -380,74 +380,75 @@ def turn(game: Game):
 # Start Task -1 :
     owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
-
+    number_of_fort_troops = game.get_number_of_fort_troops()
     node = "-1"
+    
     for i in strategic_nodes:
         if(owner[str(i)] == my_id and number_of_troops[str(i)] > 54):
+
             node = str(i)
-            break
-    if(node != "-1"):
-
-        
-        
-        weigh_of_each_node = {}
-        
-        
-        for i in owner.keys():
-            if(owner[str(i)] != my_id and owner[str(i)] != -1):
-                weigh_of_each_node[str(i)] = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
-            dp[str(i)] = [10000, 0]
-            mark[str(i)] = 0
-            if(owner[str(i)] == my_id):
-                weigh_of_each_node[str(i)] = 0 
-            if(owner[str(i)] == -1 or owner[str(i)] == my_id):
-                mark[str(i)] = 1
-        
-        
-        
-        father[str(node)] = -1
-        find_way_with_min_number_of_enemy(node, weigh_of_each_node, adjacents)
-        mini = 100000
-        mini_id = -1
-        for i in strategic_nodes:
-            if(owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
-                mini = dp[str(i)][0]
-                mini_id = i
-        if(mini_id == -1):
-            maxi = 0
-            max_id = -1
+            weigh_of_each_node = {}
+            dp = {}
+            mark = {}
+            father = {}
             for i in owner.keys():
-                if(dp[str(i)][0] + dp[str(i)][1] <= 20 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
-                    maxi = dp[str(i)][0] + dp[str(i)][1]
-                    max_id = i
-
-            way = []
-            x = 0
-            while(x < 100 and max_id != -1):
-                x +=1
-                way.append(max_id)
-                max_id = father[str(max_id)]   
-            way.reverse()     
-            if(len(way) >= 2):
-                game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
-                for i in range(1, len(way) - 1):
-                    game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
-                
-
-        else:
-            x = 0
-            way = []
-            while(x < 100 and mini_id != -1):
-                x += 1  
-                way.append(mini_id)
-                mini_id = father[str(mini_id)]
-            way.reverse()
-            if(len(way) >= 2):
-                game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
-                for i in range(1, len(way) - 1):
-                    game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
-                
+                if(owner[str(i)] != my_id and owner[str(i)] != -1):
+                    weigh_of_each_node[str(i)] = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
+                dp[str(i)] = [10000, 0]
+                mark[str(i)] = 0
+                if(owner[str(i)] == my_id):
+                    weigh_of_each_node[str(i)] = 0 
+                if(owner[str(i)] == -1 or owner[str(i)] == my_id):
+                    mark[str(i)] = 1
             
+            
+            
+            father[str(node)] = -1
+            find_way_with_min_number_of_enemy(node, weigh_of_each_node, adjacents)
+            mini = 100000
+            mini_id = -1
+            for i in strategic_nodes:
+                if(owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
+                    mini = dp[str(i)][0]
+                    mini_id = i
+            if(mini_id == -1):
+                maxi = 0
+                max_id = -1
+                for i in owner.keys():
+                    if(dp[str(i)][0] + dp[str(i)][1] <= 20 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
+                        maxi = dp[str(i)][0] + dp[str(i)][1]
+                        max_id = i
+
+                way = []
+                x = 0
+                while(x < 100 and max_id != -1):
+                    x +=1
+                    way.append(max_id)
+                    max_id = father[str(max_id)]   
+                way.reverse()     
+                if(len(way) >= 2):
+                    game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
+                    for i in range(1, len(way) - 1):
+                        game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
+                    
+
+            else:
+                x = 0
+                way = []
+                while(x < 100 and mini_id != -1):
+                    x += 1  
+                    way.append(mini_id)
+                    mini_id = father[str(mini_id)]
+                way.reverse()
+                if(len(way) >= 2):
+                    game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
+                    for i in range(1, len(way) - 1):
+                        game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
+
+            owner = game.get_owners()
+            number_of_troops= game.get_number_of_troops()
+            number_of_fort_troops = game.get_number_of_fort_troops()            
+                
                
 
 
