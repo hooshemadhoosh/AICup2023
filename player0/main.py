@@ -1,6 +1,6 @@
 import random
 from src.game import Game
-VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 3 , "troops_to_put_on_strategics" : 3 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
+VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 4 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
 good_list = [4, 5]
@@ -343,30 +343,28 @@ def turn(game: Game):
                 number_of_troops[str(item[0])] += int(troops_to_put)
                 game.put_troop(item[0] , int(troops_to_put))
             item[3] = True
-            print ('TASK 3 IN DEPLOYMENT OF TROOPS IS DONE:', item)
+            print ('\nTASK 3 IN DEPLOYMENT OF TROOPS IS DONE:', item , '\n')
 #FINISH TASK 3
 
 #START TASK 4
 
     owner = game.get_owners()
-    number_of_troops= game.get_number_of_troops()
-    number_of_fort_troops = game.get_number_of_fort_troops()
-
     attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
     for enemy_stra in enemy_best_strategic:
         sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
-        sorted_layer1.sort(key= lambda x: game.get_number_of_troops()[str(x)]+game.get_number_of_fort_troops()[str(x)])
+        sorted_layer1.sort(key= lambda x: number_of_troops[str(x)]+ number_of_fort_troops[str(x)])
         for layer1_node in sorted_layer1:
             sorted_layer2 = [node for node in adjacents[str(layer1_node)] if owner[str(node)]==my_id]
             if len(sorted_layer2)==0:   continue
-            sorted_layer2.sort(key= lambda x: game.get_number_of_troops()[str(x)],reverse=True)
+            sorted_layer2.sort(key= lambda x: number_of_troops[str(x)],reverse=True)
             for layer2_node in sorted_layer2:
-                needed_troops = (game.get_number_of_troops()[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
-                if game.get_number_of_troops()[str(layer2_node)]+my_remaining_troops>=needed_troops:
-                    troops_to_put = int(needed_troops-game.get_number_of_troops()[str(layer2_node)])
+                needed_troops = (number_of_troops[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
+                if number_of_troops[str(layer2_node)]+my_remaining_troops>=needed_troops:
+                    troops_to_put = int(needed_troops-number_of_troops[str(layer2_node)])
                     if troops_to_put > 0:   
                         my_remaining_troops-=troops_to_put
-                        game.put_troop(layer2_node , int(troops_to_put))
+                        number_of_troops[str(layer2_node)] += int(troops_to_put)
+                        print (game.put_troop(layer2_node , int(troops_to_put)), '\n TASK 4 IN DEPLOYMENT OF TROOPS IS DONE!\n')
                         attack_on_layer1.append([layer2_node,layer1_node])
                         break
 #FINISH TASK 4
