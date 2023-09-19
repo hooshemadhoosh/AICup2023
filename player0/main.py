@@ -294,6 +294,7 @@ def turn(game: Game):
                 if num_of_needed_troops > 0:
                     game.put_troop(n[0][0] , num_of_needed_troops)
                     my_remaining_troops -= num_of_needed_troops 
+                    number_of_troops[str(n[0][0])] += num_of_needed_troops
                 n[1]['attackon'] = True 
                 print ('TASK 1 IN DEPLOYMENT OF TROOPS IS DONE: Attack is on now for planet %d' %n[0][0] , 'to attack to:' , n[0][1] , '\n')
 #FINISH TASK1
@@ -312,11 +313,10 @@ def turn(game: Game):
     
     defend_planets = dict(sorted(defend_planets.items() , key  = lambda u : u[1] , reverse = True))
     for defend in defend_planets:
-        #print ('number of my troops is:' , my_remaining_troops)
-        #print ('server says the number of my troops are: ' , game.get_number_of_troops_to_put()['number_of_troops'])
         if my_remaining_troops >= defender_troops:
             my_remaining_troops -= defender_troops
             game.put_troop(int(defend) , defender_troops)
+            print ('TASK 2 IN DEPLOYMENT OF TROOPS IS DONE')
 #FINISH TASK2
 
 #START TASK 3
@@ -333,9 +333,9 @@ def turn(game: Game):
                     x= [tunnel[i-1],tunnel[i],tunnel[0], False] 
                     open_tunnel.append(x)
                     break
-    #print ('open tunnel IS NOT sorted:' , open_tunnel)
+    print ('open tunnel IS NOT sorted:' , open_tunnel)
     open_tunnel.sort(key=lambda x: game.get_number_of_troops()[str(x[2])]+game.get_number_of_fort_troops()[str(x[2])]) #باید چک کنم ببینم در حالت لیست هم درست مرتب سازی میکنه یا گند کاری میشه
-    #print ('open tunnel IS sorted',open_tunnel)
+    print ('open tunnel IS sorted',open_tunnel)
     for item in open_tunnel:
         needed_troops = (game.get_number_of_troops()[str(item[1])] + game.get_number_of_fort_troops()[str(item[1])])*beta+attack_attemps-1
         my_remaining_troops = game.get_number_of_troops_to_put() ['number_of_troops']
@@ -345,7 +345,7 @@ def turn(game: Game):
                 my_remaining_troops-=troops_to_put
                 game.put_troop(item[0] , int(troops_to_put))
             item[3] = True
-            #print ('TASK 3 IN DEPLOYMENT OF TROOPS IS DONE:', item)
+            print ('TASK 3 IN DEPLOYMENT OF TROOPS IS DONE:', item)
 #FINISH TASK 3
 
 #START TASK 4
