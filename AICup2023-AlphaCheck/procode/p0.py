@@ -1,4 +1,4 @@
-VARS={'strategic_troops_number': 6, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.5, 'TroopsTunnel': 1, 'number_of_attack_attemps': 3, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 2}
+VARS={'strategic_troops_number': 13.0, 'mytroops/enemytroops (beta)': 1.3, 'beta_plus': 1.6, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 6.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 2.0}
 flag = False
 ListOfTunnels = []
 good_list = [4, 5]
@@ -244,8 +244,8 @@ def turn(game):
         if(max_id == -1):
             pass
         else:
-            my_remaining_troops = 0
             game.put_troop(max_id, my_remaining_troops) 
+            my_remaining_troops = 0
             
 #FINISH TASK -1        
             
@@ -605,6 +605,6 @@ def turn(game):
                 flag = True
                 break        
     # finish Task0 :)
-    game.next_state() #Finishing Turn
+    #Finishing Turn
 
     return

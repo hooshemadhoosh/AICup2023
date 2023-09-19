@@ -246,8 +246,8 @@ def turn(game: Game):
         if(max_id == -1):
             pass
         else:
-            my_remaining_troops = 0
             game.put_troop(max_id, my_remaining_troops) 
+            my_remaining_troops = 0
             
 #FINISH TASK -1        
             
