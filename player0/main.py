@@ -246,8 +246,7 @@ def turn(game: Game):
         if(max_id == -1):
             pass
         else:
-            #my_remaining_troops
-            # my_remaining_troops = 0
+            my_remaining_troops = 0
             game.put_troop(max_id, my_remaining_troops) 
             
 #FINISH TASK -1        
@@ -256,14 +255,10 @@ def turn(game: Game):
 #START TASK 0 :
 # تقویت ضعیف ترین خونه ی استراتژیک در هر راند !!
     number_of_troops= game.get_number_of_troops()
-    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     mini = 1000
     mini_id = -1
-    number_of_troops= game.get_number_of_troops()
 
     for i in strategic_nodes:
-        number_of_troops= game.get_number_of_troops()
-        my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
         if owner[str(i)] == my_id and (number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
@@ -274,7 +269,6 @@ def turn(game: Game):
 #FINISH TASK 0
 
 
-    number_of_troops= game.get_number_of_troops()
 #START TASK 1
     for enemy in strategic_nodes:  
         if owner[str(enemy)] != my_id:
@@ -301,7 +295,7 @@ def turn(game: Game):
                     game.put_troop(n[0][0] , num_of_needed_troops)
                     my_remaining_troops -= num_of_needed_troops 
                 n[1]['attackon'] = True 
-                #print ('TASK 1 IN DEPLOYMENT OF TROOPS IS DONE: Attack is on now for planet %d' %n[0][0] , 'to attack to:' , n[0][1] , '\n')
+                print ('TASK 1 IN DEPLOYMENT OF TROOPS IS DONE: Attack is on now for planet %d' %n[0][0] , 'to attack to:' , n[0][1] , '\n')
 #FINISH TASK1
 
 
