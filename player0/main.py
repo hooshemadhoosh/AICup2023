@@ -429,6 +429,7 @@ def turn(game: Game):
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
                     for i in range(1, len(way) - 1):
+                        if number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])]>=number_of_troops[str(way[i])]*beta:    break
                         game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
                     
 
@@ -443,6 +444,7 @@ def turn(game: Game):
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
                     for i in range(1, len(way) - 1):
+                        if number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])]>=number_of_troops[str(way[i])]*beta:    break
                         game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
 
             owner = game.get_owners()

@@ -38,10 +38,15 @@ import procode.p2 as p2
 import os
 import json
 import matplotlib.pyplot as plt
-from subprocess import run
-
-run(['py','main.py'],shell=True)
-
+from subprocess import Popen,run
+import subprocess
+import time
+start_time = time.time()
+# run(['py','main.py'],shell=False,capture_output=False)
+p=Popen(["py", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+output, errors = p.communicate()
+print(errors)
+print("--- %s seconds ---" % (time.time() - start_time))
 
 wins = [0,0,0]
 players = ['P0','P1','P2']
