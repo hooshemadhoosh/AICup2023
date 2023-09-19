@@ -46,6 +46,7 @@ start_time = time.time()
 p=Popen(["py", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 output, errors = p.communicate()
 print(errors)
+print (output)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 wins = [0,0,0]

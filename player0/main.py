@@ -236,11 +236,11 @@ def turn(game: Game):
                         dict_best_node_for_attak[str(j)] = [number_of_troops[str(j)], number_of_troops[str(i)] + number_of_fort_troops[str(i)]]
                         
         for i in dict_best_node_for_attak:
-            best_node_to_attack = dict_best_node_for_attak[str(i)][0] / dict_best_node_for_attak[str(i)][1]
+            best_node_to_attack = dict_best_node_for_attak[i][0] / dict_best_node_for_attak[i][1]
 
             if(best_node_to_attack > maxi):
                 maxi = best_node_to_attack
-                max_id = i
+                max_id = int(i)
             
         
         if(max_id == -1):
@@ -255,12 +255,11 @@ def turn(game: Game):
             
 #START TASK 0 :
 # تقویت ضعیف ترین خونه ی استراتژیک در هر راند !!
-
+    number_of_troops= game.get_number_of_troops()
+    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     mini = 1000
     mini_id = -1
     for i in strategic_nodes:
-        number_of_troops= game.get_number_of_troops()
-        my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
         if owner[str(i)] == my_id and (number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
@@ -270,11 +269,11 @@ def turn(game: Game):
 #FINISH TASK 0
 
 
-
+    number_of_troops= game.get_number_of_troops()
 #START TASK 1
     for enemy in strategic_nodes:  
         if owner[str(enemy)] != my_id:
-            enemy_troops_on_node = int(number_of_troops[str(enemy)]) + int(number_of_fort_troops[str(enemy)]) #getting the number of enemy troops on the strategic node
+            enemy_troops_on_node = number_of_troops[str(enemy)] + number_of_fort_troops[str(enemy)] #getting the number of enemy troops on the strategic node
             for my in adjacents[str(enemy)]:    
                 if owner[str(my)] == my_id:
                     my_troops_layer1node = number_of_troops[str(my)]  

@@ -234,11 +234,11 @@ def turn(game):
                         dict_best_node_for_attak[str(j)] = [number_of_troops[str(j)], number_of_troops[str(i)] + number_of_fort_troops[str(i)]]
                         
         for i in dict_best_node_for_attak:
-            best_node_to_attack = dict_best_node_for_attak[str(i)][0] / dict_best_node_for_attak[str(i)][1]
+            best_node_to_attack = dict_best_node_for_attak[i][0] / dict_best_node_for_attak[i][1]
 
             if(best_node_to_attack > maxi):
                 maxi = best_node_to_attack
-                max_id = i
+                max_id = int(i)
             
         
         if(max_id == -1):
