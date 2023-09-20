@@ -4,6 +4,7 @@ from subprocess import Popen
 import subprocess
 from tqdm import tqdm, trange
 import time
+BOX_NUMBER = 2
 p0_address  = "procode//p0.py"
 p1_address  = "procode//p1.py"
 p2_address  = "procode//p2.py"
@@ -34,7 +35,10 @@ def UPDATE_VARS(dict,addr):
     with open(addr,'w',encoding="utf8") as f:
         lines[0]= f"VARS={str(dict)}\n"
         f.write(''.join(lines))
-def game(p0dict,p1dict,p2dict):
+def game(dict_list:list):
+    p0dict = dict_list[0]
+    p1dict = dict_list[1]
+    p2dict = dict_list[2]
     UPDATE_VARS(p0dict,p0_address)
     UPDATE_VARS(p1dict,p1_address)
     UPDATE_VARS(p2dict,p2_address)
@@ -60,6 +64,35 @@ def best_in_box(box:list):
     best_p2 = box[1][2]
     return [best_p0,best_p1,best_p2]
 
-# recursive(0)
-# for i in trange(10):
-#     print(game(vars_ls[0],vars_ls[0],vars_ls[0]))
+recursive(0)
+pvars = [vars_ls,vars_ls,vars_ls]
+n = 1
+while  len(pvars[0])>1:
+    new_pvars = [[],[],[]]
+    with open('Result.txt','a',encoding='UTF-8') as f:
+        f.write(f"\n\n\n\n\n\n\n\n\n\n\n\nLayer{n}_Player_VARS:{pvars}")
+    #Fixing the number of players in layer
+    for i in range(len(pvars)):
+        while len(pvars[i])%BOX_NUMBER!=0:
+            new_pvars[i].append(pvars[i].pop())
+
+
+    #Creating a box and doing tournement on the layer
+    box = []
+    counter = 0
+    for _ in trange(len(pvars[0])):
+        dictls = []
+        for var in pvars:   dictls.append(var.pop())
+        box.append(game(dictls))
+        counter+=1
+        if counter==BOX_NUMBER:
+            best = best_in_box(box)
+            for i in range(len(best)):
+                new_pvars[i].append(best[i])
+
+            box=[]
+            counter=0
+
+
+    #Updating pvars
+    pvars = new_pvars
