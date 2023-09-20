@@ -10,7 +10,7 @@ p1_address  = "procode//p1.py"
 p2_address  = "procode//p2.py"
 VARS={'strategic_troops_number':[6,9,12],
       'mytroops/enemytroops (beta)': [1.01,1.05,1.2], 
-      'beta_plus':[1.5],
+      'beta_plus':[1.2, 1.5, 1.8],
       'TroopsTunnel':[1,2],
       'number_of_attack_attemps': [3,6],
       'troops_to_put_on_strategics': [1.0] ,
@@ -70,7 +70,7 @@ n = 1
 while  len(pvars[0])>1:
     new_pvars = [[],[],[]]
     with open('Result.txt','a',encoding='UTF-8') as f:
-        f.write(f"\n\n\n\n\n\n\n\n\n\n\n\nLayer{n}_Player_VARS:{pvars}")
+        f.write(f"\n\n\n\n\n\n*\n\n\n\n\n\nLayer{n}_Player_VARS={pvars}")
         
     #Fixing the number of players in layer
     for i in range(len(pvars)):
