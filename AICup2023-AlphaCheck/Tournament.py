@@ -71,6 +71,7 @@ while  len(pvars[0])>1:
     new_pvars = [[],[],[]]
     with open('Result.txt','a',encoding='UTF-8') as f:
         f.write(f"\n\n\n\n\n\n\n\n\n\n\n\nLayer{n}_Player_VARS:{pvars}")
+        
     #Fixing the number of players in layer
     for i in range(len(pvars)):
         while len(pvars[i])%BOX_NUMBER!=0:
@@ -96,3 +97,7 @@ while  len(pvars[0])>1:
 
     #Updating pvars
     pvars = new_pvars
+    n+=1
+
+with open('Result.txt','a',encoding='UTF-8') as f:
+    f.write(f"\n\n\n\n\n\n\n\n\n\n\n\nLayer{n}_Player_VARS:{pvars}")

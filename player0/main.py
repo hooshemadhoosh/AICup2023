@@ -274,9 +274,9 @@ def turn(game: Game):
                 game.put_troop(j, reinforcment_soldiers)
                 break
         for j in adjacents[str(mini)]:
-            if(owner[str(j)] == my_id and my_remaining_troops >= 1):
-                my_remaining_troops -= 1
-                game.put_troop(j, 1)
+            if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
+                my_remaining_troops -= reinforcment_soldiers
+                game.put_troop(j, reinforcment_soldiers)
                 break
     else:
         if(count_startegic_node == 3):
