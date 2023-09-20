@@ -263,21 +263,14 @@ def turn(game: Game):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
     if(mini >= 50 and count_startegic_node != 3):
+        count = 0 
         for j in adjacents[str(mini)]:
             if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
                 my_remaining_troops -= reinforcment_soldiers
                 game.put_troop(j, reinforcment_soldiers)
-                break
-        for j in adjacents[str(mini)]:
-            if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
-                my_remaining_troops -= reinforcment_soldiers
-                game.put_troop(j, reinforcment_soldiers)
-                break
-        for j in adjacents[str(mini)]:
-            if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
-                my_remaining_troops -= reinforcment_soldiers
-                game.put_troop(j, reinforcment_soldiers)
-                break
+                count += 1
+            if(count == 3):
+                break  
     else:
         if(count_startegic_node == 3):
             reinforcment_soldiers += 3
