@@ -264,10 +264,11 @@ def turn(game: Game):
             mini_id = i
     if(mini >= 50 and count_startegic_node != 3):
         count = 0 
-        for j in adjacents[str(mini)]:
+        for j in adjacents[str(mini_id)]:
             if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
                 my_remaining_troops -= reinforcment_soldiers
-                game.put_troop(j, reinforcment_soldiers)
+                print (game.put_troop(j, reinforcment_soldiers) , '\nTASK 0 IN DEPLOYMENT OF TROOPS IS DONE\n')
+                number_of_troops[str(j)] += reinforcment_soldiers
                 count += 1
             if(count == 3):
                 break  
@@ -276,7 +277,7 @@ def turn(game: Game):
             reinforcment_soldiers += 3
         if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
             my_remaining_troops -= reinforcment_soldiers
-            game.put_troop(mini_id, reinforcment_soldiers )
+            print (game.put_troop(mini_id, reinforcment_soldiers ) , '\nTASK 0 IN DEPLOYMENT OF TROOPS IS DONE\n')
             number_of_troops[str(mini_id)] += reinforcment_soldiers
         if(count_startegic_node == 3):
             reinforcment_soldiers -= 3
@@ -504,11 +505,15 @@ def turn(game: Game):
     else:
         if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
             for on in sort_chance_of_attacks: 
-                if on[1]['attackon'] and game.get_owners()[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
+                if on[1]['attackon'] and owner[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
                     if on[0][0] in strategic_nodes:
-                        print(game.attack(on[0][0] , on[0][1] , beta , 0.5), 'TASK 1 AND 2 IN ATTACK IS DONE \n')
+                        if game.attack(on[0][0] , on[0][1] , beta , 0.5)['won'] == 1:
+                            owner = game.get_owners()
+                            print('TASK 1 AND 2 IN ATTACK IS DONE \n')
                     else:
-                        print (game.attack(on[0][0] , on[0][1] , beta , moving_fraction), 'TASK 1 AND 2 IN ATTACK IS DONE \n')
+                        if game.attack(on[0][0] , on[0][1] , beta , moving_fraction)['won'] == 1:
+                            owner = game.get_owners()
+                            print ('TASK 1 AND 2 IN ATTACK IS DONE \n')
 #FINISH TASK 1 AND 2
 
     #   owner = game.get_owners()
