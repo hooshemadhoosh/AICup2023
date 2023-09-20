@@ -378,7 +378,7 @@ def turn(game: Game):
     node = "-1"
     
     for i in strategic_nodes:
-        if(owner[str(i)] == my_id and number_of_troops[str(i)] > 54):
+        if(owner[str(i)] == my_id and number_of_troops[str(i)] > 48):
 
             node = str(i)
             weigh_of_each_node = {}
@@ -452,9 +452,6 @@ def turn(game: Game):
 # Finish Task -1 :)     
                 
 #START TASK0
-    owner = game.get_owners()
-    number_of_troops= game.get_number_of_troops()
-    number_of_fort_troops = game.get_number_of_fort_troops()
     if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
 
@@ -463,7 +460,8 @@ def turn(game: Game):
                 if i in strategic_nodes and owner[str(i)]!=my_id:
                     near_startegic = i
                     break
-            print (game.attack(max_id, near_startegic,beta, 0.5) , 'TASK 0 IN ATTACK IS DONE \n')
+            game.attack(max_id, near_startegic,beta, 0.5)
+    
         
 #FINISH TASK 0 
     
@@ -528,21 +526,25 @@ def turn(game: Game):
                         
 
 #FINISH TASK 5 
-
+    owner = game.get_owners()
+    number_of_troops= game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
 # Start task 6:
     for i in owner:
-        number_of_troops= game.get_number_of_troops()
-        number_of_fort_troops = game.get_number_of_fort_troops()
         if(owner[str(i)] == my_id and (str(i) in strategic_nodes)and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops[str(j)]+number_of_fort_troops[str(j)] <=2)):
                     print (game.attack(i, j, 5.5 , 1-moving_fraction) , '\nTASK 6 IS DONe \n')
                     owner = game.get_owners()
+                    number_of_troops= game.get_number_of_troops()
+                    number_of_fort_troops = game.get_number_of_fort_troops()
         elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
                     print (game.attack(i, j, 4.5 , 0.3) , '\n TASK 6 IS DONE')
                     owner = game.get_owners()
+                    number_of_troops= game.get_number_of_troops()
+                    number_of_fort_troops = game.get_number_of_fort_troops()
 
 # Finish Task ;)
     game.next_state()
