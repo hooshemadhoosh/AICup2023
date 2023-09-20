@@ -338,7 +338,7 @@ def turn(game: Game):
 #START TASK 3
     owner = game.get_owners()
     #Opening Tunnel
-    open_tunnel = []  #Contains items like (from attack, to attack, our strategic node, check attack!)
+    open_tunnel = []  #Contains items like [from attack, to attack, our strategic node, check attack!]
     for tunnel in ListOfTunnels:
         if not is_tunnel_activated(tunnel,owner,my_id):
             for i in range(1,len(tunnel)):
@@ -508,12 +508,12 @@ def turn(game: Game):
                 if on[1]['attackon'] and owner[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
                     if on[0][0] in strategic_nodes:
                         if game.attack(on[0][0] , on[0][1] , beta , 0.5)['won'] == 1:
-                            owner = game.get_owners()
-                            print('TASK 1 AND 2 IN ATTACK IS DONE \n')
+                            owner[str(on[0][1])] = my_id
+                        print('TASK 1 AND 2 IN ATTACK IS DONE \n')
                     else:
                         if game.attack(on[0][0] , on[0][1] , beta , moving_fraction)['won'] == 1:
-                            owner = game.get_owners()
-                            print ('TASK 1 AND 2 IN ATTACK IS DONE \n')
+                            owner[str(on[0][1])] = my_id
+                        print ('TASK 1 AND 2 IN ATTACK IS DONE \n')
 #FINISH TASK 1 AND 2
 
     #   owner = game.get_owners()
@@ -534,16 +534,21 @@ def turn(game: Game):
 
 #START TASK 3
     for each_attack in open_tunnel:
-        if each_attack[3] and game.get_owners()[str(each_attack[1])] != my_id and game.get_owners()[str(each_attack[1])] != -1 and game.get_number_of_troops()[str(each_attack[0])]>1:
-            if str(each_attack[1]) in adjacents[str(each_attack[0])]: print (game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction) , '\n TASK 3 IN ATTACK IS DONE\n')
+        if each_attack[3] and owner[str(each_attack[1])] != my_id and owner[str(each_attack[1])] != -1 and game.get_number_of_troops()[str(each_attack[0])]>1:
+            #if str(each_attack[1]) in adjacents[str(each_attack[0])]: 
+            if game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction)['won'] == 1:
+                owner[str(each_attack[1])] = my_id
+            print ('\n TASK 3 IN ATTACK IS DONE\n')
+
 #FINISH TASK 3
 
 #START TASK 4
     for case in attack_on_layer1:   
-        if game.get_owners()[str(case[1])]!=my_id and game.get_owners()[str(case[1])]!=-1 and game.get_owners()[str(case[0])]==my_id and game.get_number_of_troops()[str(case[0])]>1:  
-            print (game.attack(case[0],case[1],beta,1-moving_fraction) , '\n TASK 4 IN ATTACK STATE IS DONE\n')
+        if owner[str(case[1])]!=my_id and owner[str(case[1])]!=-1 and owner[str(case[0])]==my_id and game.get_number_of_troops()[str(case[0])]>1:  
+            if game.attack(case[0],case[1],beta,1-moving_fraction)['won'] == 1:
+                owner[str(case[1])] = my_id
+            print ('\n TASK 4 IN ATTACK STATE IS DONE\n')
 #FINISH TASK 4
-    owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
