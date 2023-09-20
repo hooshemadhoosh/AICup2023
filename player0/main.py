@@ -3,7 +3,7 @@ from src.game import Game
 VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 4 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
-good_list = [4, 5]
+good_list = [5, 6, 7]
 father = {}
 dp = {}
 mark = {}
@@ -585,8 +585,8 @@ def turn(game: Game):
     # Task 0:
     count_startegic_node = 0 
     owner = game.get_owners()
-    number_of_fort_troops = game.get_number_of_fort_troops()
     number_of_troops = game.get_number_of_troops()
+
     for i in strategic_nodes:
         if(owner[str(i)] == my_id):
             count_startegic_node += 1
@@ -600,14 +600,16 @@ def turn(game: Game):
         if mini_id!=-1:
             game.fort(mini_id, number_of_troops[str(mini_id)]-1)
             flag = True
-    number_of_fort_troops = game.get_number_of_fort_troops()
-    number_of_troops = game.get_number_of_troops()
     if (flag == False and turn_number>162):
+        maxi = -1
+        max_id = -1
         for i in strategic_nodes :
-            if(owner[str(i)] == my_id and (number_of_troops[str(i)] in good_list)):
-                game.fort(i, number_of_troops[str(i)]-1)
-                flag = True
-                break        
+            if(owner[str(i)] == my_id and number_of_troops[str(i)] > maxi):
+                maxi = number_of_troops[str(i)]
+                max_id = i 
+        game.fort(max_id, number_of_troops[str(max_id)]-1)
+        flag = True
+              
     # finish Task0 :)
     game.next_state() #Finishing Turn
 
