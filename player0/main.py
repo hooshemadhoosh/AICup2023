@@ -273,6 +273,11 @@ def turn(game: Game):
                 my_remaining_troops -= reinforcment_soldiers
                 game.put_troop(j, reinforcment_soldiers)
                 break
+        for j in adjacents[str(mini)]:
+            if(owner[str(j)] == my_id and my_remaining_troops >= 1):
+                my_remaining_troops -= 1
+                game.put_troop(j, 1)
+                break
     else:
         if(count_startegic_node == 3):
             reinforcment_soldiers += 3
@@ -571,14 +576,14 @@ def turn(game: Game):
         if(owner[str(i)] == my_id and (str(i) in strategic_nodes)and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops[str(j)]+number_of_fort_troops[str(j)] <=2)):
-                    print (game.attack(i, j, 5.5 , 1-moving_fraction) , '\nTASK 6 IS DONe \n')
+                    print (game.attack(i, j, 4.5 , 1-moving_fraction) , '\nTASK 6 IS DONe \n')
                     owner = game.get_owners()
                     number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
         elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
-                    print (game.attack(i, j, 4.5 , 0.3) , '\n TASK 6 IS DONE')
+                    print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE')
                     owner = game.get_owners()
                     number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
