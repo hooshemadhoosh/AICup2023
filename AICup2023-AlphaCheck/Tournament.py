@@ -3,7 +3,7 @@ import os
 from subprocess import Popen
 import subprocess
 from tqdm import tqdm, trange
-import time
+
 BOX_NUMBER = 2
 p0_address  = "procode//p0.py"
 p1_address  = "procode//p1.py"
