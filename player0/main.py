@@ -262,14 +262,26 @@ def turn(game: Game):
         if owner[str(i)] == my_id and (number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
-    if(count_startegic_node == 3):
-        reinforcment_soldiers += 3
-    if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
-        my_remaining_troops -= reinforcment_soldiers
-        game.put_troop(mini_id, reinforcment_soldiers )
-        number_of_troops[str(mini_id)] += reinforcment_soldiers
-    if(count_startegic_node == 3):
-        reinforcment_soldiers += 3
+    if(mini >= 50 and count_startegic_node != 3):
+        for j in adjacents[str(mini)]:
+            if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
+                my_remaining_troops -= reinforcment_soldiers
+                game.put_troop(j, reinforcment_soldiers)
+                break
+        for j in adjacents[str(mini)]:
+            if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
+                my_remaining_troops -= reinforcment_soldiers
+                game.put_troop(j, reinforcment_soldiers)
+                break
+    else:
+        if(count_startegic_node == 3):
+            reinforcment_soldiers += 3
+        if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
+            my_remaining_troops -= reinforcment_soldiers
+            game.put_troop(mini_id, reinforcment_soldiers )
+            number_of_troops[str(mini_id)] += reinforcment_soldiers
+        if(count_startegic_node == 3):
+            reinforcment_soldiers -= 3
 #FINISH TASK 0
 
 
@@ -625,7 +637,7 @@ def turn(game: Game):
         if mini_id!=-1:
             game.fort(mini_id, number_of_troops[str(mini_id)]-1)
             flag = True
-    if (flag == False and turn_number>162):
+    if (flag == False and turn_number > 162):
         maxi = -1
         max_id = -1
         for i in strategic_nodes :
