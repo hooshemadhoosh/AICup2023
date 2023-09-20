@@ -262,10 +262,14 @@ def turn(game: Game):
         if owner[str(i)] == my_id and (number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
+    if(count_startegic_node == 3):
+        reinforcment_soldiers += 3
     if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
         my_remaining_troops -= reinforcment_soldiers
         game.put_troop(mini_id, reinforcment_soldiers )
         number_of_troops[str(mini_id)] += reinforcment_soldiers
+    if(count_startegic_node == 3):
+        reinforcment_soldiers += 3
 #FINISH TASK 0
 
 
@@ -368,6 +372,27 @@ def turn(game: Game):
                         attack_on_layer1.append([layer2_node,layer1_node])
                         break
 #FINISH TASK 4
+# Start task 5 
+    if(turn_number > 162):
+        owner = game.get_owners()
+        x = 0
+        while(my_remaining_troops > 2 and x < 100):
+            x += 1
+            for i in owner.keys():
+                if(owner[str(i)] == -1):
+                    game.put_troop(i, 3)
+                    my_remaining_troops -= 3
+                    owner[str(i)] = my_id
+                    break
+        x = 0
+        while(my_remaining_troops > 0 and x < 100):
+            x += 1
+            for i in owner.keys():
+                if(owner[str(i)] == my_id):
+                    game.put_troop(i, 1)
+                    my_remaining_troops -= 1
+                    break
+                
 
     game.next_state() #going to the next state
 #The second state! attacking!---------------------------------------------------------------------------
