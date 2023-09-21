@@ -42,11 +42,11 @@ from subprocess import Popen,run
 import subprocess
 import time
 start_time = time.time()
-# run(['py','main.py'],shell=False,capture_output=False)
-p=Popen(["py", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-output, errors = p.communicate()
-print(errors)
-print (output)
+run(['py','main.py'],shell=False,capture_output=False)
+# p=Popen(["py", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+# output, errors = p.communicate()
+# print(errors)
+# print (output)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 wins = [0,0,0]

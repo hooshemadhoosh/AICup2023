@@ -42,8 +42,9 @@ def game(dict_list:list):
     UPDATE_VARS(p0dict,p0_address)
     UPDATE_VARS(p1dict,p1_address)
     UPDATE_VARS(p2dict,p2_address)
-    p=Popen(["py", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    p=Popen(["python3", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     output, errors = p.communicate()
+    print(errors)
     scores= [0,0,0]
     address = os.listdir('result_log')
     for addr in address:
