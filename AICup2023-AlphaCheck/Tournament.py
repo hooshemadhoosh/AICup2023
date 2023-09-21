@@ -67,8 +67,9 @@ def best_in_box(box:list):
 
 recursive(0)
 pvars = [vars_ls,vars_ls,vars_ls]
+volume = len(pvars[0])
 n = 1
-while  len(pvars[0])>1:
+while  volume>1:
     new_pvars = [[],[],[]]
     with open('Result.txt','a',encoding='UTF-8') as f:
         f.write(f"\n\n\n\n\n\n*\n\n\n\n\n\nLayer{n}_Player_VARS={pvars}")
@@ -82,7 +83,7 @@ while  len(pvars[0])>1:
     #Creating a box and doing tournement on the layer
     box = []
     counter = 0
-    for _ in trange(len(pvars[0])):
+    for _ in trange(volume):
         dictls = []
         for var in pvars:   dictls.append(var.pop())
         box.append(game(dictls))
@@ -98,6 +99,7 @@ while  len(pvars[0])>1:
 
     #Updating pvars
     pvars = new_pvars
+    volume = len(pvars[0])
     n+=1
 
 with open('Result.txt','a',encoding='UTF-8') as f:
