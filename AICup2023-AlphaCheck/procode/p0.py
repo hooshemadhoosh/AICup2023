@@ -492,10 +492,10 @@ def turn(game):
 
             near_startegic = 0
             for i in adjacents[str(max_id)]:
-                if i in strategic_nodes and owner[str(i)]!=my_id:
+                if i in strategic_nodes and owner[str(i)]!=my_id and owner[str(i)] != -1:
                     near_startegic = i
                     break
-            game.attack(max_id, near_startegic,beta, 0.5)
+            if near_startegic!=0:  game.attack(max_id, near_startegic,beta, 0.5)
     
         
 #FINISH TASK 0 

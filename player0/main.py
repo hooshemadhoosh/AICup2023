@@ -8,9 +8,9 @@ father = {}
 dp = {}
 mark = {}
 def Tunnel(start, dict_adj):
-    dp = [10000] * (len(dict_adj) + 1)
-    mark = [0] * (len(dict_adj) + 1)
-    uplist = [-1] * (len(dict_adj) + 1)
+    dp = [10000] * (len(dict_adj))
+    mark = [0] * (len(dict_adj))
+    uplist = [-1] * (len(dict_adj))
     mark[start] = 1
     dp[start] = 0
     que = []
@@ -496,7 +496,7 @@ def turn(game: Game):
                 if i in strategic_nodes and owner[str(i)]!=my_id and owner[str(i)] != -1:
                     near_startegic = i
                     break
-            game.attack(max_id, near_startegic,beta, 0.5)
+            if near_startegic!=0:  game.attack(max_id, near_startegic,beta, 0.5)
     
         
 #FINISH TASK 0 
