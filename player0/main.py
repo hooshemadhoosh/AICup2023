@@ -535,7 +535,7 @@ def turn(game: Game):
 #START TASK 3
     for each_attack in open_tunnel:
         if each_attack[3] and owner[str(each_attack[1])] != my_id and owner[str(each_attack[1])] != -1 and game.get_number_of_troops()[str(each_attack[0])]>1:
-            if str(each_attack[1]) in adjacents[str(each_attack[0])]: 
+            if each_attack[1] in adjacents[str(each_attack[0])]: 
                 if game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction)['won'] == 1:
                     owner[str(each_attack[1])] = my_id
                 print ('\n TASK 3 IN ATTACK IS DONE\n')
