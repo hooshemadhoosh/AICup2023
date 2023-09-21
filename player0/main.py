@@ -343,7 +343,7 @@ def turn(game: Game):
         if not is_tunnel_activated(tunnel,owner,my_id):
             for i in range(1,len(tunnel)):
                 if owner[str(tunnel[i])]!=my_id and owner[str(tunnel[i-1])]==my_id:
-                    x= [tunnel[i-1],tunnel[i],tunnel[0], False] 
+                    x= [tunnel[i-1],tunnel[i],tunnel[0], 0] 
                     open_tunnel.append(x)
                     break
     print ('open tunnel IS NOT sorted:' , open_tunnel)
@@ -357,7 +357,7 @@ def turn(game: Game):
                 my_remaining_troops-=troops_to_put
                 number_of_troops[str(item[0])] += int(troops_to_put)
                 game.put_troop(item[0] , int(troops_to_put))
-            item[3] = True
+            item[3] += 1
             print ('\nTASK 3 IN DEPLOYMENT OF TROOPS IS DONE:', item , '\n')
 #FINISH TASK 3
 
@@ -466,7 +466,7 @@ def turn(game: Game):
             else:
                 x = 0
                 way = []
-                while(x < 100 and mini_i1 != -1):
+                while(x < 100 and mini_id1 != -1):
                     x += 1  
                     way.append(mini_id1)
                     mini_id1 = father[str(mini_id1)]
@@ -538,7 +538,7 @@ def turn(game: Game):
             if each_attack[1] in adjacents[str(each_attack[0])]: 
                 if game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction)['won'] == 1:
                     owner[str(each_attack[1])] = my_id
-                print ('\n TASK 3 IN ATTACK IS DONE\n')
+                print ('\n TASK 3 IN ATTACK IS DONE\n' , 'the list attack is:' , each_attack)
 
 #FINISH TASK 3
 
