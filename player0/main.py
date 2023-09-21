@@ -436,25 +436,25 @@ def turn(game: Game):
             father[str(node)] = -1
             find_way_with_min_number_of_enemy(node, weigh_of_each_node, adjacents)
             mini = 100000
-            mini_id = -1
+            mini_id1 = -1
             for i in strategic_nodes:
                 if(owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
                     mini = dp[str(i)][0]
-                    mini_id = i
-            if(mini_id == -1):
+                    mini_id1 = i
+            if(mini_id1 == -1):
                 maxi = 0
-                max_id = -1
+                max_id1 = -1
                 for i in owner.keys():
                     if(dp[str(i)][0] + dp[str(i)][1] <= 20 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
                         maxi = dp[str(i)][0] + dp[str(i)][1]
-                        max_id = i
+                        max_id1 = i
 
                 way = []
                 x = 0
-                while(x < 100 and max_id != -1):
+                while(x < 100 and max_id1 != -1):
                     x +=1
-                    way.append(max_id)
-                    max_id = father[str(max_id)]   
+                    way.append(max_id1)
+                    max_id1 = father[str(max_id1)]   
                 way.reverse()     
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
@@ -466,10 +466,10 @@ def turn(game: Game):
             else:
                 x = 0
                 way = []
-                while(x < 100 and mini_id != -1):
+                while(x < 100 and mini_i1 != -1):
                     x += 1  
-                    way.append(mini_id)
-                    mini_id = father[str(mini_id)]
+                    way.append(mini_id1)
+                    mini_id1 = father[str(mini_id1)]
                 way.reverse()
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
@@ -637,22 +637,22 @@ def turn(game: Game):
             count_startegic_node += 1
     if (count_startegic_node == 3 and flag == False):
         mini = 1000 
-        mini_id = -1 
+        mini_id2 = -1 
         for i in strategic_nodes:
             if(owner[str(i)] == my_id and 4 < number_of_troops[str(i)] < mini):
                 mini = number_of_troops[str(i)]
-                mini_id = i
-        if mini_id!=-1:
-            game.fort(mini_id, number_of_troops[str(mini_id)]-1)
+                mini_id2 = i
+        if mini_id2!=-1:
+            game.fort(mini_id2, number_of_troops[str(mini_id2)]-1)
             flag = True
     if (flag == False and turn_number > 162):
         maxi = -1
-        max_id = -1
+        max_id2 = -1
         for i in strategic_nodes :
             if(owner[str(i)] == my_id and number_of_troops[str(i)] > maxi):
                 maxi = number_of_troops[str(i)]
-                max_id = i 
-        game.fort(max_id, number_of_troops[str(max_id)]-1)
+                max_id2 = i 
+        game.fort(max_id2, number_of_troops[str(max_id2)]-1)
         flag = True
               
     # finish Task0 :)
