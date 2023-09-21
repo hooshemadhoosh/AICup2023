@@ -1,11 +1,10 @@
-VARS={'strategic_troops_number': 8.0, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.5, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 5.0, 'troops_to_put_on_strategics': 2.0, 'moving_fraction': 0.9, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 2.0}
+VARS = {"strategic_troops_number":9 , "mytroops/enemytroops (beta)" : 1.05 , "beta_plus": 1.5, "TroopsTunnel" : 1 , "number_of_attack_attemps" : 4 , "moving_fraction" : 0.9 , "number_of_defender_troops" : 2,"ValueOfTunnelNode":10 , "ReainForce_strategics_everyround" : 2}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
 father = {}
 dp = {}
 mark = {}
-
 def Tunnel(start, dict_adj):
     dp = [10000] * (len(dict_adj))
     mark = [0] * (len(dict_adj))
@@ -342,7 +341,7 @@ def turn(game):
         if not is_tunnel_activated(tunnel,owner,my_id):
             for i in range(1,len(tunnel)):
                 if owner[str(tunnel[i])]!=my_id and owner[str(tunnel[i-1])]==my_id:
-                    x= [tunnel[i-1],tunnel[i],tunnel[0], False] 
+                    x= [tunnel[i-1],tunnel[i],tunnel[0], 0] 
                     open_tunnel.append(x)
                     break
     print ('open tunnel IS NOT sorted:' , open_tunnel)
@@ -356,7 +355,7 @@ def turn(game):
                 my_remaining_troops-=troops_to_put
                 number_of_troops[str(item[0])] += int(troops_to_put)
                 game.put_troop(item[0] , int(troops_to_put))
-            item[3] = True
+            item[3] += 1
             print ('\nTASK 3 IN DEPLOYMENT OF TROOPS IS DONE:', item , '\n')
 #FINISH TASK 3
 
@@ -435,25 +434,25 @@ def turn(game):
             father[str(node)] = -1
             find_way_with_min_number_of_enemy(node, weigh_of_each_node, adjacents)
             mini = 100000
-            mini_id = -1
+            mini_id1 = -1
             for i in strategic_nodes:
                 if(owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
                     mini = dp[str(i)][0]
-                    mini_id = i
-            if(mini_id == -1):
+                    mini_id1 = i
+            if(mini_id1 == -1):
                 maxi = 0
-                max_id = -1
+                max_id1 = -1
                 for i in owner.keys():
                     if(dp[str(i)][0] + dp[str(i)][1] <= 20 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
                         maxi = dp[str(i)][0] + dp[str(i)][1]
-                        max_id = i
+                        max_id1 = i
 
                 way = []
                 x = 0
-                while(x < 100 and max_id != -1):
+                while(x < 100 and max_id1 != -1):
                     x +=1
-                    way.append(max_id)
-                    max_id = father[str(max_id)]   
+                    way.append(max_id1)
+                    max_id1 = father[str(max_id1)]   
                 way.reverse()     
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
@@ -465,10 +464,10 @@ def turn(game):
             else:
                 x = 0
                 way = []
-                while(x < 100 and mini_id != -1):
+                while(x < 100 and mini_id1 != -1):
                     x += 1  
-                    way.append(mini_id)
-                    mini_id = father[str(mini_id)]
+                    way.append(mini_id1)
+                    mini_id1 = father[str(mini_id1)]
                 way.reverse()
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
@@ -537,7 +536,7 @@ def turn(game):
             if each_attack[1] in adjacents[str(each_attack[0])]: 
                 if game.attack(each_attack[0],each_attack[1],beta,1-moving_fraction)['won'] == 1:
                     owner[str(each_attack[1])] = my_id
-                print ('\n TASK 3 IN ATTACK IS DONE\n')
+                print ('\n TASK 3 IN ATTACK IS DONE\n' , 'the list attack is:' , each_attack)
 
 #FINISH TASK 3
 
@@ -574,18 +573,22 @@ def turn(game):
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 # Start task 6:
+    opt_nums = [2,3,4,5]
     for i in owner:
-        if(owner[str(i)] == my_id and (str(i) in strategic_nodes)and number_of_troops[str(i)]>1):
+        if(owner[str(i)] == my_id and (i in strategic_nodes)and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops[str(j)]+number_of_fort_troops[str(j)] <=2)):
-                    print (game.attack(i, j, 4.5 , 1-moving_fraction) , '\nTASK 6 IS DONe \n')
+                    print (game.attack(i, j, 4.5 , 1-moving_fraction) , '\nTASK 6 IS DONe with beta = 4.5\n')
                     owner = game.get_owners()
                     number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
-        elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1):
+        elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
             for j in adjacents[str(i)]:
-                if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
-                    print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE')
+                if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
+                    if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
+                        print (game.attack(i, j, beta , 0.3) , '\n TASK 6 IS DONE with beta')
+                    else:
+                        print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta')
                     owner = game.get_owners()
                     number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
@@ -636,24 +639,25 @@ def turn(game):
             count_startegic_node += 1
     if (count_startegic_node == 3 and flag == False):
         mini = 1000 
-        mini_id = -1 
+        mini_id2 = -1 
         for i in strategic_nodes:
             if(owner[str(i)] == my_id and 4 < number_of_troops[str(i)] < mini):
                 mini = number_of_troops[str(i)]
-                mini_id = i
-        if mini_id!=-1:
-            game.fort(mini_id, number_of_troops[str(mini_id)]-1)
+                mini_id2 = i
+        if mini_id2!=-1:
+            game.fort(mini_id2, number_of_troops[str(mini_id2)]-1)
             flag = True
     if (flag == False and turn_number > 162):
         maxi = -1
-        max_id = -1
+        max_id2 = -1
         for i in strategic_nodes :
             if(owner[str(i)] == my_id and number_of_troops[str(i)] > maxi):
                 maxi = number_of_troops[str(i)]
-                max_id = i 
-        game.fort(max_id, number_of_troops[str(max_id)]-1)
+                max_id2 = i 
+        game.fort(max_id2, number_of_troops[str(max_id2)]-1)
         flag = True
               
     # finish Task0 :)
+
 
     return
