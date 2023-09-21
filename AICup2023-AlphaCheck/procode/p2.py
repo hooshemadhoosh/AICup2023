@@ -1,4 +1,4 @@
-VARS={'strategic_troops_number': 9, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1, 'number_of_attack_attemps': 3, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3}
+VARS={'strategic_troops_number': 9, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.8, 'TroopsTunnel': 1, 'number_of_attack_attemps': 3, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
@@ -578,16 +578,15 @@ def turn(game):
         if(owner[str(i)] == my_id and (str(i) in strategic_nodes)and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops[str(j)]+number_of_fort_troops[str(j)] <=2)):
-                    print (game.attack(i, j, 4.5 , 1-moving_fraction) , '\nTASK 6 IS DONe \n')
+                    print (game.attack(i, j, 4.5 , 1-moving_fraction) , '\nTASK 6 IS DONe with beta = 4.5\n')
                     owner = game.get_owners()
                     number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
         elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1):
             for j in adjacents[str(i)]:
-                if(owner[str(j)] != my_id and owner[str(j)] != -1 ):
-                    print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE')
+                if(owner[str(j)] != my_id and owner[str(j)] != -1 and game.get_number_of_troops()[str(i)] > 1):
+                    print (game.attack(i, j, beta_plus , 0.3) , '\n TASK 6 IS DONE with beta = 1.8')
                     owner = game.get_owners()
-                    number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
 
 # Finish Task ;)
