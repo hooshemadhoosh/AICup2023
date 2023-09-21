@@ -1,14 +1,15 @@
-VARS={'strategic_troops_number': 8.0, 'mytroops/enemytroops (beta)': 1.05, 'beta_plus': 1.5, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 3.0, 'moving_fraction': 0.9, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 2.0}
+VARS={'strategic_troops_number': 9, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1, 'number_of_attack_attemps': 3, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
 father = {}
 dp = {}
 mark = {}
+
 def Tunnel(start, dict_adj):
-    dp = [10000] * (len(dict_adj) + 1)
-    mark = [0] * (len(dict_adj) + 1)
-    uplist = [-1] * (len(dict_adj) + 1)
+    dp = [10000] * (len(dict_adj))
+    mark = [0] * (len(dict_adj))
+    uplist = [-1] * (len(dict_adj))
     mark[start] = 1
     dp[start] = 0
     que = []

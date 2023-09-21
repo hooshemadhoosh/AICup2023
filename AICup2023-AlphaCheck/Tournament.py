@@ -8,7 +8,7 @@ BOX_NUMBER = 2
 p0_address  = "procode//p0.py"
 p1_address  = "procode//p1.py"
 p2_address  = "procode//p2.py"
-VARS={'strategic_troops_number':[6,9,12],
+VARS={'strategic_troops_number':[9],
       'mytroops/enemytroops (beta)': [1.01,1.05,1.2], 
       'beta_plus':[1.2, 1.5, 1.8],
       'TroopsTunnel':[1,2],
@@ -42,7 +42,7 @@ def game(dict_list:list):
     UPDATE_VARS(p0dict,p0_address)
     UPDATE_VARS(p1dict,p1_address)
     UPDATE_VARS(p2dict,p2_address)
-    p=Popen(["python3", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    p=Popen(["py", "main.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     output, errors = p.communicate()
     print(errors)
     scores= [0,0,0]
@@ -58,11 +58,11 @@ def game(dict_list:list):
     return (scores,[p0dict,p1dict,p2dict])
 def best_in_box(box:list):
     box.sort(key=lambda result: result[0][0],reverse=True)
-    best_p0 = box[1][0]
+    best_p0 = box[0][1][0]
     box.sort(key=lambda result: result[0][1],reverse=True)
-    best_p1 = box[1][1]
+    best_p1 = box[0][1][1]
     box.sort(key=lambda result: result[0][2],reverse=True)
-    best_p2 = box[1][2]
+    best_p2 = box[0][1][2]
     return [best_p0,best_p1,best_p2]
 
 recursive(0)
