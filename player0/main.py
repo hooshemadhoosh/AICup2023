@@ -115,6 +115,7 @@ def initializer(game: Game):
     my_id = game.get_player_id()['player_id']
     adj = game.get_adj()
     troops_of = game.get_number_of_troops()
+    remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     #print("Turn Number: ",game.get_turn_number())
     #print(f"STRATEGIC NODES: {strategic_nodes}\n SCORE: {score}")
 
@@ -126,6 +127,7 @@ def initializer(game: Game):
         
     #Filling Adjacents of Strategic nodes orderd by most degree
     for i in strategic_nodes:
+        if remaining_troops<= 2*VARS['strategic_troops_number']:    break
         ordered_adj = [k for k in adj[str(i)]]
         ordered_adj.sort(key= lambda adjacent: len(adj[str(adjacent)]) , reverse=True)
         for j in ordered_adj:
@@ -149,6 +151,7 @@ def initializer(game: Game):
 
     #Filling tunnels with troop
     for tunnel in ListOfTunnels:
+        if remaining_troops<= 2*VARS['strategic_troops_number']:    break
         for node in tunnel:
             if(owner[str(node)] == -1):
                 game.put_one_troop(node)
