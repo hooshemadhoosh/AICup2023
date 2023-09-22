@@ -66,41 +66,46 @@ def best_in_box(box:list):
     return [best_p0,best_p1,best_p2]
 
 recursive(0)
-pvars = [vars_ls,vars_ls,vars_ls]
+pvars = [vars_ls[:],vars_ls[:],vars_ls[:]]
 volume = len(pvars[0])
-n = 1
-while  volume>1:
-    new_pvars = [[],[],[]]
+def main():
+    global volume
+    global pvars
+    n = 1
+    while  volume>1:
+        new_pvars = [[],[],[]]
+        with open('Result.txt','a',encoding='UTF-8') as f:
+            f.write(f"\n\n\n\n\n\n*\n\n\n\n\n\nLayer{n}_Player_VARS={pvars}")
+            
+        #Fixing the number of players in layer
+        for i in range(len(pvars)):
+            while len(pvars[i])%BOX_NUMBER!=0:
+                new_pvars[i].append(pvars[i].pop())
+            volume = len(pvars[0])
+
+        #Creating a box and doing tournement on the layer
+        box = []
+        counter = 0
+        for _ in trange(volume):
+            dictls = []
+            for var in pvars:  
+                print(len(var))
+                dictls.append(var.pop())
+            box.append(game(dictls))
+            counter+=1
+            if counter==BOX_NUMBER:
+                best = best_in_box(box)
+                for i in range(len(best)):
+                    new_pvars[i].append(best[i])
+
+                box=[]
+                counter=0
+
+
+        #Updating pvars
+        pvars = new_pvars
+        volume = len(pvars[0])
+        n+=1
+
     with open('Result.txt','a',encoding='UTF-8') as f:
-        f.write(f"\n\n\n\n\n\n*\n\n\n\n\n\nLayer{n}_Player_VARS={pvars}")
-        
-    #Fixing the number of players in layer
-    for i in range(len(pvars)):
-        while len(pvars[i])%BOX_NUMBER!=0:
-            new_pvars[i].append(pvars[i].pop())
-
-
-    #Creating a box and doing tournement on the layer
-    box = []
-    counter = 0
-    for _ in trange(volume):
-        dictls = []
-        for var in pvars:   dictls.append(var.pop())
-        box.append(game(dictls))
-        counter+=1
-        if counter==BOX_NUMBER:
-            best = best_in_box(box)
-            for i in range(len(best)):
-                new_pvars[i].append(best[i])
-
-            box=[]
-            counter=0
-
-
-    #Updating pvars
-    pvars = new_pvars
-    volume = len(pvars[0])
-    n+=1
-
-with open('Result.txt','a',encoding='UTF-8') as f:
-    f.write(f"\n\n\n\n\n\n\n\n\n\n\n\nLayer{n}_Player_VARS:{pvars}")
+        f.write(f"\n\n\n\n\n\n\n\n\n\n\n\nLayer{n}_Player_VARS:{pvars}")
