@@ -120,6 +120,16 @@ def initializer(game):
     adj = game.get_adj()
     troops_of = game.get_number_of_troops()
     remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
+    # Categorizing Strategic nodes by owner 
+    my_best_strategic  = []
+    enemy_best_strategic = []
+    for i in strategic_nodes:
+        if (owner[str(i)] == my_id) and (i not in my_best_strategic):
+            my_best_strategic.append(i)
+        elif (owner[str(i)]!=-1) and (i not in enemy_best_strategic):
+            enemy_best_strategic.append(i)
+    # Make tunnel from my strategtic to enemy strategic :)
+    if len(ListOfTunnels) == 0: ListOfTunnels=TunnelListMaker(my_best_strategic,enemy_best_strategic,adj)
     #print("Turn Number: ",game.get_turn_number())
     #print(f"STRATEGIC NODES: {strategic_nodes}\n SCORE: {score}")
 
@@ -129,29 +139,18 @@ def initializer(game):
             print(game.put_one_troop(i), "-- putting one troop on", i)
             return 
         
-    #Filling Adjacents of Strategic nodes orderd by most degree
+    #Filling Adjacents of Strategic nodes ordered
+    strategic_nodes = list(strategic_nodes)
+    strategic_nodes.sort(key=lambda node: len([i for i in adj[str(node)] if owner[str(i)]==my_id]))
     for i in strategic_nodes:
         if remaining_troops<= 2*VARS['strategic_troops_number']:    break
         ordered_adj = [k for k in adj[str(i)]]
-        ordered_adj.sort(key= lambda adjacent: len(adj[str(adjacent)]) , reverse=True)
+        ordered_adj.sort(key= lambda adjacent: any([adjacent in tunn for tunn in ListOfTunnels]) , reverse=True)
         for j in ordered_adj:
             if owner[str(j)] == -1:
                 game.put_one_troop(j)
                 return
-            
-    
-
-    # Categorizing Strategic nodes by owner 
-    my_best_strategic  = []
-    enemy_best_strategic = []
-    for i in strategic_nodes:
-        if (owner[str(i)] == my_id) and (i not in my_best_strategic):
-            my_best_strategic.append(i)
-        elif (owner[str(i)]!=-1) and (i not in enemy_best_strategic):
-            enemy_best_strategic.append(i)
-        
-    # Make tunnel from my strategtic to enemy strategic :)
-    if len(ListOfTunnels) == 0: ListOfTunnels=TunnelListMaker(my_best_strategic,enemy_best_strategic,adj)
+                   
 
     #Filling tunnels with troop
     for tunnel in ListOfTunnels:
