@@ -590,7 +590,7 @@ def turn(game: Game):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
                         print (game.attack(i, j, beta , 0.3) , '\n TASK 6 IS DONE with beta')
                     else:
-                        print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta')
+                        print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta = 3.5')
                     owner = game.get_owners()
                     number_of_troops= game.get_number_of_troops()
                     number_of_fort_troops = game.get_number_of_fort_troops()
