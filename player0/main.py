@@ -576,7 +576,7 @@ def turn(game: Game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2 and number_of_troops[str(k)] + number_of_fort_troops[str(k)]>=VARS['strategic_troops_number'] ):
+                        if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2 and number_of_troops[str(k)] + number_of_fort_troops[str(k)]>=4 ):
                             print (game.attack(k, j, beta_plus, (1 - moving_fraction)) , '\n TASK 5 IN ATTACK STATE IS DONE\n')
                             
                         elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):

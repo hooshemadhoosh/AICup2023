@@ -1,4 +1,4 @@
-VARS={'strategic_troops_number': 11, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 6, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3.0}
+VARS={'strategic_troops_number': 9.0, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3.0}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
@@ -575,7 +575,7 @@ def turn(game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]:
-                        if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2 and number_of_troops[str(k)] + number_of_fort_troops[str(k)]>=VARS['strategic_troops_number'] ):
+                        if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2 and number_of_troops[str(k)] + number_of_fort_troops[str(k)]>=4 ):
                             print (game.attack(k, j, beta_plus, (1 - moving_fraction)) , '\n TASK 5 IN ATTACK STATE IS DONE\n')
                             
                         elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
