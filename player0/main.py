@@ -606,11 +606,12 @@ def turn(game: Game):
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
                         print (game.attack(i, j, beta , 0.3) , '\n TASK 6 IS DONE with beta')
-                    else:
-                        print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta = 3.5')
-                    owner = game.get_owners()
-                    number_of_troops= game.get_number_of_troops()
-                    number_of_fort_troops = game.get_number_of_fort_troops()
+                        owner = game.get_owners()
+                        number_of_troops= game.get_number_of_troops()
+                        number_of_fort_troops = game.get_number_of_fort_troops()
+                    #else:
+                    #    print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta = 3.5')
+                    
 
 # Finish Task ;)
     game.next_state()
