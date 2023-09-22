@@ -286,13 +286,15 @@ def turn(game: Game):
             if(count == 3):
                 break  
     else:
-        if(count_startegic_node == 3):
+        check = 0
+        if(count_startegic_node == 3 and my_remaining_troops >= reinforcment_soldiers + 3):
             reinforcment_soldiers += 3
+            check = 1
         if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
             my_remaining_troops -= reinforcment_soldiers
             print (game.put_troop(mini_id, reinforcment_soldiers ) , '\nTASK 0 IN DEPLOYMENT OF TROOPS IS DONE\n')
             number_of_troops[str(mini_id)] += reinforcment_soldiers
-        if(count_startegic_node == 3):
+        if(count_startegic_node == 3 and check):
             reinforcment_soldiers -= 3
 #FINISH TASK 0
 
