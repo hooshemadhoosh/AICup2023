@@ -113,11 +113,11 @@ def initializer(game: Game):
     owner = game.get_owners()
     my_id = game.get_player_id()['player_id']
     if my_id == 0:
-        VARS={'strategic_troops_number': 11, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 6, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3.0}
+        VARS={'strategic_troops_number': 11, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 6, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 4.0}
     elif my_id == 1:
-        VARS={'strategic_troops_number': 9.0, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3.0}
+        VARS={'strategic_troops_number': 9.0, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 4.0}
     elif my_id == 2:
-        VARS={'strategic_troops_number': 13, 'mytroops/enemytroops (beta)': 1.05, 'beta_plus': 1.5, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 3.0}
+        VARS={'strategic_troops_number': 13, 'mytroops/enemytroops (beta)': 1.05, 'beta_plus': 1.5, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 4.0}
     adj = game.get_adj()
     troops_of = game.get_number_of_troops()
     remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
@@ -422,6 +422,7 @@ def turn(game: Game):
     adj_of_stupednode = -1
     i1 = -1
     # Start 6 put_troops and -2 Attack 
+
     if(my_remaining_troops > 0):
         
         for i in strategic_nodes:
@@ -447,8 +448,7 @@ def turn(game: Game):
         if(adj_of_stupednode != -1):
             game.put_troop(adj_of_stupednode, my_remaining_troops)
             my_remaining_troops = 0
-                 
-
+    
     game.next_state() #going to the next state
     if(adj_of_stupednode != -1):
         game.attack(adj_of_stupednode, i1, 0.05, moving_fraction)
