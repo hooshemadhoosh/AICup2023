@@ -434,18 +434,6 @@ def turn(game: Game):
                         i1 = i 
                         break
         
-        for i in strategic_nodes:
-            if(adj_of_stupednode != -1):
-                break
-            if(owner[str(i)] != my_id and owner[str(i)] != -1 and number_of_troops[str(i)] >= 20):
-                for j in adjacents[str(i)]:
-                    if(owner[str(j)] == -1):
-                        adj_of_stupednode = j
-                        i1 = i 
-                        break
-                    
-            
-            
         for i in owner.keys():
             if(adj_of_stupednode != -1):
                 break
@@ -456,15 +444,6 @@ def turn(game: Game):
                         i1 = i 
                         break
         
-        for i in owner.keys():
-            if(adj_of_stupednode != -1):
-                break
-            if(owner[str(i)] != my_id and owner[str(i)] != -1 and number_of_troops[str(i)] >= 20):
-                for j in adjacents[str(i)]:
-                    if(owner[str(j)] == -1):
-                        adj_of_stupednode = j
-                        i1 = i 
-                        break
         if(adj_of_stupednode != -1):
             game.put_troop(adj_of_stupednode, my_remaining_troops)
             my_remaining_troops = 0
@@ -652,14 +631,7 @@ def turn(game: Game):
 # Start task 6:
     opt_nums = [2,3,4,5]
     for i in owner:
-        if(owner[str(i)] == my_id and (i in strategic_nodes)and number_of_troops[str(i)]>1):
-            for j in adjacents[str(i)]:
-                if(owner[str(j)] != my_id and owner[str(j)] != -1 and (1<=number_of_troops[str(j)]+number_of_fort_troops[str(j)] <=2)):
-                    print (game.attack(i, j, 4.5 , 1-moving_fraction) , '\nTASK 6 IS DONe with beta = 4.5\n')
-                    owner = game.get_owners()
-                    number_of_troops= game.get_number_of_troops()
-                    number_of_fort_troops = game.get_number_of_fort_troops()
-        elif(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
+        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
