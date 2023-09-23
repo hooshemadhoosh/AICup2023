@@ -303,7 +303,7 @@ def turn(game: Game):
         if owner[str(enemy)] != my_id:
             enemy_troops_on_node = number_of_troops[str(enemy)] + number_of_fort_troops[str(enemy)] #getting the number of enemy troops on the strategic node
             for my in adjacents[str(enemy)]:    
-                if owner[str(my)] == my_id:
+                if owner[str(my)] == my_id or owner[str(my)] == -1:
                     my_troops_layer1node = number_of_troops[str(my)]  
                     my_troops_on_layer1 = my_troops_layer1node
                     tunnel_number = number_of_tunnel(my,owner,my_id)            
@@ -505,7 +505,7 @@ def turn(game: Game):
             mini = 100000
             mini_id1 = -1
             for i in strategic_nodes:
-                if(owener[str(i)] != -1 and owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
+                if(owner[str(i)] != -1 and owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
                     mini = dp[str(i)][0]
                     mini_id1 = i
             if(mini_id1 == -1):
@@ -699,7 +699,16 @@ def turn(game: Game):
                 tunel = list(reversed(tunel))
                 end = findend(tunel , owner , my_id)
                 max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-
+    for i in strategic_nodes:
+        if owner[str(i)] == my_id:
+            for layer1 in adjacents[str(i)]:
+                if owner[str(layer1)] == my_id and number_of_troops[str(layer1)] > max_troops:
+                    destinationnode , sourcenode , max_troops = i , layer1 , number_of_troops[str(layer1)]
+                    print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
+                for layer2 in adjacents[str(layer1)]:
+                    if owner[str(layer2)] == my_id and number_of_troops[str(layer2)] > max_troops and layer2 != i:
+                        destinationnode , sourcenode , max_troops =  i , layer2 , number_of_troops[str(layer2)]
+                        print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
     if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(sourcenode)['reachable']:        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
 
     game.next_state()
