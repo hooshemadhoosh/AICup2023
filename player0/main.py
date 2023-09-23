@@ -418,8 +418,61 @@ def turn(game: Game):
                     my_remaining_troops -= 1
                     break
                 
+    # Finish Task 5
+    adj_of_stupednode = -1
+    i1 = -1
+    # Start 6 put_troops and -2 Attack 
+    if(my_remaining_troops > 0):
+        
+        for i in strategic_nodes:
+            if(adj_of_stupednode != -1):
+                break
+            if(owner[str(i)] != my_id and owner[str(i)] != -1 and number_of_troops[str(i)] >= 20):
+                for j in adjacents[str(i)]:
+                    if(owner[str(j)] == my_id):
+                        adj_of_stupednode = j
+                        i1 = i 
+                        break
+        
+        for i in strategic_nodes:
+            if(adj_of_stupednode != -1):
+                break
+            if(owner[str(i)] != my_id and owner[str(i)] != -1 and number_of_troops[str(i)] >= 20):
+                for j in adjacents[str(i)]:
+                    if(owner[str(j)] == -1):
+                        adj_of_stupednode = j
+                        i1 = i 
+                        break
+                    
+            
+            
+        for i in owner.keys():
+            if(adj_of_stupednode != -1):
+                break
+            if(owner[str(i)] != my_id and owner[str(i)] != -1 and number_of_troops[str(i)] >= 20):
+                for j in adjacents[str(i)]:
+                    if(owner[str(j)] == my_id):
+                        adj_of_stupednode = j
+                        i1 = i 
+                        break
+        
+        for i in owner.keys():
+            if(adj_of_stupednode != -1):
+                break
+            if(owner[str(i)] != my_id and owner[str(i)] != -1 and number_of_troops[str(i)] >= 20):
+                for j in adjacents[str(i)]:
+                    if(owner[str(j)] == -1):
+                        adj_of_stupednode = j
+                        i1 = i 
+                        break
+        if(adj_of_stupednode != -1):
+            game.put_troop(adj_of_stupednode, my_remaining_troops)
+            my_remaining_troops = 0
+                 
 
     game.next_state() #going to the next state
+    if(adj_of_stupednode != -1):
+        game.attack(adj_of_stupednode, i1, 0.05, moving_fraction)
 #The second state! attacking!---------------------------------------------------------------------------
 # Start Task -1 :
     owner = game.get_owners()
@@ -452,19 +505,20 @@ def turn(game: Game):
             mini = 100000
             mini_id1 = -1
             for i in strategic_nodes:
-                if(owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
+                if(owener[str(i)] != -1 and owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
                     mini = dp[str(i)][0]
                     mini_id1 = i
             if(mini_id1 == -1):
                 maxi = 0
                 max_id1 = -1
                 for i in owner.keys():
-                    if(dp[str(i)][0] + dp[str(i)][1] <= 20 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
+                    if(dp[str(i)][0] + dp[str(i)][1] <= 40 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
                         maxi = dp[str(i)][0] + dp[str(i)][1]
                         max_id1 = i
 
                 way = []
                 x = 0
+                
                 while(x < 100 and max_id1 != -1):
                     x +=1
                     way.append(max_id1)
@@ -472,9 +526,10 @@ def turn(game: Game):
                 way.reverse()     
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
-                    print ('TASK -1 IN ATTACK STATE IS DONE!')
+                    print ("Task -1 list Way:")
+                    print(way)
                     for i in range(1, len(way) - 1):
-                        if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
+                        ## if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
                         game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
                     
 
@@ -488,9 +543,11 @@ def turn(game: Game):
                 way.reverse()
                 if(len(way) >= 2):
                     game.attack(way[0], way[1], VARS['beta_plus'], 0.5)
-                    print ('TASK -1 IN ATTACK STATE IS DONE!')
+                    print ("Task -1 list Way:")
+                    print(way)
+
                     for i in range(1, len(way) - 1):
-                        if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
+                        ## if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
                         game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], VARS['moving_fraction'])
 
             owner = game.get_owners()
