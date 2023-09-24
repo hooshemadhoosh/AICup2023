@@ -669,8 +669,11 @@ def turn(game: Game):
 #START TASK 1 AND 2
     else:
         for attack in deployment_list:
-            if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id:
+            number_of_troops= game.get_number_of_troops()
+            number_of_fort_troops = game.get_number_of_fort_troops() 
+            if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id and game.get_number_of_troops()[str(attack[0][1])]>=2:
                 if attack[0][1] in strategic_nodes:
+                    print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
                     if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.5)['won'] == 1:
                         owner[str(attack[0][0])] = my_id
                 else:
