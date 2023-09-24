@@ -621,7 +621,7 @@ def turn(game: Game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]: 
-                        if(owner[str(k)] == my_id and str(k) not in strategic_nodes):
+                        if(owner[str(k)] == my_id and str(k) not in strategic_nodes and number_of_troops[str(k)] >= 2):
                             print (game.attack(k, j, 0.1, 0.6) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
                             owner = game.get_owners()
                             number_of_troops= game.get_number_of_troops()
