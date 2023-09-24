@@ -728,7 +728,6 @@ def turn(game):
    #                owner[str(case[1])] = my_id
    #        print ('\n TASK 4 IN ATTACK STATE IS DONE\n')
 #FINISH TASK 4
-    owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
@@ -737,7 +736,7 @@ def turn(game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]: 
-                        if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2 and owner[str(j)] != my_id):
+                        if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2):
                             print (game.attack(k, j, 0.1, 0.6) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
                             owner = game.get_owners()
                             number_of_troops= game.get_number_of_troops()
@@ -763,44 +762,63 @@ def turn(game):
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
     owner = game.get_owners()
     number_of_troops = game.get_number_of_troops()
-    max_troops = 1
-    sourcenode = -1
-    destinationnode = -1
-    for tunel in ListOfTunnels:
-        if is_tunnel_activated (tunel , owner , my_id):
-            for eachnode in tunel[1:-1]:
-                if number_of_troops[str(eachnode)] > max_troops:
-                    max_troops = number_of_troops[str(eachnode)]
-                    sourcenode = eachnode
-                    destinationnode = tunel[0]
-        else:
-            end = 0
-            if owner[str(tunel[0])] == my_id:
-                end = findend(tunel , owner , my_id)
-                max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-                if owner[str(tunel[-1])] == my_id: #when both end and start of the tunnel is for us!
-                    tunel = list(reversed(tunel))
-                    end = findend(tunel , owner , my_id)
-                    max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-            elif owner[str(tunel[0])] != my_id and owner[str(tunel[-1])] == my_id: #we have just end of the tunnel
-                tunel = list(reversed(tunel))
-                end = findend(tunel , owner , my_id)
-                max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-    for i in strategic_nodes:
-        if owner[str(i)] == my_id:
-            for layer1 in adjacents[str(i)]:
-                if owner[str(layer1)] == my_id and number_of_troops[str(layer1)] > max_troops:
-                    destinationnode , sourcenode , max_troops = i , layer1 , number_of_troops[str(layer1)]
-                    print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
-                for layer2 in adjacents[str(layer1)]:
-                    if owner[str(layer2)] == my_id and number_of_troops[str(layer2)] > max_troops and layer2 != i:
-                        destinationnode , sourcenode , max_troops =  i , layer2 , number_of_troops[str(layer2)]
-                        print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
-    if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(sourcenode)['reachable']:        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
+    strategic_nodes = list(strategic_nodes)
+    strategic_nodes.sort(key=lambda x: number_of_troops[str(x)])
+    my_best_strategic = [node for node in strategic_nodes if owner[str(node)]==my_id]
+    for node in my_best_strategic:
+        reachable = [x for x in game.get_reachable(node)['reachable'] if x not in strategic_nodes]
+        reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
+        source = reachable[0] if len(reachable) else -1
+        if source!=-1 and number_of_troops[str(source)]>3:
+            print (game.move_troop(source , node , number_of_troops[str(source)]-1))
+            break
+    else:   #This part will run only when for loop Ends with no break
+        for node in my_best_strategic:
+            reachable = [x for x in game.get_reachable(node)['reachable'] if x in strategic_nodes and x!=node]
+            reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
+            source = reachable[0] if len(reachable) else -1
+            if source!=-1 and number_of_troops[str(source)]>20:
+                troops = (number_of_troops[str(source)]-number_of_troops[str(node)])//2
+                print (game.move_troop(source , node , number_of_troops[str(source)]-1))
+                break
+    # max_troops = 1
+    # sourcenode = -1
+    # destinationnode = -1
+    # for tunel in ListOfTunnels:
+    #     if is_tunnel_activated (tunel , owner , my_id):
+    #         for eachnode in tunel[1:-1]:
+    #             if number_of_troops[str(eachnode)] > max_troops:
+    #                 max_troops = number_of_troops[str(eachnode)]
+    #                 sourcenode = eachnode
+    #                 destinationnode = tunel[0]
+    #     else:
+    #         end = 0
+    #         if owner[str(tunel[0])] == my_id:
+    #             end = findend(tunel , owner , my_id)
+    #             max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
+    #             if owner[str(tunel[-1])] == my_id: #when both end and start of the tunnel is for us!
+    #                 tunel = list(reversed(tunel))
+    #                 end = findend(tunel , owner , my_id)
+    #                 max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
+    #         elif owner[str(tunel[0])] != my_id and owner[str(tunel[-1])] == my_id: #we have just end of the tunnel
+    #             tunel = list(reversed(tunel))
+    #             end = findend(tunel , owner , my_id)
+    #             max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
+    # for i in strategic_nodes:
+    #     if owner[str(i)] == my_id:
+    #         for layer1 in adjacents[str(i)]:
+    #             if owner[str(layer1)] == my_id and number_of_troops[str(layer1)] > max_troops:
+    #                 destinationnode , sourcenode , max_troops = i , layer1 , number_of_troops[str(layer1)]
+    #                 print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
+    #             for layer2 in adjacents[str(layer1)]:
+    #                 if owner[str(layer2)] == my_id and number_of_troops[str(layer2)] > max_troops and layer2 != i:
+    #                     destinationnode , sourcenode , max_troops =  i , layer2 , number_of_troops[str(layer2)]
+    #                     print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
+    # if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(sourcenode)['reachable']:        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
+
+
 
     game.next_state()
-
-
 #THE LAST STATE FORTIFYING---------------------------------------------------------
 
     # Task 0:
