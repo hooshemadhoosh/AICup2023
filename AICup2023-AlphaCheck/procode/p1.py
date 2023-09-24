@@ -250,7 +250,6 @@ def turn(game):
     dict_deployment = {}
     dict_all_defendings = {}
 #START TASK 0 :
-# تقویت ضعیف ترین خونه ی استراتژیک در هر راند !!
     number_of_troops= game.get_number_of_troops()
     mini = 1000
     mini_id = -1
@@ -315,20 +314,26 @@ def turn(game):
     for enemy in strategic_nodes:  
         if owner[str(enemy)] != my_id:
             enemy_troops_on_node = number_of_troops[str(enemy)] + number_of_fort_troops[str(enemy)] #getting the number of enemy troops on the strategic node
-            for my in adjacents[str(enemy)]:    
+            for my in adjacents[str(enemy)]:
+                needed_troops = 10000    
                 if owner[str(my)] == my_id or owner[str(my)] == -1:
                     my_troops_layer1node = number_of_troops[str(my)] + my_remaining_troops
                     fraction = my_troops_layer1node / enemy_troops_on_node
-                    needed_troops = my_remaining_troops
-                    if fraction > 2:    
+                    if fraction > 2:
+                        needed_troops = my_remaining_troops    
                         while my_troops_layer1node / enemy_troops_on_node > 2 and needed_troops:
                             needed_troops -= 1
                             my_troops_layer1node -= 1
                         fraction *= larg_num
-                    dict_deployment[(enemy , my)] ={'deployed' : False ,
-                                                    'fraction' : fraction , 
-                                                    'attack' : True ,
-                                                    'number of needed troops' : needed_troops} 
+                    elif enemy_troops_on_node >= 12 and 1.24 < fraction <= 2:
+                        needed_troops = int(fraction * enemy_troops_on_node) + 1 - number_of_troops[str(my)]
+                    elif enemy_troops_on_node < 12 and 1.5 < fraction <= 2:
+                        needed_troops = int(fraction * enemy_troops_on_node) + 1 - number_of_troops[str(my)]
+                    if needed_troops != 10000:
+                        dict_deployment[(enemy , my)] ={'deployed' : False ,
+                                                        'fraction' : fraction , 
+                                                        'attack' : True ,
+                                                        'number of needed troops' : needed_troops} 
                     
     deployment_list = sorted(dict_deployment.items() , key=lambda fra: fra[1]['fraction'] , reverse=True)
     print (deployment_list)
@@ -695,7 +700,7 @@ def turn(game):
         if(owner[str(i)] == my_id):
             for j in adjacents[str(i)]:
                 for k in adjacents[str(j)]: 
-                    if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2 and owner[str(j)] != my_id and owner[str(j)] != -1):
+                    if(owner[str(k)] == my_id and (k not in strategic_nodes) and number_of_troops[str(k)] >= 2 and game.get_owners()[str(j)] != my_id and game.get_owners()[str(j)] != -1):
                         if game.attack(k, j, 0.1, 0.6)['won'] == 1: 
                             print('\n TASK 5 IN ATTACK STATE IS DONE \n')
                             owner[str(j)] = my_id
