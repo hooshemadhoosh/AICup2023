@@ -633,7 +633,7 @@ def turn(game: Game):
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 # Start task 6:
-    opt_nums = [2,3,4,5,6]
+    opt_nums = [3,4,5,6]
     for i in owner:
         if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and str(i) not in strategic_nodes):
             for j in adjacents[str(i)]:
