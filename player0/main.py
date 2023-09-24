@@ -123,7 +123,7 @@ def initializer(game: Game):
     owner = game.get_owners()
     my_id = game.get_player_id()['player_id']
     if my_id == 0:
-        VARS={'strategic_troops_number': 12, 
+        VARS={'strategic_troops_number': 16, 
               'mytroops/enemytroops (beta)': 1.01, 
               'beta_plus': 1.2, 
               'TroopsTunnel': 1, 
@@ -134,7 +134,7 @@ def initializer(game: Game):
               'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     elif my_id == 1:
-        VARS={'strategic_troops_number': 10, 
+        VARS={'strategic_troops_number': 16, 
               'mytroops/enemytroops (beta)': 1.01, 
               'beta_plus': 1.2, 
               'TroopsTunnel': 1, 
@@ -145,7 +145,7 @@ def initializer(game: Game):
               'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     elif my_id == 2:
-        VARS={'strategic_troops_number': 13, 
+        VARS={'strategic_troops_number': 16, 
               'mytroops/enemytroops (beta)': 1.05, 
               'beta_plus': 1.5, 
               'TroopsTunnel': 1, 
@@ -765,8 +765,9 @@ def turn(game: Game):
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
     owner = game.get_owners()
     number_of_troops = game.get_number_of_troops()
+    number_of_fort_troops = game.get_number_of_fort_troops()
     strategic_nodes = list(strategic_nodes)
-    strategic_nodes.sort(key=lambda x: number_of_troops[str(x)])
+    strategic_nodes.sort(key=lambda x: number_of_troops[str(x)]+number_of_fort_troops[str(x)])
     my_best_strategic = [node for node in strategic_nodes if owner[str(node)]==my_id]
     for node in my_best_strategic:
         reachable = [x for x in game.get_reachable(node)['reachable'] if x not in strategic_nodes]
@@ -780,9 +781,9 @@ def turn(game: Game):
             reachable = [x for x in game.get_reachable(node)['reachable'] if x in strategic_nodes and x!=node]
             reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
             source = reachable[0] if len(reachable) else -1
-            if source!=-1 and number_of_troops[str(source)]>20:
+            if source!=-1 and number_of_troops[str(source)]>10:
                 troops = (number_of_troops[str(source)]-number_of_troops[str(node)])//2
-                print (game.move_troop(source , node , number_of_troops[str(source)]-1))
+                print (game.move_troop(source , node , troops))
                 break
     # max_troops = 1
     # sourcenode = -1
