@@ -1,3 +1,5 @@
+Python 3.11.4 (tags/v3.11.4:d2340ef, Jun  7 2023, 05:45:37) [MSC v.1934 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
 import random
 from src.game import Game
 VARS={'strategic_troops_number': 11, 
@@ -738,21 +740,18 @@ def turn(game: Game):
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
-    # for i in strategic_nodes:
-    #     if(owner[str(i)] == my_id):
-    #         for j in adjacents[str(i)]:
-    #             if(owner[str(j)] != my_id and owner[str(j)] != -1): 
-    #                 for k in adjacents[str(j)]:
-    #                     if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2 and number_of_troops[str(k)] + number_of_fort_troops[str(k)]>=4 ):
-    #                         print (game.attack(k, j, beta_plus, (1 - moving_fraction)) , '\n TASK 5 IN ATTACK STATE IS DONE\n')
-                            
-    #                     elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
-    #                         print (game.attack(k, j, beta,  1-moving_fraction) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
-    #                     owner = game.get_owners()
-    #                     number_of_troops= game.get_number_of_troops()
-    #                     number_of_fort_troops = game.get_number_of_fort_troops()
-    #                     if(owner[str(j)] == my_id):
-    #                         break
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id):
+            for j in adjacents[str(i)]:
+                if(owner[str(j)] != my_id and owner[str(j)] != -1): 
+                    for k in adjacents[str(j)]: 
+                        if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2):
+                            print (game.attack(k, j, 0.1, 0.6) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
+                            owner = game.get_owners()
+                            number_of_troops= game.get_number_of_troops()
+                            number_of_fort_troops = game.get_number_of_fort_troops()
+                        if(owner[str(j)] == my_id):
+                            break
 #FINISH TASK 5 
     owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
@@ -760,7 +759,7 @@ def turn(game: Game):
 # Start task 6:
     opt_nums = [3,4,5,6]
     for i in owner:
-        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and str(i) not in strategic_nodes):
+        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
@@ -768,11 +767,6 @@ def turn(game: Game):
                         owner = game.get_owners()
                         number_of_troops= game.get_number_of_troops()
                         number_of_fort_troops = game.get_number_of_fort_troops()
-                    #else:
-                    #    print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta = 3.5')
-                    
-
-# Finish Task ;)
     game.next_state()
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
     owner = game.get_owners()
