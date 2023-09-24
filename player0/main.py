@@ -1,6 +1,14 @@
 import random
 from src.game import Game
-VARS={'strategic_troops_number': 11, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 6, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.7, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 4.0}
+VARS={'strategic_troops_number': 11, 
+      'mytroops/enemytroops (beta)': 1.01, 
+      'beta_plus': 1.2, 'TroopsTunnel': 1.0, 
+      'number_of_attack_attemps': 6, 
+      'troops_to_put_on_strategics': 1.0, 
+      'moving_fraction': 0.7, 
+      'number_of_defender_troops': 2.0, 
+      'largest value': 10.0, 
+      'ReainForce_strategics_everyround': 9}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
@@ -115,11 +123,38 @@ def initializer(game: Game):
     owner = game.get_owners()
     my_id = game.get_player_id()['player_id']
     if my_id == 0:
-        VARS={'strategic_troops_number': 12, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1, 'number_of_attack_attemps': 6, 'troops_to_put_on_strategics': 1, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10, 'ReainForce_strategics_everyround': 3}
+        VARS={'strategic_troops_number': 12, 
+              'mytroops/enemytroops (beta)': 1.01, 
+              'beta_plus': 1.2, 
+              'TroopsTunnel': 1, 
+              'number_of_attack_attemps': 6, 
+              'troops_to_put_on_strategics': 1, 
+              'moving_fraction': 0.7, 
+              'number_of_defender_troops': 2, 
+              'largest value': 10, 
+              'ReainForce_strategics_everyround': 8}
     elif my_id == 1:
-        VARS={'strategic_troops_number': 10, 'mytroops/enemytroops (beta)': 1.01, 'beta_plus': 1.2, 'TroopsTunnel': 1, 'number_of_attack_attemps': 3, 'troops_to_put_on_strategics': 1, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10, 'ReainForce_strategics_everyround': 3}
+        VARS={'strategic_troops_number': 10, 
+              'mytroops/enemytroops (beta)': 1.01, 
+              'beta_plus': 1.2, 
+              'TroopsTunnel': 1, 
+              'number_of_attack_attemps': 3, 
+              'troops_to_put_on_strategics': 1, 
+              'moving_fraction': 0.7, 
+              'number_of_defender_troops': 2, 
+              'largest value': 10, 
+              'ReainForce_strategics_everyround': 8}
     elif my_id == 2:
-        VARS={'strategic_troops_number': 13, 'mytroops/enemytroops (beta)': 1.05, 'beta_plus': 1.5, 'TroopsTunnel': 1, 'number_of_attack_attemps': 3, 'troops_to_put_on_strategics': 1, 'moving_fraction': 0.7, 'number_of_defender_troops': 2, 'ValueOfTunnelNode': 10, 'ReainForce_strategics_everyround': 3}
+        VARS={'strategic_troops_number': 13, 
+              'mytroops/enemytroops (beta)': 1.05, 
+              'beta_plus': 1.5, 
+              'TroopsTunnel': 1, 
+              'number_of_attack_attemps': 3, 
+              'troops_to_put_on_strategics': 1, 
+              'moving_fraction': 0.7, 
+              'number_of_defender_troops': 2, 
+              'largest value': 10, 
+              'ReainForce_strategics_everyround': 8}
     adj = game.get_adj()
     troops_of = game.get_number_of_troops()
     remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
@@ -212,6 +247,7 @@ def turn(game: Game):
     sort_chance_of_attacks = -1
     reinforcment_soldiers = VARS['ReainForce_strategics_everyround']
     moving_fraction = VARS['moving_fraction']
+    larg_num = VARS['largest value']
     my_best_strategic  = []
     enemy_best_strategic = []
     for i in strategic_nodes:
@@ -259,91 +295,164 @@ def turn(game: Game):
             
 #FINISH TASK -1        
             
-            
+    dict_deployment = {}
+    dict_all_defendings = {}
 #START TASK 0 :
 # تقویت ضعیف ترین خونه ی استراتژیک در هر راند !!
     number_of_troops= game.get_number_of_troops()
     mini = 1000
     mini_id = -1
 
+    enemy_maxi = 1000
+    enemy_maxi_id = -1
+    count_our_stra = 0
     for i in strategic_nodes:
         if owner[str(i)] == my_id and (number_of_troops[str(i)] + number_of_fort_troops[str(i)] < mini):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
-    if(mini >= 50 and count_startegic_node != 3 and mini_id!=-1):
-        # count = 0 
-        # for j in adjacents[str(mini_id)]:
-        #     if(owner[str(j)] == my_id and my_remaining_troops >= reinforcment_soldiers):
-        #         my_remaining_troops -= reinforcment_soldiers
-        #         print (game.put_troop(j, reinforcment_soldiers) , '\nTASK 0 IN DEPLOYMENT OF TROOPS IS DONE\n')
-        #         number_of_troops[str(j)] += reinforcment_soldiers
-        #         count += 1
-        #     if(count == 3):
-        #         break  
-        pass
-    elif mini_id!=-1:
-        check = 0
-        if(count_startegic_node == 3 and my_remaining_troops >= reinforcment_soldiers + 3):
-            reinforcment_soldiers += 3
-            check = 1
-        if(mini_id != -1) and my_remaining_troops >= reinforcment_soldiers:
-            my_remaining_troops -= reinforcment_soldiers
-            print (game.put_troop(mini_id, reinforcment_soldiers ) , '\nTASK 0 IN DEPLOYMENT OF TROOPS IS DONE\n')
+            count_our_stra += 1
+        elif owner[str(i)] != my_id and number_of_troops[str(i)] + number_of_fort_troops[str(i)] > enemy_maxi:
+            enemy_maxi = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
+            enemy_maxi_id = i
+    if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 116:
+        if my_remaining_troops > reinforcment_soldiers:
+            print (game.put_troop(mini_id , reinforcment_soldiers))
             number_of_troops[str(mini_id)] += reinforcment_soldiers
-        if(count_startegic_node == 3 and check):
-            reinforcment_soldiers -= 3
-#FINISH TASK 0
+            my_remaining_troops -= reinforcment_soldiers
+        else:
+            print (game.put_troop(mini_id , my_remaining_troops))
+            number_of_troops[str(mini_id)] += my_remaining_troops
+            my_remaining_troops = 0
+    
+    print ('number of my troops:' , my_remaining_troops)
+    all_id = [0,1,2]
+    all_id.remove(my_id)
+    #example: {(enemy's node or attacker , my node or defender): {'fraction':1.2 , 'deployed?' : False , 'attack' : false}}
+    #if deployed and attack = False, it means we don't have to put any troops
+    #if deployed = False and attack = True, it means we can deploy troops to attack but for some reasons we didn't do this
+    #if deployed and attack = True, it means we deployed troops on a node and we are ready to attack enemy node!
+    maxi0 , maxid0 = 0 , -1
+    maxi1 , maxid1 = 0 , -1
+    for i in owner:
+        if owner[i] == all_id[0] and number_of_troops[i] > maxi0:
+            maxid0 = int(i)
+            maxi0 = number_of_troops[i]
+        elif owner[i] == all_id[1] and number_of_troops[i] > maxi1:
+            maxi1 = number_of_troops[i]
+            maxid1 = int(i)
+    
+    for stra in strategic_nodes:
+        if owner[str(stra)] != all_id[0]:
+            dict_all_defendings[(maxid0 , stra)] = {'deployed' : False ,
+                                                    'fraction' : (number_of_troops[str(maxid0)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'attack' : False,
+                                                    'number of needed troops' : (number_of_troops[str(maxid0)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)])}
+        elif owner[str(stra)] != all_id[1]:
+            dict_all_defendings[(maxid1 , stra)] = {'deployed' : False ,
+                                                    'fraction' : (number_of_troops[str(maxid1)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'attack' : False,
+                                                    'number of needed troops' : (number_of_troops[str(maxid1)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)])}
+            
+    dict_all_defendings = (sorted(dict_all_defendings.items() , key = lambda item: item[1]['fraction'] , reverse=True))
+    
+    for puttroop in dict_all_defendings:
+        if owner[str(puttroop[0][1])] == my_id:
+            dict_deployment[puttroop[0]] = puttroop[1]
+        
 
-
-#START TASK 1
     for enemy in strategic_nodes:  
         if owner[str(enemy)] != my_id:
             enemy_troops_on_node = number_of_troops[str(enemy)] + number_of_fort_troops[str(enemy)] #getting the number of enemy troops on the strategic node
             for my in adjacents[str(enemy)]:    
                 if owner[str(my)] == my_id or owner[str(my)] == -1:
-                    my_troops_layer1node = number_of_troops[str(my)]  
-                    my_troops_on_layer1 = my_troops_layer1node
-                    tunnel_number = number_of_tunnel(my,owner,my_id)            
-                    if tunnel_number!=-1:   my_troops_on_layer1*=VARS['ValueOfTunnelNode']
-                    attack_score = (my_remaining_troops-attack_attemps + my_troops_on_layer1)/enemy_troops_on_node
-                    if attack_score > beta: 
-                        opurtunity_of_attacks [(my , enemy)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False,"number_of_tunnel":tunnel_number}
+                    my_troops_layer1node = number_of_troops[str(my)] + my_remaining_troops
+                    fraction = my_troops_layer1node / enemy_troops_on_node
+                    needed_troops = my_remaining_troops
+                    if fraction > 2:    
+                        while my_troops_layer1node / enemy_troops_on_node > 2 and needed_troops:
+                            needed_troops -= 1
+                            my_troops_layer1node -= 1
+                        fraction *= larg_num
+                    dict_deployment[(enemy , my)] ={'deployed' : False ,
+                                                    'fraction' : fraction , 
+                                                    'attack' : True ,
+                                                    'number of needed troops' : needed_troops} 
+                    
+    deployment_list = sorted(dict_deployment.items() , key=lambda fra: fra[1]['fraction'] , reverse=True)
+    print (deployment_list)
+
+    for each_dep in deployment_list:
+        if each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['number of needed troops'] and 1 < each_dep[1]['fraction']:
+            if each_dep[1]['number of needed troops']:
+                print (game.put_troop(each_dep[0][1] , each_dep[1]['number of needed troops']))
+                print ('\nSOLDIERS are deployed on a node for attacking\n')
+                each_dep[1]['deployed'] = True
+                my_remaining_troops -= each_dep[1]['number of needed troops']
+                number_of_troops[str(each_dep[0][1])] += each_dep[1]['number of needed troops']
+            else:
+                each_dep[1]['deployed'] = True
+                print ('\nthere is already enough troops to attack on node' , each_dep[0][1] , 'this node should attack to:', each_dep[0][0] , '\n')
+        elif not each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['number of needed troops'] and 1 < each_dep[1]['fraction']:
+            if each_dep[1]['number of needed troops']:
+                print (game.put_troop(each_dep[0][1] ,each_dep[1]['number of needed troops']))
+                print ('this troops are deployed to defence')
+                my_remaining_troops -= each_dep[1]['number of needed troops']
+                number_of_troops[str(each_dep[0][1])] += each_dep[1]['number of needed troops']
+            
+
+
+#FINISH TASK 0
+
+
+#START TASK 1
+   #for enemy in strategic_nodes:  
+   #    if owner[str(enemy)] != my_id:
+   #        enemy_troops_on_node = number_of_troops[str(enemy)] + number_of_fort_troops[str(enemy)] #getting the number of enemy troops on the strategic node
+   #        for my in adjacents[str(enemy)]:    
+   #            if owner[str(my)] == my_id or owner[str(my)] == -1:
+   #                my_troops_layer1node = number_of_troops[str(my)]  
+   #                my_troops_on_layer1 = my_troops_layer1node
+   #                tunnel_number = number_of_tunnel(my,owner,my_id)            
+   #                if tunnel_number!=-1:   my_troops_on_layer1*=VARS['largest value']
+   #                attack_score = (my_remaining_troops-attack_attemps + my_troops_on_layer1)/enemy_troops_on_node
+   #                if attack_score > beta: 
+   #                    opurtunity_of_attacks [(my , enemy)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False,"number_of_tunnel":tunnel_number}
 
     #start putting troops on suitable nodes
-    if len(opurtunity_of_attacks) >= 1:
-        #sorting the chance of attacking in the dictionary from a high amount to a low one
-        sort_chance_of_attacks = sorted(opurtunity_of_attacks.items(), key = lambda item: item[1]['attack_score'] , reverse=True)
-        for n in sort_chance_of_attacks:
-            n_defenders = n[1]['enemy_troops']
-            num_of_needed_troops = (int(-(-(beta*n_defenders)//1))+ attack_attemps-1) - n[1]['my_troops_layer1node']
-            if my_remaining_troops >= num_of_needed_troops:
-                if num_of_needed_troops > 0:
-                    game.put_troop(n[0][0] , num_of_needed_troops)
-                    my_remaining_troops -= num_of_needed_troops 
-                    number_of_troops[str(n[0][0])] += num_of_needed_troops
-                n[1]['attackon'] = True 
-                print ('TASK 1 IN DEPLOYMENT OF TROOPS IS DONE: Attack is on now for planet %d' %n[0][0] , 'to attack to:' , n[0][1] , '\n')
+   #if len(opurtunity_of_attacks) >= 1:
+   #    #sorting the chance of attacking in the dictionary from a high amount to a low one
+   #    sort_chance_of_attacks = sorted(opurtunity_of_attacks.items(), key = lambda item: item[1]['attack_score'] , reverse=True)
+   #    for n in sort_chance_of_attacks:
+   #        n_defenders = n[1]['enemy_troops']
+   #        num_of_needed_troops = (int(-(-(beta*n_defenders)//1))+ attack_attemps-1) - n[1]['my_troops_layer1node']
+   #        if my_remaining_troops >= num_of_needed_troops:
+   #            if num_of_needed_troops > 0:
+   #                game.put_troop(n[0][0] , num_of_needed_troops)
+   #                my_remaining_troops -= num_of_needed_troops 
+   #                number_of_troops[str(n[0][0])] += num_of_needed_troops
+   #            n[1]['attackon'] = True 
+   #            print ('TASK 1 IN DEPLOYMENT OF TROOPS IS DONE: Attack is on now for planet %d' %n[0][0] , 'to attack to:' , n[0][1] , '\n')
 #FINISH TASK1
 
 
 #START TASK2
-    defend_planets = {}
-    for m in strategic_nodes:
-        if owner[str(m)] == my_id:
-            my_planet_troops = number_of_troops[str(m)] + number_of_fort_troops[str(m)]
-            enemy_troops = 0
-            for enemy_adj in adjacents[str(m)]:
-                if owner[str(enemy_adj)] != my_id:
-                    enemy_troops += number_of_troops[str(enemy_adj)] + number_of_fort_troops[str(enemy_adj)]
-            defend_planets[str(m)] = enemy_troops/my_planet_troops
-    
-    defend_planets = dict(sorted(defend_planets.items() , key  = lambda u : u[1] , reverse = True))
-    for defend in defend_planets:
-        if my_remaining_troops >= defender_troops:
-            my_remaining_troops -= defender_troops
-            number_of_troops[defend] += defender_troops
-            game.put_troop(int(defend) , defender_troops)
-            print ('TASK 2 IN DEPLOYMENT OF TROOPS IS DONE')
+   #defend_planets = {}
+   #for m in strategic_nodes:
+   #    if owner[str(m)] == my_id:
+   #        my_planet_troops = number_of_troops[str(m)] + number_of_fort_troops[str(m)]
+   #        enemy_troops = 0
+   #        for enemy_adj in adjacents[str(m)]:
+   #            if owner[str(enemy_adj)] != my_id:
+   #                enemy_troops += number_of_troops[str(enemy_adj)] + number_of_fort_troops[str(enemy_adj)]
+   #        defend_planets[str(m)] = enemy_troops/my_planet_troops
+   #
+   #defend_planets = dict(sorted(defend_planets.items() , key  = lambda u : u[1] , reverse = True))
+   #for defend in defend_planets:
+   #    if my_remaining_troops >= defender_troops:
+   #        my_remaining_troops -= defender_troops
+   #        number_of_troops[defend] += defender_troops
+   #        game.put_troop(int(defend) , defender_troops)
+   #        print ('TASK 2 IN DEPLOYMENT OF TROOPS IS DONE')
 #FINISH TASK2
 
 #START TASK 3
@@ -374,25 +483,25 @@ def turn(game: Game):
 
 #START TASK 4
 
-    owner = game.get_owners()
-    attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
-    for enemy_stra in enemy_best_strategic:
-        sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
-        sorted_layer1.sort(key= lambda x: number_of_troops[str(x)]+ number_of_fort_troops[str(x)])
-        for layer1_node in sorted_layer1:
-            sorted_layer2 = [node for node in adjacents[str(layer1_node)] if owner[str(node)]==my_id]
-            if len(sorted_layer2)==0:   continue
-            sorted_layer2.sort(key= lambda x: number_of_troops[str(x)],reverse=True)
-            for layer2_node in sorted_layer2:
-                needed_troops = (number_of_troops[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
-                if number_of_troops[str(layer2_node)]+my_remaining_troops>=needed_troops:
-                    troops_to_put = int(needed_troops-number_of_troops[str(layer2_node)])
-                    if troops_to_put > 0:   
-                        my_remaining_troops-=troops_to_put
-                        number_of_troops[str(layer2_node)] += int(troops_to_put)
-                        print (game.put_troop(layer2_node , int(troops_to_put)), '\n TASK 4 IN DEPLOYMENT OF TROOPS IS DONE!\n')
-                        attack_on_layer1.append([layer2_node,layer1_node])
-                        break
+   #owner = game.get_owners()
+   #attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
+   #for enemy_stra in enemy_best_strategic:
+   #    sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
+   #    sorted_layer1.sort(key= lambda x: number_of_troops[str(x)]+ number_of_fort_troops[str(x)])
+   #    for layer1_node in sorted_layer1:
+   #        sorted_layer2 = [node for node in adjacents[str(layer1_node)] if owner[str(node)]==my_id]
+   #        if len(sorted_layer2)==0:   continue
+   #        sorted_layer2.sort(key= lambda x: number_of_troops[str(x)],reverse=True)
+   #        for layer2_node in sorted_layer2:
+   #            needed_troops = (number_of_troops[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
+   #            if number_of_troops[str(layer2_node)]+my_remaining_troops>=needed_troops:
+   #                troops_to_put = int(needed_troops-number_of_troops[str(layer2_node)])
+   #                if troops_to_put > 0:   
+   #                    my_remaining_troops-=troops_to_put
+   #                    number_of_troops[str(layer2_node)] += int(troops_to_put)
+   #                    print (game.put_troop(layer2_node , int(troops_to_put)), '\n TASK 4 IN DEPLOYMENT OF TROOPS IS DONE!\n')
+   #                    attack_on_layer1.append([layer2_node,layer1_node])
+   #                    break
 #FINISH TASK 4
 # Start task 5 
     if(turn_number > 162):
@@ -559,17 +668,30 @@ def turn(game: Game):
     
 #START TASK 1 AND 2
     else:
-        if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
-            for on in sort_chance_of_attacks: 
-                if on[1]['attackon'] and owner[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
-                    if on[0][0] in strategic_nodes:
-                        if game.attack(on[0][0] , on[0][1] , beta , 0.5)['won'] == 1:
-                            owner[str(on[0][1])] = my_id
-                        print('TASK 1 AND 2 IN ATTACK IS DONE \n')
-                    else:
-                        if game.attack(on[0][0] , on[0][1] , beta , moving_fraction)['won'] == 1:
-                            owner[str(on[0][1])] = my_id
-                        print ('TASK 1 AND 2 IN ATTACK IS DONE \n')
+        for attack in deployment_list:
+            if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id:
+                if attack[0][1] in strategic_nodes:
+                    if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.5)['won'] == 1:
+                        owner[str(attack[0][0])] = my_id
+                else:
+                    if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.5)['won'] == 1:
+                        owner[str(attack[0][0])] = my_id
+                print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
+
+
+
+
+       #if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
+       #    for on in sort_chance_of_attacks: 
+       #        if on[1]['attackon'] and owner[str(on[0][1])] != my_id and game.get_number_of_troops()[str(on[0][0])] > 1:
+       #            if on[0][0] in strategic_nodes:
+       #                if game.attack(on[0][0] , on[0][1] , beta , 0.5)['won'] == 1:
+       #                    owner[str(on[0][1])] = my_id
+       #                print('TASK 1 AND 2 IN ATTACK IS DONE \n')
+       #            else:
+       #                if game.attack(on[0][0] , on[0][1] , beta , moving_fraction)['won'] == 1:
+       #                    owner[str(on[0][1])] = my_id
+       #                print ('TASK 1 AND 2 IN ATTACK IS DONE \n')
 #FINISH TASK 1 AND 2
 
     #   owner = game.get_owners()
@@ -603,40 +725,37 @@ def turn(game: Game):
 #FINISH TASK 3
 
 #START TASK 4
-    for case in attack_on_layer1:   
-        if owner[str(case[1])]!=my_id and owner[str(case[1])]!=-1 and owner[str(case[0])]==my_id and game.get_number_of_troops()[str(case[0])]>1:
-            if case[0] in strategic_nodes:  
-                if game.attack(case[0],case[1],beta_plus,1-moving_fraction)['won'] == 1:
-                    owner[str(case[1])] = my_id
-            else: 
-                if game.attack(case[0],case[1],beta,1-moving_fraction)['won'] == 1:
-                    owner[str(case[1])] = my_id
-            print ('\n TASK 4 IN ATTACK STATE IS DONE\n')
+   #for case in attack_on_layer1:   
+   #    if owner[str(case[1])]!=my_id and owner[str(case[1])]!=-1 and owner[str(case[0])]==my_id and game.get_number_of_troops()[str(case[0])]>1:
+   #        if case[0] in strategic_nodes:  
+   #            if game.attack(case[0],case[1],beta_plus,1-moving_fraction)['won'] == 1:
+   #                owner[str(case[1])] = my_id
+   #        else: 
+   #            if game.attack(case[0],case[1],beta,1-moving_fraction)['won'] == 1:
+   #                owner[str(case[1])] = my_id
+   #        print ('\n TASK 4 IN ATTACK STATE IS DONE\n')
 #FINISH TASK 4
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
-    # for i in strategic_nodes:
-    #     if(owner[str(i)] == my_id):
-    #         for j in adjacents[str(i)]:
-    #             if(owner[str(j)] != my_id and owner[str(j)] != -1): 
-    #                 for k in adjacents[str(j)]:
-    #                     if(owner[str(k)] == my_id and (str(k) in strategic_nodes) and number_of_troops[str(k)] >= beta_plus * (number_of_troops[str(j)] + number_of_fort_troops[str(j)]) and number_of_troops[str(k)] >= 2 and number_of_troops[str(k)] + number_of_fort_troops[str(k)]>=4 ):
-    #                         print (game.attack(k, j, beta_plus, (1 - moving_fraction)) , '\n TASK 5 IN ATTACK STATE IS DONE\n')
-                            
-    #                     elif(owner[str(k)] == my_id and number_of_troops[str(k)] >= (beta * (number_of_troops[str(j)] + number_of_fort_troops[str(j)])) and number_of_troops[str(k)] >= 2):
-    #                         print (game.attack(k, j, beta,  1-moving_fraction) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
-    #                     owner = game.get_owners()
-    #                     number_of_troops= game.get_number_of_troops()
-    #                     number_of_fort_troops = game.get_number_of_fort_troops()
-    #                     if(owner[str(j)] == my_id):
-    #                         break
+    for i in strategic_nodes:
+        if(owner[str(i)] == my_id):
+            for j in adjacents[str(i)]:
+                if(owner[str(j)] != my_id and owner[str(j)] != -1): 
+                    for k in adjacents[str(j)]: 
+                        if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2):
+                            print (game.attack(k, j, 0.1, 0.6) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
+                            owner = game.get_owners()
+                            number_of_troops= game.get_number_of_troops()
+                            number_of_fort_troops = game.get_number_of_fort_troops()
+                        if(owner[str(j)] == my_id):
+                            break
 #FINISH TASK 5 
     owner = game.get_owners()
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 # Start task 6:
-    opt_nums = [2,3,4,5]
+    opt_nums = [3,4,5,6]
     for i in owner:
         if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
             for j in adjacents[str(i)]:
@@ -646,11 +765,6 @@ def turn(game: Game):
                         owner = game.get_owners()
                         number_of_troops= game.get_number_of_troops()
                         number_of_fort_troops = game.get_number_of_fort_troops()
-                    #else:
-                    #    print (game.attack(i, j, 3.5 , 0.3) , '\n TASK 6 IS DONE with beta = 3.5')
-                    
-
-# Finish Task ;)
     game.next_state()
 #THE THIRD STATE MOVING TROOPS-----------------------------------------------------------
     owner = game.get_owners()
