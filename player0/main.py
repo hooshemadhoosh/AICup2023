@@ -7,7 +7,7 @@ VARS={'strategic_troops_number': 11,
       'troops_to_put_on_strategics': 1.0, 
       'moving_fraction': 0.7, 
       'number_of_defender_troops': 2.0, 
-      'largest value': 10.0, 
+      'ValueOfTunnelNode': 10.0, 
       'ReainForce_strategics_everyround': 9}
 flag = False
 ListOfTunnels = []
@@ -131,7 +131,7 @@ def initializer(game: Game):
               'troops_to_put_on_strategics': 1, 
               'moving_fraction': 0.7, 
               'number_of_defender_troops': 2, 
-              'largest value': 10, 
+              'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     elif my_id == 1:
         VARS={'strategic_troops_number': 10, 
@@ -142,7 +142,7 @@ def initializer(game: Game):
               'troops_to_put_on_strategics': 1, 
               'moving_fraction': 0.7, 
               'number_of_defender_troops': 2, 
-              'largest value': 10, 
+              'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     elif my_id == 2:
         VARS={'strategic_troops_number': 13, 
@@ -153,7 +153,7 @@ def initializer(game: Game):
               'troops_to_put_on_strategics': 1, 
               'moving_fraction': 0.7, 
               'number_of_defender_troops': 2, 
-              'largest value': 10, 
+              'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     adj = game.get_adj()
     troops_of = game.get_number_of_troops()
@@ -239,15 +239,10 @@ def turn(game: Game):
     adjacents = game.get_adj()
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
-    opurtunity_of_attacks = {}
     beta = VARS["mytroops/enemytroops (beta)"]
-    beta_plus = VARS["beta_plus"]
-    attack_attemps = VARS["number_of_attack_attemps"]
-    defender_troops = VARS["number_of_defender_troops"]
-    sort_chance_of_attacks = -1
     reinforcment_soldiers = VARS['ReainForce_strategics_everyround']
     moving_fraction = VARS['moving_fraction']
-    larg_num = VARS['largest value']
+    larg_num = VARS['ValueOfTunnelNode']
     my_best_strategic  = []
     enemy_best_strategic = []
     for i in strategic_nodes:
@@ -342,12 +337,12 @@ def turn(game: Game):
             maxid1 = int(i)
     
     for stra in strategic_nodes:
-        if owner[str(stra)] != all_id[0]:
+        if owner[str(stra)] != all_id[0] and maxid0 != -1:
             dict_all_defendings[(maxid0 , stra)] = {'deployed' : False ,
                                                     'fraction' : (number_of_troops[str(maxid0)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
                                                     'number of needed troops' : (number_of_troops[str(maxid0)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)])}
-        elif owner[str(stra)] != all_id[1]:
+        elif owner[str(stra)] != all_id[1] and maxid1 != -1:
             dict_all_defendings[(maxid1 , stra)] = {'deployed' : False ,
                                                     'fraction' : (number_of_troops[str(maxid1)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
@@ -413,7 +408,7 @@ def turn(game: Game):
    #                my_troops_layer1node = number_of_troops[str(my)]  
    #                my_troops_on_layer1 = my_troops_layer1node
    #                tunnel_number = number_of_tunnel(my,owner,my_id)            
-   #                if tunnel_number!=-1:   my_troops_on_layer1*=VARS['largest value']
+   #                if tunnel_number!=-1:   my_troops_on_layer1*=VARS['ValueOfTunnelNode']
    #                attack_score = (my_remaining_troops-attack_attemps + my_troops_on_layer1)/enemy_troops_on_node
    #                if attack_score > beta: 
    #                    opurtunity_of_attacks [(my , enemy)] = {'attack_score':attack_score , 'enemy_troops' : enemy_troops_on_node, 'my_troops_layer1node':my_troops_layer1node , 'attackon' : False,"number_of_tunnel":tunnel_number}
@@ -669,8 +664,6 @@ def turn(game: Game):
 #START TASK 1 AND 2
     else:
         for attack in deployment_list:
-            number_of_troops= game.get_number_of_troops()
-            number_of_fort_troops = game.get_number_of_fort_troops() 
             if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id and game.get_number_of_troops()[str(attack[0][1])]>=2:
                 if attack[0][1] in strategic_nodes:
                     print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
