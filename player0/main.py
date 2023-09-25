@@ -123,7 +123,7 @@ def initializer(game: Game):
     owner = game.get_owners()
     my_id = game.get_player_id()['player_id']
     if my_id == 0:
-        VARS={'strategic_troops_number': 16, 
+        VARS={'strategic_troops_number': 17, 
               'mytroops/enemytroops (beta)': 1.01, 
               'beta_plus': 1.2, 
               'TroopsTunnel': 1, 
@@ -134,7 +134,7 @@ def initializer(game: Game):
               'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     elif my_id == 1:
-        VARS={'strategic_troops_number': 16, 
+        VARS={'strategic_troops_number': 17, 
               'mytroops/enemytroops (beta)': 1.01, 
               'beta_plus': 1.2, 
               'TroopsTunnel': 1, 
@@ -145,7 +145,7 @@ def initializer(game: Game):
               'ValueOfTunnelNode': 10, 
               'ReainForce_strategics_everyround': 8}
     elif my_id == 2:
-        VARS={'strategic_troops_number': 16, 
+        VARS={'strategic_troops_number': 17, 
               'mytroops/enemytroops (beta)': 1.05, 
               'beta_plus': 1.5, 
               'TroopsTunnel': 1, 
@@ -251,7 +251,13 @@ def turn(game: Game):
         elif (owner[str(i)]!=-1) and (i not in enemy_best_strategic):
             enemy_best_strategic.append(i)
 #The first state! DEPLOYMENT OF TROOPS!---------------------------------------------------------------------------
-
+#Start Protocol 1
+    fort_target = -1
+    if len(my_best_strategic)==2 and flag==False:
+        fort_target = my_best_strategic[0]
+        print (game.put_troop(my_best_strategic[1], my_remaining_troops) , '\nProtocol 1 IN DEPLOYMENT IS DONE')
+        flag = True
+#Finish Protocol 1
 #START TASK -1
     # اگه سه تا استراتژیک داشتیم و یه همسایه از استراتژیک داشتیم میایم
     # میایم هرچی سرباز داریم میریزم توی همسایه استراتژیکی ازش  به اونی که نداریم اتک میدیدم !
@@ -836,7 +842,11 @@ def turn(game: Game):
 
     game.next_state()
 #THE LAST STATE FORTIFYING---------------------------------------------------------
-
+    #Start Protocol 1
+    if fort_target!=-1 and flag==True:
+        game.fort(fort_target, VARS['strategic_troops_number']-1)
+        fort_target=-1
+    #Finish Protocol 1
     # Task 0:
     count_startegic_node = 0 
     owner = game.get_owners()
