@@ -380,7 +380,7 @@ def turn(game):
                         fraction = (min_needed_troops + number_of_troops[str(my)] + 3) / enemy_troops_on_node
                         need_troops = min_needed_troops + 3
 
-                    if fraction and fraction >= 1.5:    fraction *= larg_num
+                    if fraction > 0 and fraction >= 1.5:    fraction *= larg_num
                     if need_troops != 10000:
                         dict_deployment[(enemy , my)] ={'deployed' : False ,
                                                         'fraction' : fraction , 
@@ -392,7 +392,8 @@ def turn(game):
 
     for each_dep in deployment_list:
         if each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
-            if each_dep[1]['min num of needed troops']:
+            if each_dep[1]['min num of needed troops'] > 0:
+                print (each_dep)
                 print (game.put_troop(each_dep[0][1] , each_dep[1]['min num of needed troops']))
                 print ('\nSOLDIERS are deployed on a node for attacking\n')
                 each_dep[1]['deployed'] = True
@@ -401,7 +402,7 @@ def turn(game):
             else:
                 each_dep[1]['deployed'] = True
                 print ('\nthere is already enough troops to attack on node' , each_dep[0][1] , 'this node should attack to:', each_dep[0][0] , '\n')
-        elif not each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1 < each_dep[1]['fraction']:
+        elif not each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
             if each_dep[1]['min num of needed troops']:
                 print (game.put_troop(each_dep[0][1] ,each_dep[1]['min num of needed troops']))
                 print ('this troops are deployed to defence')
