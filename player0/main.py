@@ -34,6 +34,41 @@ def Tunnel(start, dict_adj):
     
     return (uplist)
 
+def Tunnel_with_depth(start,dict_adj):
+    dp = [10000] * (len(dict_adj))
+    mark = [0] * (len(dict_adj))
+    uplist = [-1] * (len(dict_adj))
+    mark[start] = 1
+    dp[start] = 0
+    que = []
+    que.append(start) 
+    while len(que):
+        point = que.pop(0)
+        for i in dict_adj[str(point)]:
+            if(mark[i] == 0):
+                mark[i] = 1 
+                que.append(i)
+                dp[i] = dp[point] + 1
+                uplist[i] = point
+    
+    return (uplist,dp)
+
+def uplist_to_list(uplist,node):
+    Tunnel_listt = []
+    x = node
+    while(x != -1):
+        Tunnel_listt.append(x)
+        x = uplist[x]
+
+    Tunnel_listt.reverse()
+    return Tunnel_listt
+
+def total_troops_of_way(way,troops_of,fort_troops_of):
+    counter = 0
+    for node in way[1:]:
+        counter+= troops_of[str(node)]+fort_troops_of[str(node)]
+    return counter
+
 def TunnelListMaker(list_of_my_strategics,list_of_enemy_strategics,dict_adj):
     result = []
     for my_strategic in list_of_my_strategics:
@@ -110,7 +145,24 @@ def find_way_with_min_number_of_enemy(node, weigh_of_each_node, adj):
             mark[str(mini_id)] = 1
             dont_filled_node.append(mini_id)
             
-            
+def best_path(enemy_stra,adj,owner,my_id,troops_of,fort_troops_of):
+    uplist,depth = Tunnel_with_depth(enemy_stra,adj)
+    list_of_starts = [node for node in owner if owner[str(node)]==my_id or owner[str(node)]==-1]
+    list_of_starts.sort(key=lambda node: depth[node])
+    list_of_ways = []
+    for node in list_of_starts[:20]:
+        way = uplist_to_list(uplist,node)
+        check = True
+        for i in way[1:]:
+            if owner[str(i)]==my_id or owner[str(i)]==-1:
+                check=False
+                break
+        if check:   list_of_ways.append(way)
+    list_of_ways.sort(key= lambda way: total_troops_of_way(way,troops_of,fort_troops_of))
+    if len(list_of_ways):   
+        return (list_of_ways[0],total_troops_of_way(list_of_ways[0],troops_of,fort_troops_of))
+    else:   return -1
+    
 
 def initializer(game: Game):
     global ListOfTunnels 
