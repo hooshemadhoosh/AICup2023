@@ -294,6 +294,7 @@ def turn(game: Game):
     reinforcment_soldiers = VARS['ReainForce_strategics_everyround']
     moving_fraction = VARS['moving_fraction']
     larg_num = VARS['ValueOfTunnelNode']
+    beta_plus = VARS['beta_plus']
     my_best_strategic  = []
     enemy_best_strategic = []
     for i in strategic_nodes:
@@ -751,6 +752,8 @@ def turn(game: Game):
 # Finish Task -1 :)     
                 
 #START TASK0
+    origin = -1
+    goal = -1
     if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
 
@@ -773,7 +776,7 @@ def turn(game: Game):
                 if attack[1]['tunel'] == -1:
                     if attack[0][1] in strategic_nodes:
                         print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
-                        if game.attack(attack[0][1] , attack[0][0] , beta , 0.5)['won'] == 1:
+                        if game.attack(attack[0][1] , attack[0][0] , beta_plus , 0.5)['won'] == 1:
                             owner[str(attack[0][0])] = my_id
                     else:
                         if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
@@ -785,11 +788,17 @@ def turn(game: Game):
                     for node in range(0, len(way)-1):
                         betta = 0.5
                         if owner[str(way[node])] == my_id and way[node] in strategic_nodes:
-                            betta = 1
-                        if game.attack(way[node] , way[node+1] , betta , 0.9)['won'] == 1:
-                            owner[str(way[node + 1])] = my_id
-                        else:
+                            betta = 0.99
+                        if game.attack(way[node] , way[node+1] , betta , 0.99)['won'] == 1:
+                            owner[str(way[node+1])] = my_id
+                        elif way[0] in strategic_nodes:
+                            goal = way[node]
+                            origin = way[0] if node != 0 else -1
                             break
+                    else:
+                        if way[0] in strategic_nodes:
+                            goal = way[-1]
+                            origin = way[0]
                         
 
 
@@ -885,25 +894,35 @@ def turn(game: Game):
     owner = game.get_owners()
     number_of_troops = game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
-    strategic_nodes = list(strategic_nodes)
-    strategic_nodes.sort(key=lambda x: number_of_troops[str(x)]+number_of_fort_troops[str(x)])
-    my_best_strategic = [node for node in strategic_nodes if owner[str(node)]==my_id]
-    for node in my_best_strategic:
-        reachable = [x for x in game.get_reachable(node)['reachable'] if x not in strategic_nodes]
-        reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
-        source = reachable[0] if len(reachable) else -1
-        if source!=-1 and number_of_troops[str(source)]>3:
-            print (game.move_troop(source , node , number_of_troops[str(source)]-1))
-            break
-    else:   #This part will run only when for loop Ends with no break
+    #START PROTOCOL 1
+
+    if origin != -1 and goal != -1:
+        moving_troops = (number_of_troops[str(goal)] - number_of_troops[str(origin)])//2
+        if moving_troops > 0:
+            print (game.move_troop(goal , origin , moving_troops))
+
+    #FINISH PROTOCOL 1
+    else:
+        strategic_nodes = list(strategic_nodes)
+        strategic_nodes.sort(key=lambda x: number_of_troops[str(x)]+number_of_fort_troops[str(x)])
+        my_best_strategic = [node for node in strategic_nodes if owner[str(node)]==my_id]
         for node in my_best_strategic:
-            reachable = [x for x in game.get_reachable(node)['reachable'] if x in strategic_nodes and x!=node]
+            reachable = [x for x in game.get_reachable(node)['reachable'] if x not in strategic_nodes]
             reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
             source = reachable[0] if len(reachable) else -1
-            if source!=-1 and number_of_troops[str(source)]>10 and number_of_fort_troops[str(source)]+number_of_troops[str(source)]>number_of_fort_troops[str(node)]+number_of_troops[str(node)]:
-                troops = (number_of_troops[str(source)]-number_of_troops[str(node)])//2
-                if troops>0:    print (game.move_troop(source , node , troops))
+            if source!=-1 and number_of_troops[str(source)]>3:
+                print (game.move_troop(source , node , number_of_troops[str(source)]-1))
                 break
+        else:   #This part will run only when for loop Ends with no break
+            for node in my_best_strategic:
+                reachable = [x for x in game.get_reachable(node)['reachable'] if x in strategic_nodes and x!=node]
+                reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
+                source = reachable[0] if len(reachable) else -1
+                if source!=-1 and number_of_troops[str(source)]>10 and number_of_fort_troops[str(source)]+number_of_troops[str(source)]>number_of_fort_troops[str(node)]+number_of_troops[str(node)]:
+                    troops = (number_of_troops[str(source)]-number_of_troops[str(node)])//2
+                    if troops>0:    print (game.move_troop(source , node , troops))
+                    break
+    
     # max_troops = 1
     # sourcenode = -1
     # destinationnode = -1
