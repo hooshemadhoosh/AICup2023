@@ -304,6 +304,7 @@ def turn(game):
         elif owner[str(i)] != my_id and number_of_troops[str(i)] + number_of_fort_troops[str(i)] > enemy_maxi:
             enemy_maxi = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             enemy_maxi_id = i
+    print ('number of my troops:' , my_remaining_troops)
     if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 116:
         if my_remaining_troops > reinforcment_soldiers:
             print (game.put_troop(mini_id , reinforcment_soldiers))
@@ -314,7 +315,6 @@ def turn(game):
             number_of_troops[str(mini_id)] += my_remaining_troops
             my_remaining_troops = 0
     
-    print ('number of my troops:' , my_remaining_troops)
     all_id = [0,1,2]
     all_id.remove(my_id)
     #example: {(enemy's node or attacker , my node or defender): {'fraction':1.2 , 'deployed?' : False , 'attack' : false}}
