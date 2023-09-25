@@ -246,6 +246,7 @@ def turn(game):
     if len(my_best_strategic)==2 and flag==False:
         fort_target = my_best_strategic[0]
         print (game.put_troop(my_best_strategic[1], my_remaining_troops) , '\nProtocol 1 IN DEPLOYMENT IS DONE')
+        my_remaining_troops = 0
         flag = True
 #Finish Protocol 1
 #START TASK -1
@@ -306,8 +307,11 @@ def turn(game):
             enemy_maxi_id = i
             
     print ('number of my troops:' , my_remaining_troops)
+    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 116:
         if my_remaining_troops > reinforcment_soldiers:
+            print(f"my real remaining troops: {game.get_number_of_troops_to_put()['number_of_troops']}")
+            print (f'number of my troops:{my_remaining_troops} number of troops to put:{reinforcment_soldiers}')
             print (game.put_troop(mini_id , reinforcment_soldiers))
             number_of_troops[str(mini_id)] += reinforcment_soldiers
             my_remaining_troops -= reinforcment_soldiers

@@ -315,6 +315,7 @@ def turn(game: Game):
             enemy_maxi = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             enemy_maxi_id = i
     print ('number of my troops:' , my_remaining_troops)
+    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 116:
         if my_remaining_troops > reinforcment_soldiers:
             print (game.put_troop(mini_id , reinforcment_soldiers))
