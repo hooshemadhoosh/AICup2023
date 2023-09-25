@@ -843,8 +843,9 @@ def turn(game: Game):
     game.next_state()
 #THE LAST STATE FORTIFYING---------------------------------------------------------
     #Start Protocol 1
+    number_of_troops = game.get_number_of_troops()
     if fort_target!=-1 and flag==True:
-        game.fort(fort_target, VARS['strategic_troops_number']-1)
+        game.fort(fort_target, number_of_troops[str(fort_target)]-1)
         fort_target=-1
     #Finish Protocol 1
     # Task 0:
