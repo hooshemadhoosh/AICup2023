@@ -65,7 +65,7 @@ def uplist_to_list(uplist,node):
 
 def total_troops_of_way(way,troops_of,fort_troops_of):
     counter = 0
-    for node in way[1:]:
+    for node in way[:-1]:
         counter+= troops_of[str(node)]+fort_troops_of[str(node)]
     return counter
 
@@ -147,17 +147,16 @@ def find_way_with_min_number_of_enemy(node, weigh_of_each_node, adj):
             
 def best_path(enemy_stra,adj,owner,my_id,troops_of,fort_troops_of):
     uplist,depth = Tunnel_with_depth(enemy_stra,adj)
-    list_of_starts = [node for node in owner if owner[str(node)]==my_id or owner[str(node)]==-1]
-    list_of_starts.sort(key=lambda node: depth[node])
+    list_of_starts = [node for node in owner if owner[node]==my_id or owner[node]==-1]
+    list_of_starts.sort(key=lambda node: depth[int(node)])
     list_of_ways = []
     for node in list_of_starts[:20]:
-        way = uplist_to_list(uplist,node)
-        check = True
+        way = uplist_to_list(uplist,int(node))
         for i in way[1:]:
-            if owner[str(i)]==my_id or owner[str(i)]==-1:
-                check=False
+            if owner[str(i)]==my_id or owner[str(i)] == -1:
+                way = way[:way.index(i)+1]
                 break
-        if check:   list_of_ways.append(way)
+        if way not in list_of_ways:   list_of_ways.append(way)
     list_of_ways.sort(key= lambda way: total_troops_of_way(way,troops_of,fort_troops_of))
     if len(list_of_ways):   
         return (list_of_ways[0],total_troops_of_way(list_of_ways[0],troops_of,fort_troops_of))
@@ -378,7 +377,7 @@ def turn(game: Game):
             number_of_troops[str(mini_id)] += my_remaining_troops
             my_remaining_troops = 0
     
-    
+    my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     all_id = [0,1,2]
     all_id.remove(my_id)
     #example: {(enemy's node or attacker , my node or defender): {'fraction':1.2 , 'deployed?' : False , 'attack' : false}}
@@ -400,21 +399,22 @@ def turn(game: Game):
             dict_all_defendings[(maxid0 , stra)] = {'deployed' : False ,
                                                     'fraction' : (number_of_troops[str(maxid0)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
-                                                    'min num of needed troops' : (number_of_troops[str(maxid0)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)])}
+                                                    'min num of needed troops' : (number_of_troops[str(maxid0)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'tunel' : -1}
         elif owner[str(stra)] != all_id[1] and maxid1 != -1:
             dict_all_defendings[(maxid1 , stra)] = {'deployed' : False ,
                                                     'fraction' : (number_of_troops[str(maxid1)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
-                                                    'min num of needed troops' : (number_of_troops[str(maxid1)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)])}
+                                                    'min num of needed troops' : (number_of_troops[str(maxid1)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'tunel' : -1}
             
     dict_all_defendings = (sorted(dict_all_defendings.items() , key = lambda item: item[1]['fraction'] , reverse=True))
-    
     for puttroop in dict_all_defendings:
         if owner[str(puttroop[0][1])] == my_id:
             dict_deployment[puttroop[0]] = puttroop[1]
-        
-    enemy_numbers = [1,2,3,4,5,6,7 ,8 ,9 ,10,11]
-    my_numbers    = [4,5,6,8,8,9,11,12,14,15,17]
+#checking for attack on layer1 node 
+    enemy_numbers = [1,2,3,4,5,6 ,7 ,8 ,9 ,10,11]
+    my_numbers    = [4,5,7,8,9,10,11,12,14,15,17]
     for enemy in strategic_nodes:  
         if owner[str(enemy)] != my_id:
             enemy_troops_on_node = number_of_troops[str(enemy)] + number_of_fort_troops[str(enemy)] #getting the number of enemy troops on the strategic node
@@ -429,24 +429,56 @@ def turn(game: Game):
 
                 if owner[str(my)] == my_id or owner[str(my)] == -1:
                     if my_remaining_troops == min_needed_troops:
-                        fraction = min_needed_troops + number_of_troops[str(my)] / enemy_troops_on_node
+                        fraction = (min_needed_troops + number_of_troops[str(my)]) / enemy_troops_on_node
                         need_troops = my_remaining_troops
                     elif min_needed_troops < my_remaining_troops <= (min_needed_troops+ 3):
-                        fraction = my_remaining_troops + number_of_troops[str(my)] / enemy_troops_on_node
+                        fraction = (my_remaining_troops + number_of_troops[str(my)]) / enemy_troops_on_node
                         need_troops = my_remaining_troops
                     elif my_remaining_troops > (min_needed_troops + number_of_troops[str(my)] + 3):
                         fraction = (min_needed_troops + number_of_troops[str(my)] + 3) / enemy_troops_on_node
                         need_troops = min_needed_troops + 3
 
-                    if fraction > 0 and fraction >= 1.5:    fraction *= larg_num
-                    if need_troops != 10000:
-                        dict_deployment[(enemy , my)] ={'deployed' : False ,
-                                                        'fraction' : fraction , 
-                                                        'attack' : True ,
-                                                        'min num of needed troops' : need_troops} 
-                    
+                    if fraction >= 1.5:    fraction *= larg_num
+                    if need_troops != 10000 and fraction != -1:
+                        dict_deployment[(enemy , my)] = {'deployed' : False ,
+                                                         'fraction' : fraction , 
+                                                         'attack' : True ,
+                                                         'min num of needed troops' : need_troops,
+                                                         'tunel' : -1} 
+    for enemy in strategic_nodes:
+        fraction = -1
+        min_needed_troops = 10000
+        need_troops = 10000
+        if owner[str(enemy)] != my_id:
+            path = (best_path(enemy,adjacents,owner,my_id,number_of_troops,number_of_fort_troops))
+            if path != -1:
+                my = path[0][-1]
+                enemy_troops_on_path = path[1]
+                if enemy_troops_on_path in enemy_numbers:
+                    min_needed_troops = my_numbers[enemy_troops_on_path-1] - number_of_troops[str(my)]
+                else:
+                    min_needed_troops = int(1.5*enemy_troops_on_path) + 1 - number_of_troops[str(my)]
+                if my_remaining_troops == min_needed_troops:
+                    fraction = (min_needed_troops + number_of_troops[str(my)]) / enemy_troops_on_path
+                    need_troops = my_remaining_troops
+                elif min_needed_troops < my_remaining_troops <= (min_needed_troops + 3):
+                    need_troops = my_remaining_troops
+                    fraction = (my_remaining_troops + number_of_troops[str(my)]) / enemy_troops_on_path
+                elif my_remaining_troops > (min_needed_troops + number_of_troops[str(my)] + 3):
+                    need_troops = min_needed_troops + 3
+                    fraction = (min_needed_troops + number_of_troops[str(my)] + 3) / enemy_troops_on_path
+                if fraction >= 1.5:    fraction*=larg_num
+                if need_troops != 10000 and fraction != -1:
+                    dict_deployment[(enemy , my)] = {'deployed' : False ,
+                                                     'fraction' : fraction , 
+                                                     'attack' : True ,
+                                                     'min num of needed troops' : need_troops,
+                                                     'tunel' : path[0]} 
+
+#finish checking layer1 node
+    
     deployment_list = sorted(dict_deployment.items() , key=lambda fra: fra[1]['fraction'] , reverse=True)
-    print (deployment_list)
+    print ('\n' ,deployment_list , '\n')
 
     for each_dep in deployment_list:
         if each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
@@ -738,14 +770,28 @@ def turn(game: Game):
     else:
         for attack in deployment_list:
             if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id and game.get_number_of_troops()[str(attack[0][1])]>=2:
-                if attack[0][1] in strategic_nodes:
-                    print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
-                    if game.attack(attack[0][1] , attack[0][0] , beta , 0.5)['won'] == 1:
-                        owner[str(attack[0][0])] = my_id
+                if attack[1]['tunel'] == -1:
+                    if attack[0][1] in strategic_nodes:
+                        print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
+                        if game.attack(attack[0][1] , attack[0][0] , beta , 0.5)['won'] == 1:
+                            owner[str(attack[0][0])] = my_id
+                    else:
+                        if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
+                            owner[str(attack[0][0])] = my_id
+                    print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
                 else:
-                    if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
-                        owner[str(attack[0][0])] = my_id
-                print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
+                    way = attack[1]['tunel']
+                    way.reverse()
+                    for node in range(0, len(way)-1):
+                        betta = 0.5
+                        if owner[str(way[node])] == my_id and way[node] in strategic_nodes:
+                            betta = 1
+                        if game.attack(way[node] , way[node+1] , betta , 0.9)['won'] == 1:
+                            owner[str(way[node + 1])] = my_id
+                        else:
+                            break
+                        
+
 
 
 
