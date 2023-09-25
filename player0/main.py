@@ -802,9 +802,9 @@ def turn(game: Game):
             reachable = [x for x in game.get_reachable(node)['reachable'] if x in strategic_nodes and x!=node]
             reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
             source = reachable[0] if len(reachable) else -1
-            if source!=-1 and number_of_troops[str(source)]>10:
+            if source!=-1 and number_of_troops[str(source)]>10 and number_of_fort_troops[str(source)]+number_of_troops[str(source)]>number_of_fort_troops[str(node)]+number_of_troops[str(node)]:
                 troops = (number_of_troops[str(source)]-number_of_troops[str(node)])//2
-                print (game.move_troop(source , node , troops))
+                if troops>0:    print (game.move_troop(source , node , troops))
                 break
     # max_troops = 1
     # sourcenode = -1
