@@ -1,4 +1,4 @@
-VARS={'strategic_troops_number': 17,}
+VARS={'strategic_troops_number': 17.0, 'mytroops/enemytroops (beta)': 1.1, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.9, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 7.0}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
@@ -135,6 +135,23 @@ def find_way_with_min_number_of_enemy(node, weigh_of_each_node, adj):
             mark[str(mini_id)] = 1
             dont_filled_node.append(mini_id)
             
+def best_path(enemy_stra,adj,owner,my_id,troops_of,fort_troops_of):
+    uplist,depth = Tunnel_with_depth(enemy_stra,adj)
+    list_of_starts = [node for node in owner if owner[node]==my_id or owner[node]==-1]
+    list_of_starts.sort(key=lambda node: depth[int(node)])
+    list_of_ways = []
+    for node in list_of_starts[:20]:
+        way = uplist_to_list(uplist,int(node))
+        for i in way[1:]:
+            if owner[str(i)]==my_id or owner[str(i)] == -1:
+                way = way[:way.index(i)+1]
+                break
+        if way not in list_of_ways:   list_of_ways.append(way)
+    list_of_ways.sort(key= lambda way: total_troops_of_way(way,troops_of,fort_troops_of))
+    if len(list_of_ways):   
+        return (list_of_ways[0],total_troops_of_way(list_of_ways[0],troops_of,fort_troops_of))
+    else:   return -1
+    
 def best_path(enemy_stra,adj,owner,my_id,troops_of,fort_troops_of):
     uplist,depth = Tunnel_with_depth(enemy_stra,adj)
     list_of_starts = [node for node in owner if owner[node]==my_id or owner[node]==-1]
@@ -309,40 +326,41 @@ def turn(game):
     # اگه سه تا استراتژیک داشتیم و یه همسایه از استراتژیک داشتیم میایم
     # میایم هرچی سرباز داریم میریزم توی همسایه استراتژیکی ازش  به اونی که نداریم اتک میدیدم !
 
-
-    count_startegic_node = 0
-    maxi = -1
-    max_id = -1
-
-    for i in strategic_nodes:
-        if(owner[str(i)] == my_id):
-            count_startegic_node += 1
     
-    if(count_startegic_node == 3 and turn_number > 126):
 
-        dict_best_node_for_attak = {}
-        for i in strategic_nodes:
-            if(owner[str(i)] != my_id):
-                for j in adjacents[str(i)]:
-                    if(owner[str(j)] == my_id or owner[str(j)] == -1):
-                        dict_best_node_for_attak[str(j)] = [number_of_troops[str(j)], number_of_troops[str(i)] + number_of_fort_troops[str(i)]]
-                        
-        for i in dict_best_node_for_attak:
-            best_node_to_attack = dict_best_node_for_attak[i][0] / dict_best_node_for_attak[i][1]
+   #count_startegic_node = 0
+   #maxi = -1
+   #max_id = -1
 
-            if(best_node_to_attack > maxi):
-                maxi = best_node_to_attack
-                max_id = int(i)
-            
-        
-        if(max_id == -1):
-            pass
-        else:
-            print (game.put_troop(max_id, my_remaining_troops) , '\nTASK -1 IN DEPLOYMENT IS DONE')
-            my_remaining_troops = 0
+   #for i in strategic_nodes:
+   #    if(owner[str(i)] == my_id):
+   #        count_startegic_node += 1
+   #
+   #if(count_startegic_node == 3 and turn_number > 126):
+
+   #    dict_best_node_for_attak = {}
+   #    for i in strategic_nodes:
+   #        if(owner[str(i)] != my_id):
+   #            for j in adjacents[str(i)]:
+   #                if(owner[str(j)] == my_id or owner[str(j)] == -1):
+   #                    dict_best_node_for_attak[str(j)] = [number_of_troops[str(j)], number_of_troops[str(i)] + number_of_fort_troops[str(i)]]
+   #                    
+   #    for i in dict_best_node_for_attak:
+   #        best_node_to_attack = dict_best_node_for_attak[i][0] / dict_best_node_for_attak[i][1]
+
+   #        if(best_node_to_attack > maxi):
+   #            maxi = best_node_to_attack
+   #            max_id = int(i)
+   #        
+   #    
+   #    if(max_id == -1):
+   #        pass
+   #    else:
+   #        print (game.put_troop(max_id, my_remaining_troops) , '\nTASK -1 IN DEPLOYMENT IS DONE')
+   #        my_remaining_troops = 0
             
 #FINISH TASK -1        
-            
+    my_fort_target = fort_target
     dict_deployment = {}
     dict_all_defendings = {}
 #START TASK 0 :
@@ -358,12 +376,15 @@ def turn(game):
             mini = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
             mini_id = i
             count_our_stra += 1
-        elif owner[str(i)] != my_id and number_of_troops[str(i)] + number_of_fort_troops[str(i)] > enemy_maxi:
-            enemy_maxi = number_of_troops[str(i)] + number_of_fort_troops[str(i)]
+            if mini_id == my_fort_target and flag:
+                mini_id = -1
+                my_fort_target = -2
+        elif owner[str(i)] != my_id and number_of_troops[str(i)] > enemy_maxi:
+            enemy_maxi = number_of_troops[str(i)]
             enemy_maxi_id = i
     print ('number of my troops:' , my_remaining_troops)
     my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
-    if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 116 and my_remaining_troops > 0:
+    if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 112 and my_remaining_troops > 0 and mini_id != -1:
         if my_remaining_troops > reinforcment_soldiers:
             print (game.put_troop(mini_id , reinforcment_soldiers))
             number_of_troops[str(mini_id)] += reinforcment_soldiers
@@ -747,19 +768,17 @@ def turn(game):
 # Finish Task -1 :)     
                 
 #START TASK0
-    origin = -1
-    goal = -1
     if(count_startegic_node == 3 and max_id != -1 and turn_number > 126):
         #my_remaining_troops
 
-            near_startegic = 0
-            for i in adjacents[str(max_id)]:
-                if i in strategic_nodes and owner[str(i)]!=my_id and owner[str(i)] != -1:
-                    near_startegic = i
-                    break
-            if near_startegic!=0:  
-                game.attack(max_id, near_startegic,0.5, 0.5)
-                print ('TASK 0 IN ATTACK IS DONE')
+   #        near_startegic = 0
+   #        for i in adjacents[str(max_id)]:
+   #            if i in strategic_nodes and owner[str(i)]!=my_id and owner[str(i)] != -1:
+   #                near_startegic = i
+   #                break
+   #        if near_startegic!=0:  
+   #            game.attack(max_id, near_startegic,0.5, 0.5)
+   #            print ('TASK 0 IN ATTACK IS DONE')
                 
         
 #FINISH TASK 0 
@@ -768,35 +787,14 @@ def turn(game):
     else:
         for attack in deployment_list:
             if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id and game.get_number_of_troops()[str(attack[0][1])]>=2:
-                if attack[1]['tunel'] == -1:
-                    if attack[0][1] in strategic_nodes:
-                        print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
-                        if game.attack(attack[0][1] , attack[0][0] , beta_plus , 0.5)['won'] == 1:
-                            owner[str(attack[0][0])] = my_id
-                    else:
-                        if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
-                            owner[str(attack[0][0])] = my_id
-                    print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
+                if attack[0][1] in strategic_nodes:
+                    print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
+                    if game.attack(attack[0][1] , attack[0][0] , beta , 0.5)['won'] == 1:
+                        owner[str(attack[0][0])] = my_id
                 else:
-                    way = attack[1]['tunel']
-                    way.reverse()
-                    for node in range(0, len(way)-1):
-                        betta = 0.5
-                        if owner[str(way[node])] == my_id and way[node] in strategic_nodes:
-                            betta = 0.99
-                        if owner[str(way[node+1])]==my_id or owner[str(way[node])]!=my_id:  break
-                        if game.attack(way[node] , way[node+1] , betta , 0.99)['won'] == 1:
-                            owner[str(way[node+1])] = my_id
-                        elif way[0] in strategic_nodes:
-                            goal = way[node]
-                            origin = way[0] if node != 0 else -1
-                            break
-                    else:
-                        if way[0] in strategic_nodes:
-                            goal = way[-1]
-                            origin = way[0]
-                        
-
+                    if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
+                        owner[str(attack[0][0])] = my_id
+                print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
 
 
 
