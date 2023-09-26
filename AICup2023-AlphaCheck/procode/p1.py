@@ -1,5 +1,6 @@
 VARS={'strategic_troops_number': 17,}
 flag = False
+check_get_one = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
 father = {}
@@ -148,6 +149,7 @@ def best_path(enemy_stra,adj,owner,my_id,troops_of,fort_troops_of):
                 break
         if way not in list_of_ways:   list_of_ways.append(way)
     list_of_ways.sort(key= lambda way: total_troops_of_way(way,troops_of,fort_troops_of))
+    list_of_ways = [my_way for my_way in list_of_ways if len(my_way)>1]
     if len(list_of_ways):   
         return (list_of_ways[0],total_troops_of_way(list_of_ways[0],troops_of,fort_troops_of))
     else:   return -1
@@ -262,6 +264,7 @@ def initializer(game):
     
  
 def turn(game):
+    global check_get_one
     global VARS  
     global flag
     global good_list
@@ -452,6 +455,7 @@ def turn(game):
         if owner[str(enemy)] != my_id:
             path = (best_path(enemy,adjacents,owner,my_id,number_of_troops,number_of_fort_troops))
             if path != -1:
+                print(path)
                 my = path[0][-1]
                 enemy_troops_on_path = path[1]
                 if enemy_troops_on_path in enemy_numbers:
@@ -581,26 +585,28 @@ def turn(game):
 #FINISH TASK 3
 
 #START TASK 4
-
-   #owner = game.get_owners()
-   #attack_on_layer1 = []  #Stores cases in form of [attacker node,target node]
-   #for enemy_stra in enemy_best_strategic:
-   #    sorted_layer1 = [node for node in adjacents[str(enemy_stra)] if owner[str(node)]!=my_id]
-   #    sorted_layer1.sort(key= lambda x: number_of_troops[str(x)]+ number_of_fort_troops[str(x)])
-   #    for layer1_node in sorted_layer1:
-   #        sorted_layer2 = [node for node in adjacents[str(layer1_node)] if owner[str(node)]==my_id]
-   #        if len(sorted_layer2)==0:   continue
-   #        sorted_layer2.sort(key= lambda x: number_of_troops[str(x)],reverse=True)
-   #        for layer2_node in sorted_layer2:
-   #            needed_troops = (number_of_troops[str(layer1_node)] + number_of_fort_troops[str(layer1_node)])*beta+attack_attemps-1
-   #            if number_of_troops[str(layer2_node)]+my_remaining_troops>=needed_troops:
-   #                troops_to_put = int(needed_troops-number_of_troops[str(layer2_node)])
-   #                if troops_to_put > 0:   
-   #                    my_remaining_troops-=troops_to_put
-   #                    number_of_troops[str(layer2_node)] += int(troops_to_put)
-   #                    print (game.put_troop(layer2_node , int(troops_to_put)), '\n TASK 4 IN DEPLOYMENT OF TROOPS IS DONE!\n')
-   #                    attack_on_layer1.append([layer2_node,layer1_node])
-   #                    break
+    if(check_get_one == False):
+        check_get_one = True
+        dict_mini_depth = {}
+        for i in owner.keys():
+            dict_mini_depth[str(i)] = 10000
+        for i in strategic_nodes:
+            uplist1,depth1 = Tunnel_with_depth(i, adjacents)
+            for j in range(0, len(adjacents)):
+                dict_mini_depth[str(j)] = min(dict_mini_depth[str(j)], depth1[j])
+        maxi5 = 0
+        maxi5_ = -1
+        for j in dict_mini_depth.keys():
+            if(dict_mini_depth[str(j)] > maxi5 and owner[str(j)] == -1):
+                maxi5 = dict_mini_depth[str(j)]
+                maxi5_ = int(j)
+        if(my_remaining_troops > 0 and maxi5_!=-1):
+            game.put_troop(maxi5_, 1)
+            # print(maxi5_)
+            my_remaining_troops -= 1 
+        print("dict of depth:", dict_mini_depth)
+    else:
+        check_get_one = False
 #FINISH TASK 4
 # Start task 5 
     if(turn_number > 162):
