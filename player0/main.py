@@ -706,35 +706,8 @@ def turn(game: Game):
                 if(owner[str(i)] != -1 and owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
                     mini = dp[str(i)][0]
                     mini_id1 = i
-            if(mini_id1 == -1):
-                maxi = 0
-                max_id1 = -1
-                for i in owner.keys():
-                    if(dp[str(i)][0] + dp[str(i)][1] <= 40 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
-                        maxi = dp[str(i)][0] + dp[str(i)][1]
-                        max_id1 = i
-
-                way = []
-                x = 0
-                
-                while(x < 100 and max_id1 != -1):
-                    x +=1
-                    way.append(max_id1)
-                    max_id1 = father[str(max_id1)]   
-                way.reverse()     
-                if(len(way) >= 2):
-                    print ("Task -1 list Way:")
-                    print(way)
-                    if game.attack(way[0], way[1], VARS['beta_plus'], 0.5)['won'] == 1:
-                        for i in range(1, len(way) - 1):
-                            if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
-                            if game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], 0.9)['won'] != 1:   break
-                            owner = game.get_owners()
-                            number_of_troops= game.get_number_of_troops()
-                            number_of_fort_troops = game.get_number_of_fort_troops() 
-                    
-
-            else:
+            
+            if(mini_id != -1):
                 x = 0
                 way = []
                 while(x < 100 and mini_id1 != -1):
