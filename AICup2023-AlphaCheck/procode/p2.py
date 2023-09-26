@@ -1,4 +1,4 @@
-VARS={'strategic_troops_number': 17.0, 'mytroops/enemytroops (beta)': 1.0, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.9, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 8.0}
+VARS={'strategic_troops_number': 17,}
 flag = False
 ListOfTunnels = []
 good_list = [5, 6, 7]
@@ -483,7 +483,6 @@ def turn(game):
     for each_dep in deployment_list:
         if each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
             if each_dep[1]['min num of needed troops'] > 0:
-                print (each_dep)
                 print (game.put_troop(each_dep[0][1] , each_dep[1]['min num of needed troops']))
                 print ('\nSOLDIERS are deployed on a node for attacking\n')
                 each_dep[1]['deployed'] = True
@@ -787,6 +786,7 @@ def turn(game):
                     betta = 0.5
                     if owner[str(way[node])] == my_id and way[node] in strategic_nodes:
                         betta = 0.99
+                    if owner[str(way[node+1])]==my_id or owner[str(way[node])]!=my_id:  break
                     if game.attack(way[node] , way[node+1] , betta , 0.99)['won'] == 1:
                         owner[str(way[node+1])] = my_id
                     elif way[0] in strategic_nodes:
@@ -860,12 +860,14 @@ def turn(game):
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
+    print (strategic_nodes)
     for i in strategic_nodes:
         if(owner[str(i)] == my_id):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]: 
                         if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2):
+                            print (f'my stra (i) is: {i} and enemy node layer1 is {j} and layer2 node is {k}')
                             print (game.attack(k, j, 0.1, 0.6) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
                             owner = game.get_owners()
                             number_of_troops= game.get_number_of_troops()
@@ -879,7 +881,7 @@ def turn(game):
 # Start task 6:
     opt_nums = [3,4,5,6]
     for i in owner:
-        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
+        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and int(i) not in strategic_nodes):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
