@@ -305,10 +305,15 @@ def turn(game: Game):
 #The first state! DEPLOYMENT OF TROOPS!---------------------------------------------------------------------------
 #Start Protocol 1
     fort_target = -1
-    if len(my_best_strategic)==2 and flag==False:
-        fort_target = my_best_strategic[0]
-        print (game.put_troop(my_best_strategic[1], my_remaining_troops) , '\nProtocol 1 IN DEPLOYMENT IS DONE')
-        flag = True
+    if my_id==1:
+        if len(my_best_strategic)==2 and flag==False:
+            fort_target = my_best_strategic[0]
+            print (game.put_troop(my_best_strategic[1], my_remaining_troops) , '\nProtocol 1 IN DEPLOYMENT IS DONE')
+            flag = True
+    else:
+        if len(my_best_strategic)==2 and flag==False:
+            fort_target = my_best_strategic[0]
+            flag = True
 #Finish Protocol 1
 #START TASK -1
     # اگه سه تا استراتژیک داشتیم و یه همسایه از استراتژیک داشتیم میایم
@@ -789,6 +794,7 @@ def turn(game: Game):
                         betta = 0.5
                         if owner[str(way[node])] == my_id and way[node] in strategic_nodes:
                             betta = 0.99
+                        if owner[str(way[node+1])]==my_id or owner[str(way[node])]!=my_id:  break
                         if game.attack(way[node] , way[node+1] , betta , 0.99)['won'] == 1:
                             owner[str(way[node+1])] = my_id
                         elif way[0] in strategic_nodes:
@@ -881,7 +887,7 @@ def turn(game: Game):
 # Start task 6:
     opt_nums = [3,4,5,6]
     for i in owner:
-        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and i not in strategic_nodes):
+        if(owner[str(i)] == my_id and number_of_troops[str(i)]>1 and int(i) not in strategic_nodes):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
