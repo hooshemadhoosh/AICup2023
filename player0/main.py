@@ -409,15 +409,15 @@ def turn(game: Game):
     for stra in strategic_nodes:
         if owner[str(stra)] != all_id[0] and maxid0 != -1:
             dict_all_defendings[(maxid0 , stra)] = {'deployed' : False ,
-                                                    'fraction' : (number_of_troops[str(maxid0)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'fraction' : (number_of_troops[str(maxid0)] + larg_num)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
-                                                    'min num of needed troops' : (number_of_troops[str(maxid0)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'min num of needed troops' : (number_of_troops[str(maxid0)] + larg_num) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'tunel' : -1}
         elif owner[str(stra)] != all_id[1] and maxid1 != -1:
             dict_all_defendings[(maxid1 , stra)] = {'deployed' : False ,
-                                                    'fraction' : (number_of_troops[str(maxid1)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'fraction' : (number_of_troops[str(maxid1)] + larg_num)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
-                                                    'min num of needed troops' : (number_of_troops[str(maxid1)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'min num of needed troops' : (number_of_troops[str(maxid1)] + larg_num) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'tunel' : -1}
             
     dict_all_defendings = (sorted(dict_all_defendings.items() , key = lambda item: item[1]['fraction'] , reverse=True))

@@ -1,4 +1,4 @@
-VARS={'strategic_troops_number': 17,}
+VARS={'strategic_troops_number': 17.0, 'mytroops/enemytroops (beta)': 1.1, 'beta_plus': 1.2, 'TroopsTunnel': 1.0, 'number_of_attack_attemps': 3.0, 'troops_to_put_on_strategics': 1.0, 'moving_fraction': 0.9, 'number_of_defender_troops': 2.0, 'ValueOfTunnelNode': 10.0, 'ReainForce_strategics_everyround': 7.0}
 flag = False
 check_get_one = False
 ListOfTunnels = []
@@ -6,6 +6,8 @@ good_list = [5, 6, 7]
 father = {}
 dp = {}
 mark = {}
+each_add = 3
+reapeted_attacks = {}
 def Tunnel(start, dict_adj):
     dp = [10000] * (len(dict_adj))
     mark = [0] * (len(dict_adj))
@@ -268,6 +270,8 @@ def turn(game):
     global VARS  
     global flag
     global good_list
+    global reapeted_attacks
+    global each_add
 #getting turn number
     my_id = game.get_player_id()['player_id']
     turn_number = game.get_turn_number()['turn_number']
@@ -295,6 +299,10 @@ def turn(game):
             my_best_strategic.append(i)
         elif (owner[str(i)]!=-1) and (i not in enemy_best_strategic):
             enemy_best_strategic.append(i)
+    
+    if turn_number < 109:
+        for e in strategic_nodes:
+            reapeted_attacks[e] = 0
 #The first state! DEPLOYMENT OF TROOPS!---------------------------------------------------------------------------
 #Start Protocol 1
     fort_target = -1
@@ -400,15 +408,15 @@ def turn(game):
     for stra in strategic_nodes:
         if owner[str(stra)] != all_id[0] and maxid0 != -1:
             dict_all_defendings[(maxid0 , stra)] = {'deployed' : False ,
-                                                    'fraction' : (number_of_troops[str(maxid0)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'fraction' : (number_of_troops[str(maxid0)] + larg_num)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
-                                                    'min num of needed troops' : (number_of_troops[str(maxid0)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'min num of needed troops' : (number_of_troops[str(maxid0)] + larg_num) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'tunel' : -1}
         elif owner[str(stra)] != all_id[1] and maxid1 != -1:
             dict_all_defendings[(maxid1 , stra)] = {'deployed' : False ,
-                                                    'fraction' : (number_of_troops[str(maxid1)] + larg_num - 4)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'fraction' : (number_of_troops[str(maxid1)] + larg_num)/(number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'attack' : False,
-                                                    'min num of needed troops' : (number_of_troops[str(maxid1)] + larg_num - 4) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
+                                                    'min num of needed troops' : (number_of_troops[str(maxid1)] + larg_num) - (number_of_troops[str(stra)] + number_of_fort_troops[str(stra)]),
                                                     'tunel' : -1}
             
     dict_all_defendings = (sorted(dict_all_defendings.items() , key = lambda item: item[1]['fraction'] , reverse=True))
@@ -443,6 +451,8 @@ def turn(game):
 
                     if fraction >= 1.5:    fraction *= larg_num
                     if need_troops != 10000 and fraction != -1:
+                        if reapeted_attacks[enemy] > 2:
+                            need_troops += ((reapeted_attacks[enemy] - 2) * each_add)
                         dict_deployment[(enemy , my)] = {'deployed' : False ,
                                                          'fraction' : fraction , 
                                                          'attack' : True ,
@@ -455,7 +465,6 @@ def turn(game):
         if owner[str(enemy)] != my_id:
             path = (best_path(enemy,adjacents,owner,my_id,number_of_troops,number_of_fort_troops))
             if path != -1:
-                print(path)
                 my = path[0][-1]
                 enemy_troops_on_path = path[1]
                 if enemy_troops_on_path in enemy_numbers:
@@ -473,6 +482,8 @@ def turn(game):
                     fraction = (min_needed_troops + number_of_troops[str(my)] + 3) / enemy_troops_on_path
                 if fraction >= 1.5:    fraction*=larg_num
                 if need_troops != 10000 and fraction != -1:
+                    if reapeted_attacks[enemy] > 2:
+                            need_troops += ((reapeted_attacks[enemy] - 2) * each_add)
                     dict_deployment[(enemy , my)] = {'deployed' : False ,
                                                      'fraction' : fraction , 
                                                      'attack' : True ,
@@ -482,7 +493,6 @@ def turn(game):
 #finish checking layer1 node
     
     deployment_list = sorted(dict_deployment.items() , key=lambda fra: fra[1]['fraction'] , reverse=True)
-    print ('\n' ,deployment_list , '\n')
 
     for each_dep in deployment_list:
         if each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
@@ -604,7 +614,6 @@ def turn(game):
             game.put_troop(maxi5_, 1)
             # print(maxi5_)
             my_remaining_troops -= 1 
-        print("dict of depth:", dict_mini_depth)
     else:
         check_get_one = False
 #FINISH TASK 4
@@ -698,35 +707,8 @@ def turn(game):
                 if(owner[str(i)] != -1 and owner[str(i)] != my_id and dp[str(i)][0] != 10000 and dp[str(i)][0] < mini):
                     mini = dp[str(i)][0]
                     mini_id1 = i
-            if(mini_id1 == -1):
-                maxi = 0
-                max_id1 = -1
-                for i in owner.keys():
-                    if(dp[str(i)][0] + dp[str(i)][1] <= 40 and owner[str(i)] != my_id and maxi <= dp[str(i)][0] + dp[str(i)][1]):
-                        maxi = dp[str(i)][0] + dp[str(i)][1]
-                        max_id1 = i
-
-                way = []
-                x = 0
-                
-                while(x < 100 and max_id1 != -1):
-                    x +=1
-                    way.append(max_id1)
-                    max_id1 = father[str(max_id1)]   
-                way.reverse()     
-                if(len(way) >= 2):
-                    print ("Task -1 list Way:")
-                    print(way)
-                    if game.attack(way[0], way[1], VARS['beta_plus'], 0.5)['won'] == 1:
-                        for i in range(1, len(way) - 1):
-                            if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
-                            if game.attack(way[i], way[i + 1], VARS['mytroops/enemytroops (beta)'], 0.9)['won'] != 1:   break
-                            owner = game.get_owners()
-                            number_of_troops= game.get_number_of_troops()
-                            number_of_fort_troops = game.get_number_of_fort_troops() 
-                    
-
-            else:
+            
+            if(mini_id != -1):
                 x = 0
                 way = []
                 while(x < 100 and mini_id1 != -1):
@@ -781,9 +763,13 @@ def turn(game):
                     print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
                     if game.attack(attack[0][1] , attack[0][0] , beta_plus , 0.5)['won'] == 1:
                         owner[str(attack[0][0])] = my_id
+                        if attack[0][0] in strategic_nodes:
+                            reapeted_attacks[attack[0][0]] += 1
                 else:
                     if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
                         owner[str(attack[0][0])] = my_id
+                        if attack[0][0] in strategic_nodes:
+                            reapeted_attacks[attack[0][0]] += 1
                 print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
             else:
                 way = attack[1]['tunel']
@@ -795,6 +781,8 @@ def turn(game):
                     if owner[str(way[node+1])]==my_id or owner[str(way[node])]!=my_id:  break
                     if game.attack(way[node] , way[node+1] , betta , 0.99)['won'] == 1:
                         owner[str(way[node+1])] = my_id
+                        if node+2 == len(way) and way[-1] in strategic_nodes:
+                            reapeted_attacks[way[-1]] += 1
                     elif way[0] in strategic_nodes:
                         goal = way[node]
                         origin = way[0] if node != 0 else -1
@@ -803,11 +791,8 @@ def turn(game):
                     if way[0] in strategic_nodes:
                         goal = way[-1]
                         origin = way[0]
-                        
 
-
-
-
+    print ( 'dict reapeted is:',reapeted_attacks)
 
        #if sort_chance_of_attacks!=-1 and len(sort_chance_of_attacks) >= 1:
        #    for on in sort_chance_of_attacks: 
@@ -866,7 +851,6 @@ def turn(game):
     number_of_troops= game.get_number_of_troops()
     number_of_fort_troops = game.get_number_of_fort_troops()
 #START TASK 5 :
-    print (strategic_nodes)
     for i in strategic_nodes:
         if(owner[str(i)] == my_id):
             for j in adjacents[str(i)]:
