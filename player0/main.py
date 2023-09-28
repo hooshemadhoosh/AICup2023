@@ -883,7 +883,7 @@ def turn(game: Game):
     number_of_fort_troops = game.get_number_of_fort_troops()
     #START PROTOCOL 1
 
-    if origin != -1 and goal != -1:
+    if origin != -1 and goal != -1 and number_of_troops[str(goal)]>number_of_troops[str(origin)]+number_of_fort_troops[str(origin)]:
         moving_troops = (number_of_troops[str(goal)] - number_of_troops[str(origin)])//2
         if moving_troops > 0:
             print (game.move_troop(goal , origin , moving_troops))
