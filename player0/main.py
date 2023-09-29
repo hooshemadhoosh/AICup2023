@@ -343,15 +343,15 @@ def turn(game: Game):
         elif owner[str(i)] != my_id and number_of_troops[str(i)] > enemy_maxi:
             enemy_maxi = number_of_troops[str(i)]
             enemy_maxi_id = i
-
+    print (mini , mini_id)
     my_remaining_troops = game.get_number_of_troops_to_put()['number_of_troops']
     if mini < 30 and enemy_maxi > 14 and count_our_stra < 3 and turn_number < 112 and my_remaining_troops > 0 and mini_id != -1:
         if my_remaining_troops > reinforcment_soldiers:
-            print (game.put_troop(mini_id , reinforcment_soldiers))
+            game.put_troop(mini_id , reinforcment_soldiers)
             number_of_troops[str(mini_id)] += reinforcment_soldiers
             my_remaining_troops -= reinforcment_soldiers
         else:
-            print (game.put_troop(mini_id , my_remaining_troops))
+            game.put_troop(mini_id , my_remaining_troops)
             number_of_troops[str(mini_id)] += my_remaining_troops
             my_remaining_troops = 0
     
@@ -456,23 +456,19 @@ def turn(game: Game):
 #finish checking layer1 node
     
     deployment_list = sorted(dict_deployment.items() , key=lambda fra: fra[1]['fraction'] , reverse=True)
-    print ('\n' ,deployment_list , '\n')
 
     for each_dep in deployment_list:
         if each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
             if each_dep[1]['min num of needed troops'] > 0:
                 game.put_troop(each_dep[0][1] , each_dep[1]['min num of needed troops'])
-                print ('\nSOLDIERS are deployed on a node for attacking\n')
                 each_dep[1]['deployed'] = True
                 my_remaining_troops -= each_dep[1]['min num of needed troops']
                 number_of_troops[str(each_dep[0][1])] += each_dep[1]['min num of needed troops']
             else:
                 each_dep[1]['deployed'] = True
-                print ('\nthere is already enough troops to attack on node' , each_dep[0][1] , 'this node should attack to:', each_dep[0][0] , '\n')
         elif not each_dep[1]['attack'] and my_remaining_troops >= each_dep[1]['min num of needed troops'] and 1.2 < each_dep[1]['fraction']:
             if each_dep[1]['min num of needed troops']:
                 game.put_troop(each_dep[0][1] ,each_dep[1]['min num of needed troops'])
-                print ('this troops are deployed to defence')
                 my_remaining_troops -= each_dep[1]['min num of needed troops']
                 number_of_troops[str(each_dep[0][1])] += each_dep[1]['min num of needed troops']
             
@@ -500,7 +496,6 @@ def turn(game: Game):
             game.put_troop(maxi5_, 1)
             # print(maxi5_)
             my_remaining_troops -= 1 
-        print("dict of depth:", dict_mini_depth)
     else:
         check_get_one = False
 #FINISH TASK 1
@@ -513,7 +508,7 @@ def turn(game: Game):
             x += 1
             for i in owner.keys():
                 if(owner[str(i)] == -1):
-                    print (game.put_troop(i, 3) , '\nTASK 5 IN DEPLOYMENT IS DONE\n')
+                    game.put_troop(i, 3)
                     my_remaining_troops -= 3
                     owner[str(i)] = my_id
                     break
@@ -522,7 +517,7 @@ def turn(game: Game):
             x += 1
             for i in owner.keys():
                 if(owner[str(i)] == my_id):
-                    print (game.put_troop(i, 1) , '\nTASK 5 IN DEPLOYMENT IS DONE\n')
+                    game.put_troop(i, 1)
                     my_remaining_troops -= 1
                     break
                 
@@ -605,8 +600,6 @@ def turn(game: Game):
                     mini_id1 = father[str(mini_id1)]
                 way.reverse()
                 if(len(way) >= 2):
-                    print ("Task -1 list Way:")
-                    print(way)
                     if game.attack(way[0], way[1], VARS['beta_plus'], 0.5)['won'] == 1:
                         for i in range(1, len(way) - 1):
                             if (number_of_fort_troops[str(way[i + 1])]+number_of_troops[str(way[i + 1])])*beta>=number_of_troops[str(way[i])] or number_of_troops[str(way[i])]<2 :    break
@@ -633,13 +626,11 @@ def turn(game: Game):
         if attack[1]['attack'] and attack[1]['deployed'] and owner[str(attack[0][0])] != my_id and game.get_number_of_troops()[str(attack[0][1])]>=2:
             if attack[1]['tunel'] == -1:
                 if attack[0][1] in strategic_nodes:
-                    print(f"TROOPS OF ATTACKER Node:{number_of_troops[str(attack[0][1])]}")
                     if game.attack(attack[0][1] , attack[0][0] , beta_plus , 0.5)['won'] == 1:
                         owner[str(attack[0][0])] = my_id
                 else:
                     if game.attack(attack[0][1] , attack[0][0] , 0.5 , 0.9)['won'] == 1:
                         owner[str(attack[0][0])] = my_id
-                print ('WE ATTACKED FROM' , attack[0][1] , 'TO NODE' ,attack[0][0])
             else:
                 way = attack[1]['tunel']
                 way.reverse()
@@ -671,8 +662,7 @@ def turn(game: Game):
                 if(owner[str(j)] != my_id and owner[str(j)] != -1): 
                     for k in adjacents[str(j)]: 
                         if(owner[str(k)] == my_id and k not in strategic_nodes and number_of_troops[str(k)] >= 2):
-                            print (f'my stra (i) is: {i} and enemy node layer1 is {j} and layer2 node is {k}')
-                            print (game.attack(k, j, 0.1, 0.6) , '\n TASK 5 IN ATTACK STATE IS DONE \n')
+                            game.attack(k, j, 0.1, 0.6)
                             owner = game.get_owners()
                             number_of_troops= game.get_number_of_troops()
                             number_of_fort_troops = game.get_number_of_fort_troops()
@@ -689,7 +679,7 @@ def turn(game: Game):
             for j in adjacents[str(i)]:
                 if(owner[str(j)] != my_id and owner[str(j)] != -1 and number_of_troops[str(i)] in opt_nums):
                     if 1 <= number_of_troops[str(j)] + number_of_fort_troops[str(j)] <= 2:
-                        print (game.attack(i, j, beta , 0.3) , '\n TASK 6 IS DONE with beta')
+                        game.attack(i, j, beta , 0.3)
                         owner = game.get_owners()
                         number_of_troops= game.get_number_of_troops()
                         number_of_fort_troops = game.get_number_of_fort_troops()
@@ -703,7 +693,7 @@ def turn(game: Game):
     if origin != -1 and goal != -1 and number_of_troops[str(goal)]>number_of_troops[str(origin)]+number_of_fort_troops[str(origin)]:
         moving_troops = (number_of_troops[str(goal)] - number_of_troops[str(origin)])//2
         if moving_troops > 0:
-            print (game.move_troop(goal , origin , moving_troops))
+            game.move_troop(goal , origin , moving_troops)
 
     #FINISH PROTOCOL 1
     else:
@@ -715,7 +705,7 @@ def turn(game: Game):
             reachable.sort(key=lambda x: number_of_troops[str(x)],reverse=True)
             source = reachable[0] if len(reachable) else -1
             if source!=-1 and number_of_troops[str(source)]>3:
-                print (game.move_troop(source , node , number_of_troops[str(source)]-1))
+                game.move_troop(source , node , number_of_troops[str(source)]-1)
                 break
         else:   #This part will run only when for loop Ends with no break
             for node in my_best_strategic:
@@ -724,44 +714,8 @@ def turn(game: Game):
                 source = reachable[0] if len(reachable) else -1
                 if source!=-1 and number_of_troops[str(source)]>10 and number_of_fort_troops[str(source)]+number_of_troops[str(source)]>number_of_fort_troops[str(node)]+number_of_troops[str(node)]:
                     troops = (number_of_troops[str(source)]-number_of_troops[str(node)])//2
-                    if troops>0:    print (game.move_troop(source , node , troops))
+                    if troops>0:    game.move_troop(source , node , troops)
                     break
-    
-    # max_troops = 1
-    # sourcenode = -1
-    # destinationnode = -1
-    # for tunel in ListOfTunnels:
-    #     if is_tunnel_activated (tunel , owner , my_id):
-    #         for eachnode in tunel[1:-1]:
-    #             if number_of_troops[str(eachnode)] > max_troops:
-    #                 max_troops = number_of_troops[str(eachnode)]
-    #                 sourcenode = eachnode
-    #                 destinationnode = tunel[0]
-    #     else:
-    #         end = 0
-    #         if owner[str(tunel[0])] == my_id:
-    #             end = findend(tunel , owner , my_id)
-    #             max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-    #             if owner[str(tunel[-1])] == my_id: #when both end and start of the tunnel is for us!
-    #                 tunel = list(reversed(tunel))
-    #                 end = findend(tunel , owner , my_id)
-    #                 max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-    #         elif owner[str(tunel[0])] != my_id and owner[str(tunel[-1])] == my_id: #we have just end of the tunnel
-    #             tunel = list(reversed(tunel))
-    #             end = findend(tunel , owner , my_id)
-    #             max_troops , sourcenode , destinationnode = findmove (tunel , end , number_of_troops , max_troops , sourcenode , destinationnode)
-    # for i in strategic_nodes:
-    #     if owner[str(i)] == my_id:
-    #         for layer1 in adjacents[str(i)]:
-    #             if owner[str(layer1)] == my_id and number_of_troops[str(layer1)] > max_troops:
-    #                 destinationnode , sourcenode , max_troops = i , layer1 , number_of_troops[str(layer1)]
-    #                 print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
-    #             for layer2 in adjacents[str(layer1)]:
-    #                 if owner[str(layer2)] == my_id and number_of_troops[str(layer2)] > max_troops and layer2 != i:
-    #                     destinationnode , sourcenode , max_troops =  i , layer2 , number_of_troops[str(layer2)]
-    #                     print ('source is:' , sourcenode , 'destination is:' , destinationnode , 'number of troops is:' , max_troops)
-    # if sourcenode != -1 and destinationnode != -1 and destinationnode in game.get_reachable(sourcenode)['reachable']:        print (game.move_troop(sourcenode , destinationnode , number_of_troops[str(sourcenode)]-1))
-
 
 
     game.next_state()
